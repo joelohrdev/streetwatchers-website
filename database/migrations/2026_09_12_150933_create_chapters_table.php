@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('city');
             $table->string('country');
-            $table->string('latitude');
-            $table->string('longitude');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 11, 8);
             $table->text('description');
             $table->string('cover_image_path')->nullable();
             $table->string('status')->default(ChapterStatus::Pending);
