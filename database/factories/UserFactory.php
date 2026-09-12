@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -28,6 +29,11 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'bio' => fake()->text(),
+            'avatar' => fake()->image(),
+            'city' => fake()->city(),
+            'country' => fake()->country(),
+            'role' => fake()->randomElement(UserRole::cases()),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
@@ -42,9 +48,4 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
-
-    /**
-     * Indicate that the model has two-factor authentication configured.
-     */
-    public function withTwoFactor(): static {}
 }
