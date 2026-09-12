@@ -45,9 +45,16 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'role' => UserRole::class,
+            'id' => 'integer',
+            'name' => 'string',
+            'email' => 'string',
             'password' => 'hashed',
+            'bio' => 'string',
+            'avatar' => 'string',
+            'city' => 'string',
+            'country' => 'string',
+            'role' => UserRole::class,
+            'email_verified_at' => 'datetime',
         ];
     }
 }
