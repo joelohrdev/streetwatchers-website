@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->string('city')->nullable();
             $table->string('country')->nullable();
-            $table->string('role')->default(UserRole::MEMBER->value);
+            $table->string('role')->default(UserRole::Member->value);
             $table->rememberToken();
             $table->timestamps();
         });
