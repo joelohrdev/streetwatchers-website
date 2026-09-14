@@ -118,6 +118,8 @@ class DatabaseSeeder extends Seeder
                 ->create();
         }
 
+        $this->call(ChapterSeeder::class);
+
         $critiqueGroup = CritiqueGroup::factory()->create([
             'name' => 'Week of '.now()->startOfWeek()->toFormattedDateString(),
             'week_start' => now()->startOfWeek(),
