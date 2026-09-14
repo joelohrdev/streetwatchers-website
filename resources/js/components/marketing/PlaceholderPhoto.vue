@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+
 /**
  * A street photograph in a fixed-ratio frame, or a clearly marked stand-in when no `src` is given.
  * Real images and placeholders share the same wrapper so the surrounding whitespace stays
@@ -6,7 +8,8 @@
  * frame will carry.
  *
  * `framed` draws the logo's viewfinder brackets just outside the corners. `priority` loads the
- * image straight away, for photos visible when the page first appears.
+ * image straight away, for photos visible when the page first appears. If the image fails to load,
+ * the placeholder is shown instead.
  */
 const {
     ratio = 'aspect-[4/5]',
@@ -24,6 +27,15 @@ const {
     priority?: boolean;
 }>();
 
+const failed = ref(false);
+
+watch(
+    () => src,
+    () => {
+        failed.value = false;
+    },
+);
+
 /** Corner brackets sit just outside the frame, as they do around the mark. */
 const bracketCorners = [
     '-top-2 -left-2 border-t-2 border-l-2 md:-top-3 md:-left-3',
@@ -36,13 +48,14 @@ const bracketCorners = [
 <template>
     <div class="relative">
         <img
-            v-if="src"
+            v-if="src && !failed"
             :src="src"
             :alt="alt"
             :loading="priority ? 'eager' : 'lazy'"
             :fetchpriority="priority ? 'high' : 'auto'"
             decoding="async"
             :class="[ratio, 'bg-ink block w-full object-cover object-center']"
+            @error="failed = true"
         />
         <div
             v-else

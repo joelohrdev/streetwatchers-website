@@ -21,6 +21,7 @@ class CollectiveFactory extends Factory
             'name' => fake()->company(),
             'slug' => fake()->unique()->slug(),
             'description' => fake()->paragraph(),
+            'based_in' => fake()->optional()->city(),
             'website_url' => fake()->optional()->url(),
             'instagram_url' => fake()->optional()->passthrough('https://instagram.com/'.fake()->userName()),
             'logo_path' => null,
@@ -36,6 +37,26 @@ class CollectiveFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_verified' => true,
+        ]);
+    }
+
+    /**
+     * Indicate that the collective is accepting applications.
+     */
+    public function openForApplications(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_open_for_applications' => true,
+        ]);
+    }
+
+    /**
+     * Indicate that the collective is not accepting applications.
+     */
+    public function closedForApplications(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_open_for_applications' => false,
         ]);
     }
 }

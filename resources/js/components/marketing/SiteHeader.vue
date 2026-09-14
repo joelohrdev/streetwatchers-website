@@ -5,6 +5,7 @@ import { computed, ref } from 'vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
 import { dashboard, home, login, register } from '@/routes';
 import { index as chapterDirectory } from '@/routes/chapters';
+import { index as collectiveDirectory } from '@/routes/collectives';
 
 /**
  * Explore points at the matching homepage section until the feed page exists;
@@ -13,6 +14,7 @@ import { index as chapterDirectory } from '@/routes/chapters';
 const navLinks = [
     { label: 'Explore', href: '#featured' },
     { label: 'Groups', href: chapterDirectory.url() },
+    { label: 'Collectives', href: collectiveDirectory.url() },
 ];
 
 const isMenuOpen = ref(false);

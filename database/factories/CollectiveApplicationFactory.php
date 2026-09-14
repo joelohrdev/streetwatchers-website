@@ -27,4 +27,27 @@ class CollectiveApplicationFactory extends Factory
             'status' => fake()->randomElement(CollectiveApplicationStatus::cases()),
         ];
     }
+
+    /**
+     * Indicate that the application is waiting for a founder's decision.
+     */
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => CollectiveApplicationStatus::Pending,
+            'decided_by' => null,
+            'decided_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that a founder declined the application.
+     */
+    public function declined(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => CollectiveApplicationStatus::Declined,
+            'decided_at' => now()->subDay(),
+        ]);
+    }
 }

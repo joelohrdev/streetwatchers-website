@@ -16,10 +16,12 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property string $message
  * @property CollectiveApplicationStatus $status
+ * @property int|null $decided_by
+ * @property Carbon|null $decided_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['collective_id', 'user_id', 'message', 'status'])]
+#[Fillable(['collective_id', 'user_id', 'message', 'status', 'decided_by', 'decided_at'])]
 class CollectiveApplication extends Model
 {
     /** @use HasFactory<CollectiveApplicationFactory> */
@@ -38,6 +40,8 @@ class CollectiveApplication extends Model
             'user_id' => 'integer',
             'message' => 'string',
             'status' => CollectiveApplicationStatus::class,
+            'decided_by' => 'integer',
+            'decided_at' => 'datetime',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -57,5 +61,15 @@ class CollectiveApplication extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * The founder who accepted or declined the application.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function decider(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'decided_by');
     }
 }

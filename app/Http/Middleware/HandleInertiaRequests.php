@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\CollectiveApplicationStatus;
+use App\Models\CollectiveApplication;
 use App\Models\ContactMessage;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -47,7 +49,25 @@ class HandleInertiaRequests extends Middleware
             'unreadContactMessages' => fn (): ?int => $request->user()?->isSuperAdmin()
                 ? ContactMessage::query()->whereNull('read_at')->count()
                 : null,
+            'pendingCollectiveApplications' => fn (): ?int => $this->pendingCollectiveApplications($request),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
+    }
+
+    /**
+     * Pending applications to collectives the user founded, or null when they founded none.
+     */
+    private function pendingCollectiveApplications(Request $request): ?int
+    {
+        $user = $request->user();
+
+        if ($user === null || ! $user->foundedCollectives()->exists()) {
+            return null;
+        }
+
+        return CollectiveApplication::query()
+            ->where('status', CollectiveApplicationStatus::Pending)
+            ->whereIn('collective_id', $user->foundedCollectives()->select('collectives.id'))
+            ->count();
     }
 }

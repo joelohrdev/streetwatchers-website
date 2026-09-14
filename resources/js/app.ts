@@ -18,6 +18,8 @@ void createInertiaApp({
             case name.startsWith('auth/'):
             case name === 'chapters/Index':
             case name === 'chapters/Show':
+            case name === 'collectives/Index':
+            case name === 'collectives/Show':
             case name.startsWith('photo-removal-requests/'):
             case name.startsWith('contact-messages/'):
                 return MarketingLayout;

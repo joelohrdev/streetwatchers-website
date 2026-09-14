@@ -2,13 +2,14 @@
 import { AtSign, Camera, Rss } from '@lucide/vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
 import { index as chapterDirectory } from '@/routes/chapters';
+import { index as collectiveDirectory } from '@/routes/collectives';
 import { create as contact } from '@/routes/contact-messages';
 import { create as photoRemovalRequest } from '@/routes/photo-removal-requests';
 
 /** Placeholder destinations until the supporting pages exist. */
 const footerLinks = [
     { label: 'Groups', href: chapterDirectory.url() },
-    { label: 'Collectives', href: '#' },
+    { label: 'Collectives', href: collectiveDirectory.url() },
     { label: 'Code of Conduct', href: '#' },
     { label: 'Privacy', href: '#' },
     { label: 'Contact', href: contact.url() },

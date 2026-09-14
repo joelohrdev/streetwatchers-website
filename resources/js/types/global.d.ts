@@ -24,6 +24,8 @@ declare module '@inertiajs/core' {
             announcement: string | null;
             /** Unread contact form messages. Only sent to super admins; null for everyone else. */
             unreadContactMessages: number | null;
+            /** Pending applications to collectives the user founded. Null when they founded none. */
+            pendingCollectiveApplications: number | null;
             sidebarOpen: boolean;
             [key: string]: unknown;
         };

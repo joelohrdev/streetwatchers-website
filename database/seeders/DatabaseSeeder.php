@@ -4,15 +4,12 @@ namespace Database\Seeders;
 
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
-use App\Enums\CollectiveMemberRole;
 use App\Enums\EventRsvpStatus;
 use App\Enums\PhotoStatus;
 use App\Enums\ReportStatus;
 use App\Enums\UserRole;
 use App\Models\Article;
 use App\Models\Chapter;
-use App\Models\Collective;
-use App\Models\CollectiveApplication;
 use App\Models\Comment;
 use App\Models\Correspondent;
 use App\Models\Event;
@@ -100,19 +97,7 @@ class DatabaseSeeder extends Seeder
             $user->following()->attach($users->except([$user->id])->random(3));
         }
 
-        $collectives = Collective::factory(2)->create(['is_open_for_applications' => true]);
-
-        foreach ($collectives as $collective) {
-            $members = $users->random(4);
-
-            $collective->members()->attach($members->first(), ['role' => CollectiveMemberRole::Founder]);
-            $collective->members()->attach($members->skip(1), ['role' => CollectiveMemberRole::Member]);
-
-            CollectiveApplication::factory(2)
-                ->for($collective)
-                ->sequence(fn () => ['user_id' => $users->diff($members)->random()->id])
-                ->create();
-        }
+        $this->call(CollectiveSeeder::class);
 
         $this->call(ChapterSeeder::class);
 

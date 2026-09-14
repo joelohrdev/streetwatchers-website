@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ChapterMembershipController;
+use App\Http\Controllers\CollectiveApplicationController;
+use App\Http\Controllers\CollectiveApplicationDecisionController;
+use App\Http\Controllers\CollectiveController;
+use App\Http\Controllers\CollectiveMembershipController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoRemovalRequestController;
@@ -16,6 +20,8 @@ Route::get('/', HomeController::class)->name('home');
  * The route names, controller and database keep the internal "chapter" name.
  */
 Route::get('groups', [ChapterController::class, 'index'])->name('chapters.index');
+
+Route::get('collectives', [CollectiveController::class, 'index'])->name('collectives.index');
 
 // Old /chapters links keep working, including any search in the query string.
 Route::get('chapters/{path?}', fn (Request $request, ?string $path = null): RedirectResponse => redirect()->to(
@@ -41,10 +47,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('groups/{chapter}/membership', [ChapterMembershipController::class, 'store'])->name('chapters.membership.store');
     Route::delete('groups/{chapter}/membership', [ChapterMembershipController::class, 'destroy'])->name('chapters.membership.destroy');
+
+    Route::get('collectives/create', [CollectiveController::class, 'create'])->name('collectives.create');
+    Route::post('collectives', [CollectiveController::class, 'store'])->name('collectives.store');
+    Route::get('collectives/{collective}/edit', [CollectiveController::class, 'edit'])->name('collectives.edit');
+    Route::put('collectives/{collective}', [CollectiveController::class, 'update'])->name('collectives.update');
+    Route::post('collectives/{collective}/applications', [CollectiveApplicationController::class, 'store'])->name('collectives.applications.store');
+    Route::delete('collectives/{collective}/membership', [CollectiveMembershipController::class, 'destroy'])->name('collectives.membership.destroy');
+
+    Route::get('collective-applications', [CollectiveApplicationController::class, 'index'])->name('collective-applications.index');
+    Route::patch('collective-applications/{collectiveApplication}', [CollectiveApplicationDecisionController::class, 'update'])->name('collective-applications.decision.update');
 });
 
-// Sends guests to log in or register and back again, so it deliberately has no auth middleware.
+// Sends guests to log in or register and back again, so these deliberately have no auth middleware.
 Route::get('groups/{chapter}/join', [ChapterMembershipController::class, 'create'])->name('chapters.membership.create');
+Route::get('collectives/{collective}/apply', [CollectiveApplicationController::class, 'create'])->name('collectives.applications.create');
+
+// Registered after collectives/create so that path isn't read as a collective slug.
+Route::get('collectives/{collective}', [CollectiveController::class, 'show'])->name('collectives.show');
 
 // Registered after groups/create so that path isn't read as a group slug.
 Route::get('groups/{chapter}', [ChapterController::class, 'show'])->name('chapters.show');

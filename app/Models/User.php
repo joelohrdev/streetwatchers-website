@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\CollectiveMemberRole;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
@@ -155,6 +156,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Collective::class)
             ->using(CollectiveUser::class)
             ->withPivot('role');
+    }
+
+    /**
+     * The collectives this user founded.
+     *
+     * @return BelongsToMany<Collective, $this, CollectiveUser>
+     */
+    public function foundedCollectives(): BelongsToMany
+    {
+        return $this->collectives()->wherePivot('role', CollectiveMemberRole::Founder);
     }
 
     /**

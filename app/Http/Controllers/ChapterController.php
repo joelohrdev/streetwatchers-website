@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Concerns\GeneratesUniqueSlugs;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\PhotoStatus;
@@ -18,6 +19,8 @@ use Inertia\Response;
 
 class ChapterController extends Controller
 {
+    use GeneratesUniqueSlugs;
+
     /**
      * How many nearby chapters to suggest on a chapter page.
      */
@@ -168,7 +171,7 @@ class ChapterController extends Controller
         $chapter = DB::transaction(function () use ($request): Chapter {
             $chapter = Chapter::query()->create([
                 ...$request->safe()->only(['name', 'city', 'country', 'latitude', 'longitude', 'description']),
-                'slug' => $this->uniqueSlug($request->validated('name')),
+                'slug' => $this->uniqueSlug($request->validated('name'), Chapter::class, self::RESERVED_SLUGS),
                 'cover_image_path' => $request->file('cover_image')?->store('chapter-covers', 'public'),
                 'status' => ChapterStatus::Pending,
             ]);
@@ -179,22 +182,5 @@ class ChapterController extends Controller
         });
 
         return to_route('chapters.create')->with('submitted_chapter', $chapter->name);
-    }
-
-    /**
-     * Build a slug from the chapter name, adding a number when it is already taken.
-     */
-    private function uniqueSlug(string $name): string
-    {
-        $base = Str::slug($name) ?: 'chapter';
-        $slug = $base;
-        $suffix = 2;
-
-        while (in_array($slug, self::RESERVED_SLUGS, true) || Chapter::query()->where('slug', $slug)->exists()) {
-            $slug = "{$base}-{$suffix}";
-            $suffix++;
-        }
-
-        return $slug;
     }
 }

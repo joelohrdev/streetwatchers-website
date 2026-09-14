@@ -5,8 +5,9 @@ import {
     Gauge,
     Inbox,
     LayoutGrid,
-    MapPinned,
+    MailOpen,
     MapPinPlus,
+    MapPinned,
     Newspaper,
     PenLine,
     Settings,
@@ -30,6 +31,8 @@ import {
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { dashboard } from '@/routes';
 import { create as createChapter } from '@/routes/chapters';
+import { index as collectiveApplicationsIndex } from '@/routes/collective-applications';
+import { create as createCollective } from '@/routes/collectives';
 import { dashboard as adminDashboard } from '@/routes/admin';
 import { index as articlesIndex } from '@/routes/admin/articles';
 import { index as chaptersIndex } from '@/routes/admin/chapters';
@@ -50,7 +53,7 @@ type NavGroup = {
 const page = usePage();
 const { isCurrentUrl, isCurrentOrParentUrl } = useCurrentUrl();
 
-const mainNavItems: NavItem[] = [
+const mainNavItems = computed<NavItem[]>(() => [
     {
         title: 'Dashboard',
         href: dashboard(),
@@ -61,7 +64,23 @@ const mainNavItems: NavItem[] = [
         href: createChapter(),
         icon: MapPinPlus,
     },
-];
+    {
+        title: 'Start a collective',
+        href: createCollective(),
+        icon: UsersRound,
+    },
+    // Only founders of a collective get the applications inbox.
+    ...(page.props.pendingCollectiveApplications !== null
+        ? [
+              {
+                  title: 'Applications',
+                  href: collectiveApplicationsIndex(),
+                  icon: MailOpen,
+                  badge: page.props.pendingCollectiveApplications,
+              },
+          ]
+        : []),
+]);
 
 /** A section link that stays highlighted on its sub-pages, e.g. a single chapter. */
 function section(
