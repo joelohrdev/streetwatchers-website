@@ -7,6 +7,10 @@ import HeroSection from '@/components/marketing/HeroSection.vue';
 import IntroStatement from '@/components/marketing/IntroStatement.vue';
 import type { ChapterDirectoryStats, FeaturedPhoto } from '@/types';
 
+defineProps<{
+    chapterStats: ChapterDirectoryStats;
+}>();
+
 /**
  * Placeholder content. Each value is shaped like the Inertia prop that will
  * replace it, so the sections stay untouched when the backend lands.
@@ -55,11 +59,6 @@ const featuredPhotos: FeaturedPhoto[] = [
         credit: 'Photographer Name',
     },
 ];
-
-const chapterStats: ChapterDirectoryStats = {
-    chapterCount: 64,
-    countryCount: 29,
-};
 </script>
 
 <template>

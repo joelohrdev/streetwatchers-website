@@ -16,6 +16,8 @@ void createInertiaApp({
             case name === 'Welcome':
                 return null;
             case name === 'Home':
+            case name === 'chapters/Index':
+            case name === 'chapters/Show':
             case name.startsWith('photo-removal-requests/'):
                 return MarketingLayout;
             case name.startsWith('admin/'):

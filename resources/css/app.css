@@ -67,7 +67,7 @@
 
 /*
   StreetWatchers marketing palette: monochrome, keyed to the logo and to
-  high-contrast black and white photography. Paper is pure white, ink is pure
+  high-contrast black and white photography. Paper is a warm off-white, ink is pure
   black, and there is no accent hue — emphasis comes from value and inversion.
 
   These tokens are deliberately literal rather than `var()` indirections: the
@@ -75,7 +75,7 @@
   appearance preference is dark.
 */
 @theme {
-    --color-paper: hsl(0 0% 100%);
+    --color-paper: #f8f7f3;
     --color-ink: hsl(0 0% 0%);
     --color-ink-soft: hsl(0 0% 38%);
     --color-hairline: hsl(0 0% 86%);

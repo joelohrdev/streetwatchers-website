@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read int|null $admins_count
+ * @property-read int|null $published_photos_count
  */
 #[Fillable('name', 'slug', 'city', 'country', 'latitude', 'longitude', 'description', 'cover_image_path', 'status')]
 class Chapter extends Model
@@ -54,6 +55,20 @@ class Chapter extends Model
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Great-circle distance to another chapter in kilometres, using the haversine formula.
+     */
+    public function distanceInKilometresTo(Chapter $other): float
+    {
+        $latitudeDelta = deg2rad($other->latitude - $this->latitude);
+        $longitudeDelta = deg2rad($other->longitude - $this->longitude);
+
+        $a = sin($latitudeDelta / 2) ** 2
+            + cos(deg2rad($this->latitude)) * cos(deg2rad($other->latitude)) * sin($longitudeDelta / 2) ** 2;
+
+        return 2 * 6371 * asin(sqrt($a));
     }
 
     /**

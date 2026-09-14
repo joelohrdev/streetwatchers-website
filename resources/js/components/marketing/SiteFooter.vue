@@ -2,11 +2,12 @@
 import { ArrowRight, AtSign, Camera, Rss } from '@lucide/vue';
 import { ref } from 'vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
+import { index as chapterDirectory } from '@/routes/chapters';
 import { create as photoRemovalRequest } from '@/routes/photo-removal-requests';
 
 /** Placeholder destinations until the supporting pages exist. */
 const footerLinks = [
-    { label: 'Chapters', href: '#chapters' },
+    { label: 'Groups', href: chapterDirectory.url() },
     { label: 'Collectives', href: '#' },
     { label: 'Code of Conduct', href: '#' },
     { label: 'Privacy', href: '#' },

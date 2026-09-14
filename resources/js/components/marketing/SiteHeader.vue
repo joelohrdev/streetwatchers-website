@@ -4,15 +4,16 @@ import { Menu, X } from '@lucide/vue';
 import { ref } from 'vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
 import { home } from '@/routes';
+import { index as chapterDirectory } from '@/routes/chapters';
 import { register } from '@/routes';
 
 /**
- * Explore and Chapters point at the matching homepage sections until their own
- * pages exist; swap the hrefs for Wayfinder routes at that point.
+ * Explore points at the matching homepage section until the feed page exists;
+ * swap its href for a Wayfinder route at that point.
  */
 const navLinks = [
     { label: 'Explore', href: '#featured' },
-    { label: 'Chapters', href: '#chapters' },
+    { label: 'Groups', href: chapterDirectory.url() },
 ];
 
 const isMenuOpen = ref(false);

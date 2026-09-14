@@ -4,6 +4,9 @@ import type { Auth } from '@/types/auth';
 declare module 'vite/client' {
     interface ImportMetaEnv {
         readonly VITE_APP_NAME: string;
+        readonly VITE_MAP_TILE_URL?: string;
+        readonly VITE_MAP_TILE_ATTRIBUTION?: string;
+        readonly VITE_MAP_BASEMAP?: 'tiles' | 'outline';
         [key: string]: string | boolean | undefined;
     }
 
