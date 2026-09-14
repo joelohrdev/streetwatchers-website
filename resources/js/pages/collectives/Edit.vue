@@ -1,65 +1,70 @@
 <script setup lang="ts">
-import { Form, Head, Link, setLayoutProps } from '@inertiajs/vue3';
+import { Form, Head, Link } from '@inertiajs/vue3';
 import { ArrowLeft } from '@lucide/vue';
 import { update } from '@/actions/App/Http/Controllers/CollectiveController';
 import type { CollectiveFormDefaults } from '@/components/collectives/CollectiveForm.vue';
 import CollectiveForm from '@/components/collectives/CollectiveForm.vue';
-import Heading from '@/components/Heading.vue';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
-import { edit, show } from '@/routes/collectives';
+import { primaryButtonClass } from '@/lib/marketing';
+import { show } from '@/routes/collectives';
 
-const props = defineProps<{
+defineProps<{
     collective: CollectiveFormDefaults & { slug: string };
 }>();
-
-// The breadcrumb needs the collective's slug, so it is set once the props are known.
-setLayoutProps({
-    breadcrumbs: [
-        { title: 'Edit collective', href: edit(props.collective.slug) },
-    ],
-});
 </script>
 
 <template>
     <Head :title="`Edit ${collective.name}`" />
 
-    <div class="mx-auto w-full max-w-3xl px-4 py-6">
-        <Button as-child variant="ghost" size="sm" class="mb-4 -ml-2">
-            <Link :href="show(collective.slug)">
-                <ArrowLeft />
-                Back to {{ collective.name }}
-            </Link>
-        </Button>
+    <section class="mx-auto w-full max-w-2xl px-6 py-20 md:px-10 md:py-28">
+        <Link
+            :href="show(collective.slug)"
+            class="font-display text-ink-soft hover:text-ink inline-flex items-center gap-2 text-xs font-semibold tracking-[0.14em] uppercase transition-colors"
+        >
+            <ArrowLeft class="size-4" />
+            Back to {{ collective.name }}
+        </Link>
 
-        <Heading
-            title="Edit collective"
-            description="Update how the collective appears in the directory and whether people can apply to join."
-        />
+        <p
+            class="font-display text-ink-soft mt-12 text-xs font-semibold tracking-[0.18em] uppercase"
+        >
+            Collectives
+        </p>
+        <h1
+            class="font-display mt-4 text-3xl font-extrabold tracking-tight uppercase md:text-5xl"
+        >
+            Edit {{ collective.name }}
+        </h1>
+        <p class="text-ink-soft mt-6 text-lg leading-relaxed">
+            Update how the collective appears in the directory and whether
+            people can apply to join.
+        </p>
 
         <Form
             v-bind="update.form(collective.slug)"
-            class="space-y-6"
+            class="mt-14 flex flex-col gap-14"
             v-slot="{ errors, processing, progress }"
         >
             <CollectiveForm :collective="collective" :errors="errors" />
 
             <div
-                class="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end"
+                class="border-hairline flex flex-col gap-4 border-t pt-10 sm:flex-row sm:items-center"
             >
+                <button
+                    type="submit"
+                    :disabled="processing"
+                    :class="[primaryButtonClass, 'sm:w-auto']"
+                >
+                    {{ processing ? 'Saving…' : 'Save changes' }}
+                </button>
                 <progress
                     v-if="progress"
                     :value="progress.percentage"
                     max="100"
-                    class="w-full sm:w-40"
+                    class="accent-ink w-full sm:w-40"
                 >
                     {{ progress.percentage }}%
                 </progress>
-                <Button type="submit" :disabled="processing">
-                    <Spinner v-if="processing" />
-                    Save changes
-                </Button>
             </div>
         </Form>
-    </div>
+    </section>
 </template>

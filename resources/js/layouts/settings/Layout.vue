@@ -1,71 +1,74 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import Heading from '@/components/Heading.vue';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { Link, usePage } from '@inertiajs/vue3';
+import { ArrowLeft } from '@lucide/vue';
+import { computed } from 'vue';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
-import { toUrl } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import { dashboard } from '@/routes';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
-import type { NavItem } from '@/types';
 
-const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Profile',
-        href: editProfile(),
-    },
-    {
-        title: 'Security',
-        href: editSecurity(),
-    },
-    {
-        title: 'Appearance',
-        href: editAppearance(),
-    },
-];
-
+const page = usePage();
 const { isCurrentOrParentUrl } = useCurrentUrl();
+
+/** Appearance only changes the admin panel's theme, so only super admins see it. */
+const tabs = computed(() => [
+    { title: 'Profile', href: editProfile() },
+    { title: 'Password', href: editSecurity() },
+    ...(page.props.auth.user.role === 'super_admin'
+        ? [{ title: 'Appearance', href: editAppearance() }]
+        : []),
+]);
 </script>
 
 <template>
-    <div class="px-4 py-6">
-        <Heading
-            title="Settings"
-            description="Manage your profile and account settings"
-        />
+    <section class="mx-auto w-full max-w-3xl px-6 py-20 md:px-10 md:py-28">
+        <Link
+            :href="dashboard()"
+            class="font-display text-ink-soft hover:text-ink inline-flex items-center gap-2 text-xs font-semibold tracking-[0.14em] uppercase transition-colors"
+        >
+            <ArrowLeft class="size-4" />
+            Back to Your StreetWatchers
+        </Link>
 
-        <div class="flex flex-col lg:flex-row lg:space-x-12">
-            <aside class="w-full max-w-xl lg:w-48">
-                <nav
-                    class="flex flex-col space-y-1 space-x-0"
-                    aria-label="Settings"
-                >
-                    <Button
-                        v-for="item in sidebarNavItems"
-                        :key="toUrl(item.href)"
-                        variant="ghost"
-                        :class="[
-                            'w-full justify-start',
-                            { 'bg-muted': isCurrentOrParentUrl(item.href) },
-                        ]"
-                        as-child
-                    >
-                        <Link :href="item.href">
-                            <component :is="item.icon" class="h-4 w-4" />
-                            {{ item.title }}
-                        </Link>
-                    </Button>
-                </nav>
-            </aside>
+        <p
+            class="font-display text-ink-soft mt-12 text-xs font-semibold tracking-[0.18em] uppercase"
+        >
+            Your account
+        </p>
+        <h1
+            class="font-display mt-4 text-3xl font-extrabold tracking-tight uppercase md:text-4xl"
+        >
+            Settings
+        </h1>
 
-            <Separator class="my-6 lg:hidden" />
+        <nav
+            class="border-hairline mt-10 flex flex-wrap gap-x-8 gap-y-3 border-b"
+            aria-label="Settings"
+        >
+            <Link
+                v-for="tab in tabs"
+                :key="tab.title"
+                :href="tab.href"
+                :aria-current="
+                    isCurrentOrParentUrl(tab.href) ? 'page' : undefined
+                "
+                :class="
+                    cn(
+                        'font-display -mb-px border-b-2 pb-3 text-xs font-semibold tracking-[0.14em] uppercase transition-colors',
+                        isCurrentOrParentUrl(tab.href)
+                            ? 'border-ink text-ink'
+                            : 'text-ink-soft hover:text-ink border-transparent',
+                    )
+                "
+            >
+                {{ tab.title }}
+            </Link>
+        </nav>
 
-            <div class="flex-1 md:max-w-2xl">
-                <section class="max-w-xl space-y-12">
-                    <slot />
-                </section>
-            </div>
+        <div class="mt-12 flex flex-col gap-16">
+            <slot />
         </div>
-    </div>
+    </section>
 </template>

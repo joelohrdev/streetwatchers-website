@@ -3,10 +3,9 @@ import { Link, usePage } from '@inertiajs/vue3';
 import {
     Flag,
     Gauge,
+    Globe,
     Inbox,
     LayoutGrid,
-    MailOpen,
-    MapPinPlus,
     MapPinned,
     Newspaper,
     PenLine,
@@ -29,10 +28,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
-import { dashboard } from '@/routes';
-import { create as createChapter } from '@/routes/chapters';
-import { index as collectiveApplicationsIndex } from '@/routes/collective-applications';
-import { create as createCollective } from '@/routes/collectives';
+import { dashboard, home } from '@/routes';
 import { dashboard as adminDashboard } from '@/routes/admin';
 import { index as articlesIndex } from '@/routes/admin/articles';
 import { index as chaptersIndex } from '@/routes/admin/chapters';
@@ -53,34 +49,11 @@ type NavGroup = {
 const page = usePage();
 const { isCurrentUrl, isCurrentOrParentUrl } = useCurrentUrl();
 
-const mainNavItems = computed<NavItem[]>(() => [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Start a group',
-        href: createChapter(),
-        icon: MapPinPlus,
-    },
-    {
-        title: 'Start a collective',
-        href: createCollective(),
-        icon: UsersRound,
-    },
-    // Only founders of a collective get the applications inbox.
-    ...(page.props.pendingCollectiveApplications !== null
-        ? [
-              {
-                  title: 'Applications',
-                  href: collectiveApplicationsIndex(),
-                  icon: MailOpen,
-                  badge: page.props.pendingCollectiveApplications,
-              },
-          ]
-        : []),
-]);
+/** The sidebar only appears in the admin panel, so its top links lead back to the rest of the site. */
+const mainNavItems: NavItem[] = [
+    { title: 'View site', href: home(), icon: Globe },
+    { title: 'Your StreetWatchers', href: dashboard(), icon: LayoutGrid },
+];
 
 /** A section link that stays highlighted on its sub-pages, e.g. a single chapter. */
 function section(
@@ -146,7 +119,7 @@ const adminNavGroups = computed<NavGroup[]>(() => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard()">
+                        <Link :href="adminDashboard()">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>

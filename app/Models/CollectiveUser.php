@@ -34,4 +34,12 @@ class CollectiveUser extends Pivot
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * @return BelongsTo<Collective, $this>
+     */
+    public function collective(): BelongsTo
+    {
+        return $this->belongsTo(Collective::class);
+    }
 }

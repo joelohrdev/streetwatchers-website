@@ -7,6 +7,7 @@ use App\Http\Controllers\CollectiveApplicationDecisionController;
 use App\Http\Controllers\CollectiveController;
 use App\Http\Controllers\CollectiveMembershipController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoRemovalRequestController;
 use Illuminate\Http\RedirectResponse;
@@ -40,7 +41,7 @@ Route::post('photo-removal-requests', [PhotoRemovalRequestController::class, 'st
     ->name('photo-removal-requests.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('groups/create', [ChapterController::class, 'create'])->name('chapters.create');
     Route::post('groups', [ChapterController::class, 'store'])->name('chapters.store');

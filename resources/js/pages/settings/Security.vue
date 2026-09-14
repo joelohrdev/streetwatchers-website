@@ -1,43 +1,26 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
-import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { edit } from '@/routes/security';
+import FormField from '@/components/marketing/FormField.vue';
+import { primaryButtonClass } from '@/lib/marketing';
 
-// oxfmt-ignore
-type Props = {
+defineProps<{
     passwordRules: string;
-} ;
-
-const props = defineProps<Props>();
-
-defineOptions({
-    layout: {
-        breadcrumbs: [
-            {
-                title: 'Security settings',
-                href: edit(),
-            },
-        ],
-    },
-});
+}>();
 </script>
 
 <template>
-    <Head title="Security settings" />
+    <Head title="Password settings" />
 
-    <h1 class="sr-only">Security settings</h1>
-
-    <div class="space-y-6">
-        <Heading
-            variant="small"
-            title="Update password"
-            description="Ensure your account is using a long, random password to stay secure"
-        />
+    <div>
+        <h2
+            class="font-display text-lg font-extrabold tracking-tight uppercase"
+        >
+            Password
+        </h2>
+        <p class="text-ink-soft mt-2 leading-relaxed">
+            Use a long, unique password to keep your account secure.
+        </p>
 
         <Form
             v-bind="SecurityController.update.form()"
@@ -50,54 +33,50 @@ defineOptions({
                 'password_confirmation',
                 'current_password',
             ]"
-            class="space-y-6"
+            class="mt-10 flex flex-col gap-10"
             v-slot="{ errors, processing }"
         >
-            <div class="grid gap-2">
-                <Label for="current_password">Current password</Label>
-                <PasswordInput
-                    id="current_password"
-                    name="current_password"
-                    class="mt-1 block w-full"
-                    autocomplete="current-password"
-                    placeholder="Current password"
-                />
-                <InputError :message="errors.current_password" />
-            </div>
+            <FormField
+                id="current_password"
+                label="Current password"
+                type="password"
+                name="current_password"
+                autocomplete="current-password"
+                placeholder="Your current password"
+                :error="errors.current_password"
+            />
 
-            <div class="grid gap-2">
-                <Label for="password">New password</Label>
-                <PasswordInput
-                    id="password"
-                    name="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                    placeholder="New password"
-                    :passwordrules="props.passwordRules"
-                />
-                <InputError :message="errors.password" />
-            </div>
+            <FormField
+                id="password"
+                label="New password"
+                type="password"
+                name="password"
+                autocomplete="new-password"
+                placeholder="Choose a new password"
+                :passwordrules="passwordRules"
+                :error="errors.password"
+            />
 
-            <div class="grid gap-2">
-                <Label for="password_confirmation">Confirm password</Label>
-                <PasswordInput
-                    id="password_confirmation"
-                    name="password_confirmation"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                    placeholder="Confirm password"
-                    :passwordrules="props.passwordRules"
-                />
-                <InputError :message="errors.password_confirmation" />
-            </div>
+            <FormField
+                id="password_confirmation"
+                label="Confirm new password"
+                type="password"
+                name="password_confirmation"
+                autocomplete="new-password"
+                placeholder="Type it again"
+                :passwordrules="passwordRules"
+                :error="errors.password_confirmation"
+            />
 
-            <div class="flex items-center gap-4">
-                <Button
+            <div>
+                <button
+                    type="submit"
                     :disabled="processing"
                     data-test="update-password-button"
+                    :class="[primaryButtonClass, 'sm:w-auto']"
                 >
-                    Save
-                </Button>
+                    {{ processing ? 'Saving…' : 'Save password' }}
+                </button>
             </div>
         </Form>
     </div>

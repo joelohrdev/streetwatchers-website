@@ -1,7 +1,6 @@
 import { createInertiaApp } from '@inertiajs/vue3';
 import { initializeTheme } from '@/composables/useAppearance';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import MarketingLayout from '@/layouts/MarketingLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { initializeFlashToast } from '@/lib/flashToast';
@@ -14,21 +13,13 @@ void createInertiaApp({
         switch (true) {
             case name === 'Welcome':
                 return null;
-            case name === 'Home':
-            case name.startsWith('auth/'):
-            case name === 'chapters/Index':
-            case name === 'chapters/Show':
-            case name === 'collectives/Index':
-            case name === 'collectives/Show':
-            case name.startsWith('photo-removal-requests/'):
-            case name.startsWith('contact-messages/'):
-                return MarketingLayout;
             case name.startsWith('admin/'):
                 return AdminLayout;
             case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
+                return [MarketingLayout, SettingsLayout];
+            // Everything outside the admin panel, including member pages, uses the public site's look.
             default:
-                return AppLayout;
+                return MarketingLayout;
         }
     },
     progress: {

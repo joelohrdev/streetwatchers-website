@@ -93,6 +93,26 @@ class User extends Authenticatable
     }
 
     /**
+     * The user's group membership rows, for when the role matters as well as the group.
+     *
+     * @return HasMany<ChapterUser, $this>
+     */
+    public function chapterMemberships(): HasMany
+    {
+        return $this->hasMany(ChapterUser::class);
+    }
+
+    /**
+     * The user's collective membership rows, for when the role matters as well as the collective.
+     *
+     * @return HasMany<CollectiveUser, $this>
+     */
+    public function collectiveMemberships(): HasMany
+    {
+        return $this->hasMany(CollectiveUser::class);
+    }
+
+    /**
      * @return HasMany<Photo, $this>
      */
     public function photos(): HasMany

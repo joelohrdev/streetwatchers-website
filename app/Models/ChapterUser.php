@@ -37,4 +37,12 @@ class ChapterUser extends Pivot
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * @return BelongsTo<Chapter, $this>
+     */
+    public function chapter(): BelongsTo
+    {
+        return $this->belongsTo(Chapter::class);
+    }
 }

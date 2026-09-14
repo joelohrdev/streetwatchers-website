@@ -2,6 +2,7 @@
 import AnnouncementBanner from '@/components/AnnouncementBanner.vue';
 import SiteFooter from '@/components/marketing/SiteFooter.vue';
 import SiteHeader from '@/components/marketing/SiteHeader.vue';
+import { Toaster } from '@/components/ui/sonner';
 </script>
 
 <template>
@@ -12,5 +13,7 @@ import SiteHeader from '@/components/marketing/SiteHeader.vue';
             <slot />
         </main>
         <SiteFooter />
+        <!-- Confirmations such as "Profile updated" arrive as flash toasts. The public site is always light. -->
+        <Toaster theme="light" position="bottom-center" />
     </div>
 </template>
