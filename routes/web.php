@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\ChapterMembershipController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoRemovalRequestController;
@@ -37,7 +38,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('groups/create', [ChapterController::class, 'create'])->name('chapters.create');
     Route::post('groups', [ChapterController::class, 'store'])->name('chapters.store');
+
+    Route::post('groups/{chapter}/membership', [ChapterMembershipController::class, 'store'])->name('chapters.membership.store');
+    Route::delete('groups/{chapter}/membership', [ChapterMembershipController::class, 'destroy'])->name('chapters.membership.destroy');
 });
+
+// Sends guests to log in or register and back again, so it deliberately has no auth middleware.
+Route::get('groups/{chapter}/join', [ChapterMembershipController::class, 'create'])->name('chapters.membership.create');
 
 // Registered after groups/create so that path isn't read as a group slug.
 Route::get('groups/{chapter}', [ChapterController::class, 'show'])->name('chapters.show');

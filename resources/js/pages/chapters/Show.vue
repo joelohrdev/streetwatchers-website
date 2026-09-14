@@ -3,6 +3,8 @@ import { Head, Link } from '@inertiajs/vue3';
 import { ArrowLeft, ArrowRight, CalendarDays, MapPin } from '@lucide/vue';
 import { computed } from 'vue';
 import type { MapChapter } from '@/components/marketing/ChapterMap.vue';
+import type { GroupMembership } from '@/components/marketing/GroupJoinPanel.vue';
+import GroupJoinPanel from '@/components/marketing/GroupJoinPanel.vue';
 import ChapterMap from '@/components/marketing/ChapterMap.vue';
 import { formatDistance } from '@/lib/geo';
 import { create, index, show } from '@/routes/chapters';
@@ -28,6 +30,8 @@ const props = defineProps<{
     organisers: string[];
     upcomingEvents: UpcomingEvent[];
     nearby: NearbyChapter[];
+    membership: GroupMembership;
+    status: string | null;
 }>();
 
 const mapChapters = computed<MapChapter[]>(() => [
@@ -106,6 +110,13 @@ const stats = computed(() => [
                 </dd>
             </div>
         </dl>
+
+        <GroupJoinPanel
+            class="mt-12"
+            :group="chapter"
+            :membership="membership"
+            :status="status"
+        />
     </section>
 
     <img

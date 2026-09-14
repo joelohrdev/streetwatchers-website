@@ -62,7 +62,7 @@ class ChapterController extends Controller
     /**
      * A public chapter page. Only active chapters are visible.
      */
-    public function show(Chapter $chapter): Response
+    public function show(Request $request, Chapter $chapter): Response
     {
         abort_unless($chapter->status === ChapterStatus::Active, 404);
 
@@ -123,7 +123,31 @@ class ChapterController extends Controller
                     'ends_at' => $event->ends_at->toIso8601String(),
                 ]),
             'nearby' => $nearby,
+            'membership' => $this->membershipFor($request, $chapter),
+            'status' => $request->session()->get('status'),
         ]);
+    }
+
+    /**
+     * How the visitor relates to the group, which decides the join panel on the group page.
+     *
+     * @return 'guest'|'none'|'member'|'organiser'
+     */
+    private function membershipFor(Request $request, Chapter $chapter): string
+    {
+        $user = $request->user();
+
+        if ($user === null) {
+            return 'guest';
+        }
+
+        $role = $chapter->memberships()->where('user_id', $user->id)->first()?->role;
+
+        return match ($role) {
+            ChapterMemberRole::Admin => 'organiser',
+            ChapterMemberRole::Member => 'member',
+            default => 'none',
+        };
     }
 
     /**
