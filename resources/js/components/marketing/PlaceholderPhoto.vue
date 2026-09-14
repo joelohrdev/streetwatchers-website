@@ -1,0 +1,50 @@
+<script setup lang="ts">
+/**
+ * Clearly marked stand-in for a street photograph. Every real image should keep
+ * the same wrapper so the surrounding whitespace stays consistent. The fill is
+ * solid black so the page carries the weight a contrasty frame will carry.
+ *
+ * `framed` draws the logo's viewfinder brackets just outside the corners.
+ */
+const {
+    ratio = 'aspect-[4/5]',
+    label = 'Placeholder photograph',
+    framed = false,
+} = defineProps<{
+    ratio?: string;
+    label?: string;
+    framed?: boolean;
+}>();
+
+/** Corner brackets sit just outside the frame, as they do around the mark. */
+const bracketCorners = [
+    '-top-2 -left-2 border-t-2 border-l-2 md:-top-3 md:-left-3',
+    '-top-2 -right-2 border-t-2 border-r-2 md:-top-3 md:-right-3',
+    '-bottom-2 -left-2 border-b-2 border-l-2 md:-bottom-3 md:-left-3',
+    '-bottom-2 -right-2 border-b-2 border-r-2 md:-bottom-3 md:-right-3',
+];
+</script>
+
+<template>
+    <div class="relative">
+        <div :class="[ratio, 'bg-ink flex w-full items-center justify-center']">
+            <span
+                class="font-display text-paper/45 px-6 text-center text-[0.6875rem] font-medium tracking-[0.18em] uppercase"
+            >
+                {{ label }}
+            </span>
+        </div>
+
+        <template v-if="framed">
+            <span
+                v-for="corner in bracketCorners"
+                :key="corner"
+                aria-hidden="true"
+                :class="[
+                    corner,
+                    'border-ink pointer-events-none absolute size-5 md:size-8',
+                ]"
+            />
+        </template>
+    </div>
+</template>

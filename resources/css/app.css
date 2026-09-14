@@ -13,6 +13,10 @@
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
+    /* The logo's geometric grotesque, used for headlines and brand labels. */
+    --font-display:
+        Montserrat, Instrument Sans, ui-sans-serif, system-ui, sans-serif;
+
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
@@ -59,6 +63,22 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  StreetWatchers marketing palette: monochrome, keyed to the logo and to
+  high-contrast black and white photography. Paper is pure white, ink is pure
+  black, and there is no accent hue — emphasis comes from value and inversion.
+
+  These tokens are deliberately literal rather than `var()` indirections: the
+  public marketing pages stay black on white whether or not the visitor's
+  appearance preference is dark.
+*/
+@theme {
+    --color-paper: hsl(0 0% 100%);
+    --color-ink: hsl(0 0% 0%);
+    --color-ink-soft: hsl(0 0% 38%);
+    --color-hairline: hsl(0 0% 86%);
 }
 
 /*
