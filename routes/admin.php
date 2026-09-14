@@ -10,9 +10,6 @@ use App\Http\Controllers\Admin\CollectiveController;
 use App\Http\Controllers\Admin\CollectiveVerificationController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\CorrespondentController;
-use App\Http\Controllers\Admin\CritiqueGroupController;
-use App\Http\Controllers\Admin\CritiqueGroupDissolutionController;
-use App\Http\Controllers\Admin\CritiqueGroupMemberController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReportPhotoStatusController;
@@ -59,11 +56,6 @@ Route::middleware(['auth', 'verified', 'can:access-admin'])
 
         Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
         Route::delete('articles/{article}/publication', [ArticlePublicationController::class, 'destroy'])->name('articles.publication.destroy');
-
-        Route::get('critique-groups', [CritiqueGroupController::class, 'index'])->name('critique-groups.index');
-        Route::post('critique-groups/{critiqueGroup}/dissolution', [CritiqueGroupDissolutionController::class, 'store'])->name('critique-groups.dissolution.store');
-        Route::put('critique-groups/{critiqueGroup}/members/{user}', [CritiqueGroupMemberController::class, 'update'])->name('critique-groups.members.update');
-        Route::delete('critique-groups/{critiqueGroup}/members/{user}', [CritiqueGroupMemberController::class, 'destroy'])->name('critique-groups.members.destroy');
 
         Route::get('tags', [TagController::class, 'index'])->name('tags.index');
         Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');

@@ -22,7 +22,7 @@ const page = usePage();
 
     <AuthPanel
         title="Welcome back"
-        description="Log in to share photos, join groups and get feedback."
+        description="Log in to share your photos and connect with your group."
     >
         <StatusNote v-if="status">{{ status }}</StatusNote>
 

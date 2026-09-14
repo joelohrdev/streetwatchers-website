@@ -172,7 +172,7 @@ class ChapterSeeder extends Seeder
     private const DESCRIPTIONS = [
         'Weekend walks through :city\'s markets, stations and back streets, followed by an edit session over coffee.',
         'A friendly group documenting everyday life in :city. All cameras and phones welcome, beginners especially.',
-        'Early-morning and after-dark photo walks around :city, with a monthly print swap and critique night.',
+        'Early-morning and after-dark photo walks around :city, with a monthly print swap and slideshow night.',
         'We shoot the neighbourhoods of :city that rarely make the postcards, and share the results in a monthly zine.',
         'Candid street photography around :city, with regular walks, shared assignments and an annual group show.',
     ];

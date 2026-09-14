@@ -17,6 +17,7 @@ enum AuditAction: string
     case CorrespondentGranted = 'correspondent_granted';
     case CorrespondentRevoked = 'correspondent_revoked';
     case ArticleUnpublished = 'article_unpublished';
+    // Critique groups were removed, but past audit entries for them must still display.
     case CritiqueGroupDissolved = 'critique_group_dissolved';
     case CritiqueGroupMemberRemoved = 'critique_group_member_removed';
     case CritiqueGroupMemberMoved = 'critique_group_member_moved';

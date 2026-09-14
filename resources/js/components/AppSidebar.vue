@@ -7,7 +7,6 @@ import {
     LayoutGrid,
     MapPinned,
     MapPinPlus,
-    MessagesSquare,
     Newspaper,
     PenLine,
     Settings,
@@ -37,7 +36,6 @@ import { index as chaptersIndex } from '@/routes/admin/chapters';
 import { index as collectivesIndex } from '@/routes/admin/collectives';
 import { index as contactMessagesIndex } from '@/routes/admin/contact-messages';
 import { index as correspondentsIndex } from '@/routes/admin/correspondents';
-import { index as critiqueGroupsIndex } from '@/routes/admin/critique-groups';
 import { index as reportsIndex } from '@/routes/admin/reports';
 import { edit as settingsEdit } from '@/routes/admin/settings';
 import { index as tagsIndex } from '@/routes/admin/tags';
@@ -109,11 +107,6 @@ const adminNavGroups = computed<NavGroup[]>(() => {
             items: [
                 section('Chapters', chaptersIndex(), MapPinned),
                 section('Collectives', collectivesIndex(), UsersRound),
-                section(
-                    'Critique groups',
-                    critiqueGroupsIndex(),
-                    MessagesSquare,
-                ),
             ],
         },
         {

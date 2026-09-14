@@ -122,14 +122,6 @@ class Photo extends Model
     }
 
     /**
-     * @return HasMany<CritiqueSubmission, $this>
-     */
-    public function critiqueSubmissions(): HasMany
-    {
-        return $this->hasMany(CritiqueSubmission::class);
-    }
-
-    /**
      * @return MorphMany<Report, $this>
      */
     public function reports(): MorphMany

@@ -34,7 +34,7 @@ type PhotoContent = {
 };
 
 type CommentContent = {
-    type: 'comment' | 'critique_comment';
+    type: 'comment';
     id: number;
     title: string;
     body: string;
@@ -258,10 +258,7 @@ const selectClass =
                 </div>
 
                 <div
-                    v-else-if="
-                        reportable.type === 'comment' ||
-                        reportable.type === 'critique_comment'
-                    "
+                    v-else-if="reportable.type === 'comment'"
                     class="space-y-2 text-sm"
                 >
                     <p class="text-muted-foreground">

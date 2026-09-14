@@ -8,8 +8,6 @@ use App\Models\Collective;
 use App\Models\Comment;
 use App\Models\ContactMessage;
 use App\Models\Correspondent;
-use App\Models\CritiqueComment;
-use App\Models\CritiqueGroup;
 use App\Models\Photo;
 use App\Models\Report;
 use App\Models\Tag;
@@ -76,8 +74,6 @@ class AppServiceProvider extends ServiceProvider
             'comment' => Comment::class,
             'contact_message' => ContactMessage::class,
             'correspondent' => Correspondent::class,
-            'critique_comment' => CritiqueComment::class,
-            'critique_group' => CritiqueGroup::class,
             'photo' => Photo::class,
             'report' => Report::class,
             'tag' => Tag::class,

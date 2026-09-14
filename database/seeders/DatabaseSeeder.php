@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\CollectiveMemberRole;
-use App\Enums\CritiqueGroupStatus;
 use App\Enums\EventRsvpStatus;
 use App\Enums\PhotoStatus;
 use App\Enums\ReportStatus;
@@ -16,9 +15,6 @@ use App\Models\Collective;
 use App\Models\CollectiveApplication;
 use App\Models\Comment;
 use App\Models\Correspondent;
-use App\Models\CritiqueComment;
-use App\Models\CritiqueGroup;
-use App\Models\CritiqueSubmission;
 use App\Models\Event;
 use App\Models\Like;
 use App\Models\Photo;
@@ -119,29 +115,6 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call(ChapterSeeder::class);
-
-        $critiqueGroup = CritiqueGroup::factory()->create([
-            'name' => 'Week of '.now()->startOfWeek()->toFormattedDateString(),
-            'week_start' => now()->startOfWeek(),
-            'week_end' => now()->endOfWeek(),
-            'status' => CritiqueGroupStatus::Active,
-        ]);
-
-        $critiqueMembers = $users->whereIn('id', $photos->pluck('user_id'))->take(5);
-        $critiqueGroup->members()->attach($critiqueMembers);
-
-        foreach ($critiqueMembers as $member) {
-            $submission = CritiqueSubmission::factory()
-                ->for($critiqueGroup)
-                ->for($photos->firstWhere('user_id', $member->id))
-                ->for($member)
-                ->create();
-
-            CritiqueComment::factory(2)
-                ->for($submission)
-                ->sequence(fn () => ['user_id' => $critiqueMembers->except([$member->id])->random()->id])
-                ->create();
-        }
 
         foreach ($chapters as $chapter) {
             $event = Event::factory()

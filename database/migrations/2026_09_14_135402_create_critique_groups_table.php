@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\CritiqueGroupStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->date('week_start');
             $table->date('week_end');
             $table->unsignedInteger('max_members')->default(8);
-            $table->string('status')->default(CritiqueGroupStatus::Forming->value);
+            $table->string('status')->default('forming');
             $table->timestamps();
 
             $table->index(['status', 'week_start']);

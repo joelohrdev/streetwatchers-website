@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\AuditLog;
 use App\Models\Comment;
-use App\Models\CritiqueComment;
 use App\Models\Photo;
 use App\Models\Report;
 use App\Models\User;
@@ -34,7 +33,6 @@ class ReportController extends Controller
     private const REPORTABLE_TYPES = [
         'photo' => 'Photo',
         'comment' => 'Comment',
-        'critique_comment' => 'Critique comment',
         'article' => 'Article',
         'user' => 'User',
     ];
@@ -78,7 +76,6 @@ class ReportController extends Controller
         $report->load(['reportable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
             Photo::class => ['user'],
             Comment::class => ['user'],
-            CritiqueComment::class => ['user'],
             Article::class => ['user'],
         ]), 'reporter']);
 
@@ -159,7 +156,7 @@ class ReportController extends Controller
             'id' => $report->reportable_id,
             'label' => match (true) {
                 $reportable instanceof Photo => $reportable->title ?? "Photo #{$reportable->id}",
-                $reportable instanceof Comment, $reportable instanceof CritiqueComment => Str::limit($reportable->body, 80),
+                $reportable instanceof Comment => Str::limit($reportable->body, 80),
                 $reportable instanceof Article => $reportable->title,
                 $reportable instanceof User => $reportable->name,
                 default => 'Deleted content',
@@ -189,7 +186,7 @@ class ReportController extends Controller
                 'status' => $reportable->status->value,
                 'author' => $reportable->user->name,
             ],
-            $reportable instanceof Comment, $reportable instanceof CritiqueComment => [
+            $reportable instanceof Comment => [
                 'type' => $report->reportable_type,
                 'id' => $reportable->id,
                 'title' => self::REPORTABLE_TYPES[$report->reportable_type],

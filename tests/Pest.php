@@ -5,7 +5,6 @@ use App\Models\Chapter;
 use App\Models\Collective;
 use App\Models\ContactMessage;
 use App\Models\Correspondent;
-use App\Models\CritiqueGroup;
 use App\Models\Report;
 use App\Models\Tag;
 use App\Models\User;
@@ -75,7 +74,6 @@ function adminRequests(): array
         'collective' => Collective::factory()->create(),
         'correspondent' => Correspondent::factory()->create(),
         'article' => Article::factory()->create(),
-        'critiqueGroup' => CritiqueGroup::factory()->create(),
         'tag' => Tag::factory()->create(),
         'contactMessage' => ContactMessage::factory()->create(),
     ];

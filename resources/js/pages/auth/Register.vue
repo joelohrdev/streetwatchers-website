@@ -21,8 +21,8 @@ const benefits = [
         body: 'Join a local group for photo walks, edits and print swaps, or start one in your city.',
     },
     {
-        title: 'Get honest feedback',
-        body: 'Trade critiques with a small circle of photographers every week.',
+        title: 'Find your collective',
+        body: 'Team up with photographers who share your way of seeing in an independent collective.',
     },
 ];
 </script>

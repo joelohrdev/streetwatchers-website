@@ -166,32 +166,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @return BelongsToMany<CritiqueGroup, $this, CritiqueGroupUser>
-     */
-    public function critiqueGroups(): BelongsToMany
-    {
-        return $this->belongsToMany(CritiqueGroup::class)
-            ->using(CritiqueGroupUser::class)
-            ->withPivot('joined_at');
-    }
-
-    /**
-     * @return HasMany<CritiqueSubmission, $this>
-     */
-    public function critiqueSubmissions(): HasMany
-    {
-        return $this->hasMany(CritiqueSubmission::class);
-    }
-
-    /**
-     * @return HasMany<CritiqueComment, $this>
-     */
-    public function critiqueComments(): HasMany
-    {
-        return $this->hasMany(CritiqueComment::class);
-    }
-
-    /**
      * @return HasMany<Event, $this>
      */
     public function organizedEvents(): HasMany
