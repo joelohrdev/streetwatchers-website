@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoRemovalRequestController;
 use Illuminate\Http\RedirectResponse;
@@ -20,6 +21,11 @@ Route::get('chapters/{path?}', fn (Request $request, ?string $path = null): Redi
     '/groups'.($path ? "/{$path}" : '').($request->getQueryString() ? '?'.$request->getQueryString() : ''),
     301,
 ))->where('path', '.*');
+
+Route::get('contact', [ContactMessageController::class, 'create'])->name('contact-messages.create');
+Route::post('contact', [ContactMessageController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact-messages.store');
 
 Route::get('photo-removal-requests/create', [PhotoRemovalRequestController::class, 'create'])->name('photo-removal-requests.create');
 Route::post('photo-removal-requests', [PhotoRemovalRequestController::class, 'store'])

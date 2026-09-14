@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Contact Form Recipient
+    |--------------------------------------------------------------------------
+    |
+    | Messages sent through the public contact form are emailed here. When no
+    | address is set, they go to every active super admin instead.
+    |
+    */
+
+    'contact_address' => env('MAIL_CONTACT_ADDRESS'),
+
 ];

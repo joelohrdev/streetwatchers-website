@@ -23,6 +23,7 @@ enum AuditAction: string
     case SettingsUpdated = 'settings_updated';
     case TagMerged = 'tag_merged';
     case TagDeleted = 'tag_deleted';
+    case ContactMessageDeleted = 'contact_message_deleted';
 
     public function label(): string
     {
@@ -46,6 +47,7 @@ enum AuditAction: string
             self::SettingsUpdated => 'Settings updated',
             self::TagMerged => 'Tag merged',
             self::TagDeleted => 'Tag deleted',
+            self::ContactMessageDeleted => 'Contact message deleted',
         };
     }
 }

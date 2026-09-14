@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\ContactMessage;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -43,6 +44,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'announcement' => fn (): ?string => Setting::announcementBanner(),
+            'unreadContactMessages' => fn (): ?int => $request->user()?->isSuperAdmin()
+                ? ContactMessage::query()->whereNull('read_at')->count()
+                : null,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

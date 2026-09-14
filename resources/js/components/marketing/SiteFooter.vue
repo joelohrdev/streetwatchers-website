@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ArrowRight, AtSign, Camera, Rss } from '@lucide/vue';
-import { ref } from 'vue';
+import { AtSign, Camera, Rss } from '@lucide/vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
 import { index as chapterDirectory } from '@/routes/chapters';
+import { create as contact } from '@/routes/contact-messages';
 import { create as photoRemovalRequest } from '@/routes/photo-removal-requests';
 
 /** Placeholder destinations until the supporting pages exist. */
@@ -11,6 +11,7 @@ const footerLinks = [
     { label: 'Collectives', href: '#' },
     { label: 'Code of Conduct', href: '#' },
     { label: 'Privacy', href: '#' },
+    { label: 'Contact', href: contact.url() },
     { label: 'Request photo removal', href: photoRemovalRequest.url() },
 ];
 
@@ -20,13 +21,6 @@ const socialLinks = [
     { label: 'Mastodon', href: '#', icon: AtSign },
     { label: 'Journal feed', href: '#', icon: Rss },
 ];
-
-const email = ref('');
-
-/** TODO: post to the newsletter endpoint once it exists. */
-function subscribe(): void {
-    email.value = '';
-}
 </script>
 
 <template>
@@ -54,38 +48,11 @@ function subscribe(): void {
             </div>
 
             <div
-                class="border-hairline flex flex-col gap-8 border-t pt-10 md:flex-row md:items-end md:justify-between"
+                class="border-hairline flex items-center justify-between gap-8 border-t pt-10"
             >
-                <form
-                    class="w-full max-w-sm"
-                    novalidate
-                    @submit.prevent="subscribe"
-                >
-                    <label
-                        for="newsletter-email"
-                        class="text-ink-soft text-xs tracking-[0.14em] uppercase"
-                    >
-                        The weekly frame
-                    </label>
-                    <div
-                        class="border-hairline focus-within:border-ink mt-3 flex items-center gap-3 border-b pb-2"
-                    >
-                        <input
-                            id="newsletter-email"
-                            v-model="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            class="text-ink placeholder:text-ink-soft/60 w-full bg-transparent text-sm focus:outline-none"
-                        />
-                        <button
-                            type="submit"
-                            class="text-ink transition-opacity hover:opacity-60"
-                            aria-label="Subscribe to the newsletter"
-                        >
-                            <ArrowRight class="size-4" />
-                        </button>
-                    </div>
-                </form>
+                <p class="text-ink-soft/80 text-xs">
+                    &copy; {{ new Date().getFullYear() }} StreetWatchers
+                </p>
 
                 <div class="flex items-center gap-6">
                     <a
@@ -99,10 +66,6 @@ function subscribe(): void {
                     </a>
                 </div>
             </div>
-
-            <p class="text-ink-soft/80 text-xs">
-                &copy; {{ new Date().getFullYear() }} StreetWatchers
-            </p>
         </div>
     </footer>
 </template>

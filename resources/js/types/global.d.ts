@@ -22,6 +22,8 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             announcement: string | null;
+            /** Unread contact form messages. Only sent to super admins; null for everyone else. */
+            unreadContactMessages: number | null;
             sidebarOpen: boolean;
             [key: string]: unknown;
         };

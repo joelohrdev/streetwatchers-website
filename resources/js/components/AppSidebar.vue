@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 import {
     Flag,
     Gauge,
+    Inbox,
     LayoutGrid,
     MapPinned,
     MapPinPlus,
@@ -34,6 +35,7 @@ import { dashboard as adminDashboard } from '@/routes/admin';
 import { index as articlesIndex } from '@/routes/admin/articles';
 import { index as chaptersIndex } from '@/routes/admin/chapters';
 import { index as collectivesIndex } from '@/routes/admin/collectives';
+import { index as contactMessagesIndex } from '@/routes/admin/contact-messages';
 import { index as correspondentsIndex } from '@/routes/admin/correspondents';
 import { index as critiqueGroupsIndex } from '@/routes/admin/critique-groups';
 import { index as reportsIndex } from '@/routes/admin/reports';
@@ -87,6 +89,10 @@ const adminNavGroups = computed<NavGroup[]>(() => {
                     href: adminDashboard(),
                     icon: Gauge,
                     isActive: isCurrentUrl(adminDashboard()),
+                },
+                {
+                    ...section('Messages', contactMessagesIndex(), Inbox),
+                    badge: page.props.unreadContactMessages,
                 },
                 section('Settings', settingsEdit(), Settings),
             ],

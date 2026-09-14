@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Chapter;
 use App\Models\Collective;
 use App\Models\Comment;
+use App\Models\ContactMessage;
 use App\Models\Correspondent;
 use App\Models\CritiqueComment;
 use App\Models\CritiqueGroup;
@@ -73,6 +74,7 @@ class AppServiceProvider extends ServiceProvider
             'chapter' => Chapter::class,
             'collective' => Collective::class,
             'comment' => Comment::class,
+            'contact_message' => ContactMessage::class,
             'correspondent' => Correspondent::class,
             'critique_comment' => CritiqueComment::class,
             'critique_group' => CritiqueGroup::class,

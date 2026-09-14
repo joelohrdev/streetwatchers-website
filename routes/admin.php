@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ChapterController;
 use App\Http\Controllers\Admin\ChapterDeactivationController;
 use App\Http\Controllers\Admin\CollectiveController;
 use App\Http\Controllers\Admin\CollectiveVerificationController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\CorrespondentController;
 use App\Http\Controllers\Admin\CritiqueGroupController;
 use App\Http\Controllers\Admin\CritiqueGroupDissolutionController;
@@ -67,6 +68,10 @@ Route::middleware(['auth', 'verified', 'can:access-admin'])
         Route::get('tags', [TagController::class, 'index'])->name('tags.index');
         Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
         Route::post('tags/{tag}/merge', [TagMergeController::class, 'store'])->name('tags.merge.store');
+
+        Route::get('contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::get('contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('contact-messages.show');
+        Route::delete('contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
 
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');

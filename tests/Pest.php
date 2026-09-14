@@ -3,6 +3,7 @@
 use App\Models\Article;
 use App\Models\Chapter;
 use App\Models\Collective;
+use App\Models\ContactMessage;
 use App\Models\Correspondent;
 use App\Models\CritiqueGroup;
 use App\Models\Report;
@@ -76,6 +77,7 @@ function adminRequests(): array
         'article' => Article::factory()->create(),
         'critiqueGroup' => CritiqueGroup::factory()->create(),
         'tag' => Tag::factory()->create(),
+        'contactMessage' => ContactMessage::factory()->create(),
     ];
 
     return collect(Router::getRoutes()->getRoutes())
