@@ -2,10 +2,7 @@
     "mcpServers": {
         "laravel-boost": {
             "command": "/Users/armp/Library/Application Support/Herd/bin/php85",
-            "args": [
-                "/Users/armp/streetwatchers/website/artisan",
-                "boost:mcp"
-            ]
+            "args": ["/Users/armp/streetwatchers/website/artisan", "boost:mcp"]
         }
     }
 }
