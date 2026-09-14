@@ -38,6 +38,16 @@ class Photo extends Model
     use HasFactory;
 
     /**
+     * Bootstrap the model and its traits.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Photo $photo): void {
+            $photo->status ??= Setting::newPhotosRequireReview() ? PhotoStatus::Pending : PhotoStatus::Published;
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -125,5 +135,13 @@ class Photo extends Model
     public function reports(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');
+    }
+
+    /**
+     * @return MorphMany<AuditLog, $this>
+     */
+    public function auditLogs(): MorphMany
+    {
+        return $this->morphMany(AuditLog::class, 'subject');
     }
 }

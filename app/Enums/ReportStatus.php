@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use App\Concerns\HasOptions;
+
 enum ReportStatus: string
 {
+    use HasOptions;
+
     case Open = 'open';
     case Reviewed = 'reviewed';
     case Actioned = 'actioned';

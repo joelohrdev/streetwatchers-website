@@ -1,5 +1,6 @@
 import { createInertiaApp } from '@inertiajs/vue3';
 import { initializeTheme } from '@/composables/useAppearance';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import MarketingLayout from '@/layouts/MarketingLayout.vue';
@@ -15,7 +16,10 @@ void createInertiaApp({
             case name === 'Welcome':
                 return null;
             case name === 'Home':
+            case name.startsWith('photo-removal-requests/'):
                 return MarketingLayout;
+            case name.startsWith('admin/'):
+                return AdminLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):

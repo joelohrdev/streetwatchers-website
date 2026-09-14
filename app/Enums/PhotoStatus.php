@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use App\Concerns\HasOptions;
+
 enum PhotoStatus: string
 {
+    use HasOptions;
+
     case Pending = 'pending';
     case Published = 'published';
     case Flagged = 'flagged';

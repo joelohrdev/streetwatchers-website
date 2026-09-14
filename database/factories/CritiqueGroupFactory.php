@@ -29,4 +29,24 @@ class CritiqueGroupFactory extends Factory
             'status' => fake()->randomElement(CritiqueGroupStatus::cases()),
         ];
     }
+
+    /**
+     * Indicate that the group is accepting members.
+     */
+    public function forming(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => CritiqueGroupStatus::Forming,
+        ]);
+    }
+
+    /**
+     * Indicate that the group is closed.
+     */
+    public function closed(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => CritiqueGroupStatus::Closed,
+        ]);
+    }
 }

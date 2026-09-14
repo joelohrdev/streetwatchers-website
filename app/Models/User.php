@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -27,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $city
  * @property string|null $country
  * @property UserRole $role
+ * @property UserStatus $status
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
@@ -58,8 +60,25 @@ class User extends Authenticatable
             'city' => 'string',
             'country' => 'string',
             'role' => UserRole::class,
+            'status' => UserStatus::class,
             'email_verified_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Whether the user can manage the whole platform from the admin panel.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === UserRole::SuperAdmin;
+    }
+
+    /**
+     * Whether the user is allowed to sign in and use the platform.
+     */
+    public function isActive(): bool
+    {
+        return $this->status === UserStatus::Active;
     }
 
     /**
@@ -226,5 +245,13 @@ class User extends Authenticatable
     public function reports(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');
+    }
+
+    /**
+     * @return MorphMany<AuditLog, $this>
+     */
+    public function auditLogs(): MorphMany
+    {
+        return $this->morphMany(AuditLog::class, 'subject');
     }
 }

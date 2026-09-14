@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
+import { Form, Head, usePage } from '@inertiajs/vue3';
 import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -23,6 +23,9 @@ defineProps<{
     status?: string;
     canResetPassword: boolean;
 }>();
+
+// Users signed out for being suspended arrive here via a redirect, so the error is on the page rather than the form.
+const page = usePage();
 </script>
 
 <template>
@@ -54,7 +57,9 @@ defineProps<{
                     autocomplete="email"
                     placeholder="email@example.com"
                 />
-                <InputError :message="errors.email" />
+                <InputError
+                    :message="errors.email ?? page.props.errors.email"
+                />
             </div>
 
             <div class="grid gap-2">

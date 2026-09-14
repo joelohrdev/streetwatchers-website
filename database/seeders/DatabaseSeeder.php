@@ -54,6 +54,23 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Mexico City Streetwatchers', 'slug' => 'mexico-city', 'city' => 'Mexico City', 'country' => 'Mexico', 'latitude' => 19.4326, 'longitude' => -99.1332],
         ])->map(fn (array $attributes) => Chapter::factory()->create([...$attributes, 'status' => ChapterStatus::Active]));
 
+        $readyForApproval = Chapter::factory()->pending()->create([
+            'name' => 'Lagos Streetwatchers', 'slug' => 'lagos', 'city' => 'Lagos', 'country' => 'Nigeria', 'latitude' => 6.5244, 'longitude' => 3.3792,
+        ]);
+        $readyForApproval->members()->attach($users->except([$testUser->id])->random(2), ['role' => ChapterMemberRole::Admin]);
+
+        $needsAnotherAdmin = Chapter::factory()->pending()->create([
+            'name' => 'Berlin Streetwatchers', 'slug' => 'berlin', 'city' => 'Berlin', 'country' => 'Germany', 'latitude' => 52.5200, 'longitude' => 13.4050,
+        ]);
+        $berlinMembers = $users->except([$testUser->id])->random(3);
+        $needsAnotherAdmin->members()->attach($berlinMembers->first(), ['role' => ChapterMemberRole::Admin]);
+        $needsAnotherAdmin->members()->attach($berlinMembers->skip(1), ['role' => ChapterMemberRole::Member]);
+
+        User::factory()->suspended()->create([
+            'name' => 'Suspended Example',
+            'email' => 'suspended@example.com',
+        ]);
+
         foreach ($chapters as $chapter) {
             $members = $users->random(5);
 
@@ -161,7 +178,7 @@ class DatabaseSeeder extends Seeder
             ->create(['status' => ReportStatus::Reviewed]);
 
         Report::factory()
-            ->anonymous()
+            ->publicSubmission()
             ->for($photos->where('status', PhotoStatus::Published)->random(), 'reportable')
             ->create([
                 'reason' => 'I am the person in this photo and I would like it removed.',

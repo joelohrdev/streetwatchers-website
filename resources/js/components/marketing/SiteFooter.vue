@@ -2,6 +2,7 @@
 import { ArrowRight, AtSign, Camera, Rss } from '@lucide/vue';
 import { ref } from 'vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
+import { create as photoRemovalRequest } from '@/routes/photo-removal-requests';
 
 /** Placeholder destinations until the supporting pages exist. */
 const footerLinks = [
@@ -9,6 +10,7 @@ const footerLinks = [
     { label: 'Collectives', href: '#' },
     { label: 'Code of Conduct', href: '#' },
     { label: 'Privacy', href: '#' },
+    { label: 'Request photo removal', href: photoRemovalRequest.url() },
 ];
 
 /** Generic stand-ins: lucide no longer ships brand marks. */

@@ -25,6 +25,17 @@ class CollectiveFactory extends Factory
             'instagram_url' => fake()->optional()->passthrough('https://instagram.com/'.fake()->userName()),
             'logo_path' => null,
             'is_open_for_applications' => fake()->boolean(),
+            'is_verified' => false,
         ];
+    }
+
+    /**
+     * Indicate that the collective is verified.
+     */
+    public function verified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_verified' => true,
+        ]);
     }
 }

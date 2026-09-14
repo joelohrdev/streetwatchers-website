@@ -27,4 +27,24 @@ class ArticleFactory extends Factory
             'published_at' => fake()->optional()->dateTimeBetween('-6 months'),
         ];
     }
+
+    /**
+     * Indicate that the article is published.
+     */
+    public function published(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'published_at' => now()->subDay(),
+        ]);
+    }
+
+    /**
+     * Indicate that the article is an unpublished draft.
+     */
+    public function draft(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'published_at' => null,
+        ]);
+    }
 }

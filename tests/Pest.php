@@ -1,6 +1,16 @@
 <?php
 
+use App\Models\Article;
+use App\Models\Chapter;
+use App\Models\Collective;
+use App\Models\Correspondent;
+use App\Models\CritiqueGroup;
+use App\Models\Report;
+use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route as Router;
 use Tests\TestCase;
 
 /*
@@ -47,4 +57,36 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Every named admin route with a URL whose parameters point at real records,
+ * so route model binding succeeds and the authorization check is what answers.
+ *
+ * @return list<array{name: string, method: string, url: string}>
+ */
+function adminRequests(): array
+{
+    $parameters = [
+        'chapter' => Chapter::factory()->create(),
+        'user' => User::factory()->create(),
+        'report' => Report::factory()->create(),
+        'collective' => Collective::factory()->create(),
+        'correspondent' => Correspondent::factory()->create(),
+        'article' => Article::factory()->create(),
+        'critiqueGroup' => CritiqueGroup::factory()->create(),
+        'tag' => Tag::factory()->create(),
+    ];
+
+    return collect(Router::getRoutes()->getRoutes())
+        ->filter(fn (Route $route): bool => str_starts_with((string) $route->getName(), 'admin.'))
+        ->map(fn (Route $route): array => [
+            'name' => $route->getName(),
+            'method' => collect($route->methods())->reject(fn (string $method): bool => $method === 'HEAD')->first(),
+            'url' => route($route->getName(), collect($route->parameterNames())
+                ->mapWithKeys(fn (string $name): array => [$name => $parameters[$name]])
+                ->all()),
+        ])
+        ->values()
+        ->all();
 }

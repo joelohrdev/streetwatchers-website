@@ -29,4 +29,24 @@ class ChapterFactory extends Factory
             'status' => fake()->randomElement(ChapterStatus::cases()),
         ];
     }
+
+    /**
+     * Indicate that the chapter is awaiting approval.
+     */
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => ChapterStatus::Pending,
+        ]);
+    }
+
+    /**
+     * Indicate that the chapter is active.
+     */
+    public function active(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => ChapterStatus::Active,
+        ]);
+    }
 }

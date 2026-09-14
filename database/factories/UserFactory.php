@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -33,7 +34,8 @@ class UserFactory extends Factory
             'avatar_path' => 'avatars/'.fake()->uuid().'.jpg',
             'city' => fake()->city(),
             'country' => fake()->country(),
-            'role' => fake()->randomElement(UserRole::cases()),
+            'role' => UserRole::Member,
+            'status' => UserStatus::Active,
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
@@ -46,6 +48,36 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a super admin.
+     */
+    public function superAdmin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::SuperAdmin,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is suspended.
+     */
+    public function suspended(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => UserStatus::Suspended,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is banned.
+     */
+    public function banned(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => UserStatus::Banned,
         ]);
     }
 }

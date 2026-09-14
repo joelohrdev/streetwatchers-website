@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ChapterMemberRole;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 
@@ -27,5 +28,13 @@ class ChapterUser extends Pivot
             'role' => ChapterMemberRole::class,
             'joined_at' => 'datetime',
         ];
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

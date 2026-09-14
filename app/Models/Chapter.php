@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int $id
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ChapterStatus $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read int|null $admins_count
  */
 #[Fillable('name', 'slug', 'city', 'country', 'latitude', 'longitude', 'description', 'cover_image_path', 'status')]
 class Chapter extends Model
@@ -73,6 +75,16 @@ class Chapter extends Model
     }
 
     /**
+     * The membership rows for this chapter, for when the role and join date matter more than the user.
+     *
+     * @return HasMany<ChapterUser, $this>
+     */
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(ChapterUser::class);
+    }
+
+    /**
      * @return HasMany<Photo, $this>
      */
     public function photos(): HasMany
@@ -86,5 +98,13 @@ class Chapter extends Model
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
+    }
+
+    /**
+     * @return MorphMany<AuditLog, $this>
+     */
+    public function auditLogs(): MorphMany
+    {
+        return $this->morphMany(AuditLog::class, 'subject');
     }
 }

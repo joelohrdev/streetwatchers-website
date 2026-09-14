@@ -24,4 +24,24 @@ class CorrespondentFactory extends Factory
             'is_active' => fake()->boolean(),
         ];
     }
+
+    /**
+     * Indicate that the correspondent is active.
+     */
+    public function active(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => true,
+        ]);
+    }
+
+    /**
+     * Indicate that the correspondent is inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
 }

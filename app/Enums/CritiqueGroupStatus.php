@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use App\Concerns\HasOptions;
+
 enum CritiqueGroupStatus: string
 {
+    use HasOptions;
+
     case Forming = 'forming';
     case Active = 'active';
     case Closed = 'closed';

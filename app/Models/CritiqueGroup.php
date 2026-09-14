@@ -57,6 +57,16 @@ class CritiqueGroup extends Model
     }
 
     /**
+     * The membership rows for this group, for when the join date matters as well as the user.
+     *
+     * @return HasMany<CritiqueGroupUser, $this>
+     */
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(CritiqueGroupUser::class);
+    }
+
+    /**
      * @return HasMany<CritiqueSubmission, $this>
      */
     public function submissions(): HasMany

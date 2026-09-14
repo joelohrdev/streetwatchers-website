@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use App\Concerns\HasOptions;
+
 enum UserRole: string
 {
+    use HasOptions;
+
     case Member = 'member';
     case ChapterAdmin = 'chapter_admin';
     case Correspondent = 'correspondent';

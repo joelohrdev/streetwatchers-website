@@ -2,8 +2,12 @@
 
 namespace App\Enums;
 
+use App\Concerns\HasOptions;
+
 enum ChapterStatus: string
 {
+    use HasOptions;
+
     case Pending = 'pending';
     case Active = 'active';
     case Inactive = 'inactive';
