@@ -1,19 +1,27 @@
 <script setup lang="ts">
 /**
- * Clearly marked stand-in for a street photograph. Every real image should keep
- * the same wrapper so the surrounding whitespace stays consistent. The fill is
- * solid black so the page carries the weight a contrasty frame will carry.
+ * A street photograph in a fixed-ratio frame, or a clearly marked stand-in when no `src` is given.
+ * Real images and placeholders share the same wrapper so the surrounding whitespace stays
+ * consistent. The placeholder fill is solid black so the page carries the weight a contrasty
+ * frame will carry.
  *
- * `framed` draws the logo's viewfinder brackets just outside the corners.
+ * `framed` draws the logo's viewfinder brackets just outside the corners. `priority` loads the
+ * image straight away, for photos visible when the page first appears.
  */
 const {
     ratio = 'aspect-[4/5]',
     label = 'Placeholder photograph',
     framed = false,
+    src,
+    alt = '',
+    priority = false,
 } = defineProps<{
     ratio?: string;
     label?: string;
     framed?: boolean;
+    src?: string;
+    alt?: string;
+    priority?: boolean;
 }>();
 
 /** Corner brackets sit just outside the frame, as they do around the mark. */
@@ -27,7 +35,19 @@ const bracketCorners = [
 
 <template>
     <div class="relative">
-        <div :class="[ratio, 'bg-ink flex w-full items-center justify-center']">
+        <img
+            v-if="src"
+            :src="src"
+            :alt="alt"
+            :loading="priority ? 'eager' : 'lazy'"
+            :fetchpriority="priority ? 'high' : 'auto'"
+            decoding="async"
+            :class="[ratio, 'bg-ink block w-full object-cover object-center']"
+        />
+        <div
+            v-else
+            :class="[ratio, 'bg-ink flex w-full items-center justify-center']"
+        >
             <span
                 class="font-display text-paper/45 px-6 text-center text-[0.6875rem] font-medium tracking-[0.18em] uppercase"
             >

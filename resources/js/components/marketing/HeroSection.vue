@@ -16,8 +16,10 @@ defineProps<{
         <figure>
             <PlaceholderPhoto
                 ratio="aspect-[4/5] md:aspect-[16/9]"
-                label="Hero photograph — a single wide street frame"
+                src="/hero.webp"
+                alt="Black-and-white photograph of a sunlit, cracked crosswalk at Superior Street in Chicago, with two people walking past a corner restaurant."
                 framed
+                priority
             />
         </figure>
 

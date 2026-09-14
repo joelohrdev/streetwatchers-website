@@ -27,15 +27,19 @@ defineProps<{
                     tabindex="0"
                 >
                     <PlaceholderPhoto
-                        ratio="aspect-[4/5]"
-                        :label="`Placeholder — ${photo.location}`"
+                        ratio="aspect-[2/3]"
+                        :src="photo.src"
+                        :alt="photo.alt"
                     />
                     <figcaption
                         class="text-ink-soft mt-4 text-sm transition-opacity duration-300 md:opacity-0 md:group-focus-within:opacity-100 md:group-hover:opacity-100"
                     >
                         <span class="text-ink">{{ photo.caption }}</span>
                         <span class="text-ink-soft/80 block">
-                            {{ photo.location }} — {{ photo.credit }}
+                            {{ photo.location
+                            }}<template v-if="photo.credit">
+                                — {{ photo.credit }}</template
+                            >
                         </span>
                     </figcaption>
                 </figure>
