@@ -30,8 +30,9 @@
             }
         </style>
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        {{-- Browser chrome follows the OS/browser colour scheme, not the in-app appearance setting --}}
+        <link rel="icon" href="/icon-black-32.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)">
+        <link rel="icon" href="/icon-white-32.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         @fonts
