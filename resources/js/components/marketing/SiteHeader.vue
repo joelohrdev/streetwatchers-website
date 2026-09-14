@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { Menu, X } from '@lucide/vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
-import { home } from '@/routes';
+import { dashboard, home, login, register } from '@/routes';
 import { index as chapterDirectory } from '@/routes/chapters';
-import { register } from '@/routes';
 
 /**
  * Explore points at the matching homepage section until the feed page exists;
@@ -17,6 +16,10 @@ const navLinks = [
 ];
 
 const isMenuOpen = ref(false);
+
+// Guests see Log in and Join; signed-in visitors, e.g. on the verify email page, get Dashboard instead.
+const page = usePage();
+const isSignedIn = computed(() => Boolean(page.props.auth.user));
 </script>
 
 <template>
@@ -37,12 +40,28 @@ const isMenuOpen = ref(false);
                 >
                     {{ link.label }}
                 </a>
-                <Link
-                    :href="register()"
-                    class="font-display border-ink text-ink border-b-2 pb-0.5 text-xs font-semibold tracking-[0.14em] uppercase"
-                >
-                    Join
-                </Link>
+                <template v-if="isSignedIn">
+                    <Link
+                        :href="dashboard()"
+                        class="font-display border-ink text-ink border-b-2 pb-0.5 text-xs font-semibold tracking-[0.14em] uppercase"
+                    >
+                        Dashboard
+                    </Link>
+                </template>
+                <template v-else>
+                    <Link
+                        :href="login()"
+                        class="font-display text-ink-soft hover:text-ink text-xs font-semibold tracking-[0.14em] uppercase transition-colors"
+                    >
+                        Log in
+                    </Link>
+                    <Link
+                        :href="register()"
+                        class="font-display border-ink text-ink border-b-2 pb-0.5 text-xs font-semibold tracking-[0.14em] uppercase"
+                    >
+                        Join
+                    </Link>
+                </template>
             </nav>
 
             <button
@@ -74,12 +93,29 @@ const isMenuOpen = ref(false);
                     {{ link.label }}
                 </a>
                 <Link
-                    :href="register()"
+                    v-if="isSignedIn"
+                    :href="dashboard()"
                     class="font-display border-ink text-ink self-start border-b-2 pb-0.5 text-sm font-semibold tracking-[0.14em] uppercase"
                     @click="isMenuOpen = false"
                 >
-                    Join
+                    Dashboard
                 </Link>
+                <template v-else>
+                    <Link
+                        :href="login()"
+                        class="font-display text-ink-soft text-sm font-semibold tracking-[0.14em] uppercase"
+                        @click="isMenuOpen = false"
+                    >
+                        Log in
+                    </Link>
+                    <Link
+                        :href="register()"
+                        class="font-display border-ink text-ink self-start border-b-2 pb-0.5 text-sm font-semibold tracking-[0.14em] uppercase"
+                        @click="isMenuOpen = false"
+                    >
+                        Join
+                    </Link>
+                </template>
             </div>
         </nav>
     </header>

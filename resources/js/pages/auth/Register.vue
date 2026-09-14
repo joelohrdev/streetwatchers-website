@@ -1,114 +1,161 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
-import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
+import { Form, Head, Link } from '@inertiajs/vue3';
+import { ArrowRight } from '@lucide/vue';
+import FormField from '@/components/marketing/FormField.vue';
+import { inlineLinkClass, primaryButtonClass } from '@/lib/marketing';
 import { login } from '@/routes';
+import { index as groupDirectory } from '@/routes/chapters';
 import { store } from '@/routes/register';
 
 defineProps<{
     passwordRules: string;
 }>();
 
-defineOptions({
-    layout: {
-        title: 'Create an account',
-        description: 'Enter your details below to create your account',
+const benefits = [
+    {
+        title: 'Share your frames',
+        body: 'Post candid photographs of everyday public life, with the story behind each one.',
     },
-});
+    {
+        title: 'Walk with a group',
+        body: 'Join a local group for photo walks, edits and print swaps, or start one in your city.',
+    },
+    {
+        title: 'Get honest feedback',
+        body: 'Trade critiques with a small circle of photographers every week.',
+    },
+];
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="Join StreetWatchers" />
 
-    <Form
-        v-bind="store.form()"
-        :reset-on-success="['password', 'password_confirmation']"
-        v-slot="{ errors, processing }"
-        class="flex flex-col gap-6"
+    <section
+        class="mx-auto grid w-full max-w-6xl gap-16 px-6 py-20 md:grid-cols-2 md:gap-20 md:px-10 md:py-28"
     >
-        <div class="grid gap-6">
-            <div class="grid gap-2">
-                <Label for="name">Name</Label>
-                <Input
+        <div>
+            <p
+                class="font-display text-ink-soft text-xs font-semibold tracking-[0.18em] uppercase"
+            >
+                Join StreetWatchers
+            </p>
+            <h1
+                class="font-display mt-4 text-3xl font-extrabold tracking-tight uppercase md:text-5xl"
+            >
+                Find the extraordinary in everyday streets
+            </h1>
+            <p class="text-ink-soft mt-6 max-w-md text-lg leading-relaxed">
+                A global community for candid, unstaged photography. Membership
+                is free.
+            </p>
+
+            <ul class="border-hairline mt-12 max-w-md border-t">
+                <li
+                    v-for="benefit in benefits"
+                    :key="benefit.title"
+                    class="border-hairline border-b py-6"
+                >
+                    <p
+                        class="font-display text-sm font-extrabold tracking-[0.06em] uppercase"
+                    >
+                        {{ benefit.title }}
+                    </p>
+                    <p class="text-ink-soft mt-2 leading-relaxed">
+                        {{ benefit.body }}
+                    </p>
+                </li>
+            </ul>
+
+            <Link
+                :href="groupDirectory()"
+                class="font-display border-ink text-ink mt-10 inline-flex items-center gap-2 border-b-2 pb-1 text-xs font-semibold tracking-[0.14em] uppercase"
+            >
+                Browse groups first
+                <ArrowRight class="size-4" />
+            </Link>
+        </div>
+
+        <div class="md:border-hairline md:border-l md:pl-20">
+            <h2
+                class="font-display text-lg font-extrabold tracking-tight uppercase"
+            >
+                Create your account
+            </h2>
+
+            <Form
+                v-bind="store.form()"
+                :reset-on-success="['password', 'password_confirmation']"
+                class="mt-10 flex flex-col gap-10"
+                v-slot="{ errors, processing }"
+            >
+                <FormField
                     id="name"
-                    type="text"
+                    label="Name"
+                    name="name"
                     required
                     autofocus
-                    :tabindex="1"
                     autocomplete="name"
-                    name="name"
-                    placeholder="Full name"
+                    placeholder="Your full name"
+                    :error="errors.name"
                 />
-                <InputError :message="errors.name" />
-            </div>
 
-            <div class="grid gap-2">
-                <Label for="email">Email address</Label>
-                <Input
+                <FormField
                     id="email"
+                    label="Email"
                     type="email"
-                    required
-                    :tabindex="2"
-                    autocomplete="email"
                     name="email"
-                    placeholder="email@example.com"
+                    required
+                    autocomplete="email"
+                    placeholder="you@example.com"
+                    :error="errors.email"
                 />
-                <InputError :message="errors.email" />
-            </div>
 
-            <div class="grid gap-2">
-                <Label for="password">Password</Label>
-                <PasswordInput
+                <FormField
                     id="password"
-                    required
-                    :tabindex="3"
-                    autocomplete="new-password"
+                    label="Password"
+                    type="password"
                     name="password"
-                    placeholder="Password"
-                    :passwordrules="passwordRules"
-                />
-                <InputError :message="errors.password" />
-            </div>
-
-            <div class="grid gap-2">
-                <Label for="password_confirmation">Confirm password</Label>
-                <PasswordInput
-                    id="password_confirmation"
                     required
-                    :tabindex="4"
                     autocomplete="new-password"
-                    name="password_confirmation"
-                    placeholder="Confirm password"
                     :passwordrules="passwordRules"
+                    placeholder="Choose a password"
+                    :error="errors.password"
                 />
-                <InputError :message="errors.password_confirmation" />
-            </div>
 
-            <Button
-                type="submit"
-                class="mt-2 w-full"
-                tabindex="5"
-                :disabled="processing"
-                data-test="register-user-button"
-            >
-                <Spinner v-if="processing" />
-                Create account
-            </Button>
-        </div>
+                <FormField
+                    id="password_confirmation"
+                    label="Confirm password"
+                    type="password"
+                    name="password_confirmation"
+                    required
+                    autocomplete="new-password"
+                    :passwordrules="passwordRules"
+                    placeholder="Type it again"
+                    :error="errors.password_confirmation"
+                />
 
-        <div class="text-muted-foreground text-center text-sm">
-            Already have an account?
-            <TextLink
-                :href="login()"
-                class="underline underline-offset-4"
-                :tabindex="6"
-                >Log in</TextLink
-            >
+                <div class="flex flex-col gap-6">
+                    <button
+                        type="submit"
+                        :disabled="processing"
+                        data-test="register-user-button"
+                        :class="primaryButtonClass"
+                    >
+                        {{
+                            processing
+                                ? 'Creating account…'
+                                : 'Join StreetWatchers'
+                        }}
+                    </button>
+
+                    <p class="text-ink-soft text-sm">
+                        Already a member?
+                        <Link :href="login()" :class="inlineLinkClass">
+                            Log in
+                        </Link>
+                    </p>
+                </div>
+            </Form>
         </div>
-    </Form>
+    </section>
 </template>

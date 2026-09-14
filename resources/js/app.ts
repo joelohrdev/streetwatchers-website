@@ -2,7 +2,6 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { initializeTheme } from '@/composables/useAppearance';
 import AdminLayout from '@/layouts/AdminLayout.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import AuthLayout from '@/layouts/AuthLayout.vue';
 import MarketingLayout from '@/layouts/MarketingLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { initializeFlashToast } from '@/lib/flashToast';
@@ -16,6 +15,7 @@ void createInertiaApp({
             case name === 'Welcome':
                 return null;
             case name === 'Home':
+            case name.startsWith('auth/'):
             case name === 'chapters/Index':
             case name === 'chapters/Show':
             case name.startsWith('photo-removal-requests/'):
@@ -23,8 +23,6 @@ void createInertiaApp({
                 return MarketingLayout;
             case name.startsWith('admin/'):
                 return AdminLayout;
-            case name.startsWith('auth/'):
-                return AuthLayout;
             case name.startsWith('settings/'):
                 return [AppLayout, SettingsLayout];
             default:

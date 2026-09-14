@@ -1,23 +1,12 @@
 <script setup lang="ts">
-import { Form, Head, usePage } from '@inertiajs/vue3';
-import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
+import { Form, Head, Link, usePage } from '@inertiajs/vue3';
+import AuthPanel from '@/components/marketing/AuthPanel.vue';
+import FormField from '@/components/marketing/FormField.vue';
+import StatusNote from '@/components/marketing/StatusNote.vue';
+import { inlineLinkClass, primaryButtonClass } from '@/lib/marketing';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
-
-defineOptions({
-    layout: {
-        title: 'Log in to your account',
-        description: 'Enter your email and password below to log in',
-    },
-});
 
 defineProps<{
     status?: string;
@@ -31,82 +20,80 @@ const page = usePage();
 <template>
     <Head title="Log in" />
 
-    <div
-        v-if="status"
-        class="mb-4 text-center text-sm font-medium text-green-600"
+    <AuthPanel
+        title="Welcome back"
+        description="Log in to share photos, join groups and get feedback."
     >
-        {{ status }}
-    </div>
+        <StatusNote v-if="status">{{ status }}</StatusNote>
 
-    <Form
-        v-bind="store.form()"
-        :reset-on-success="['password']"
-        v-slot="{ errors, processing }"
-        class="flex flex-col gap-6"
-    >
-        <div class="grid gap-6">
-            <div class="grid gap-2">
-                <Label for="email">Email address</Label>
-                <Input
-                    id="email"
-                    type="email"
-                    name="email"
-                    required
-                    autofocus
-                    :tabindex="1"
-                    autocomplete="email"
-                    placeholder="email@example.com"
-                />
-                <InputError
-                    :message="errors.email ?? page.props.errors.email"
-                />
-            </div>
+        <Form
+            v-bind="store.form()"
+            :reset-on-success="['password']"
+            class="flex flex-col gap-10"
+            v-slot="{ errors, processing }"
+        >
+            <FormField
+                id="email"
+                label="Email"
+                type="email"
+                name="email"
+                required
+                autofocus
+                autocomplete="email"
+                placeholder="you@example.com"
+                :error="errors.email ?? page.props.errors.email"
+            />
 
-            <div class="grid gap-2">
-                <div class="flex items-center justify-between">
-                    <Label for="password">Password</Label>
-                    <TextLink
-                        v-if="canResetPassword"
+            <FormField
+                id="password"
+                label="Password"
+                type="password"
+                name="password"
+                required
+                autocomplete="current-password"
+                placeholder="Your password"
+                :error="errors.password"
+            >
+                <template v-if="canResetPassword" #action>
+                    <Link
                         :href="request()"
-                        class="text-sm"
-                        :tabindex="5"
+                        class="text-ink-soft hover:text-ink text-xs transition-colors"
                     >
                         Forgot your password?
-                    </TextLink>
-                </div>
-                <PasswordInput
-                    id="password"
-                    name="password"
-                    required
-                    :tabindex="2"
-                    autocomplete="current-password"
-                    placeholder="Password"
-                />
-                <InputError :message="errors.password" />
-            </div>
+                    </Link>
+                </template>
+            </FormField>
 
-            <div class="flex items-center justify-between">
-                <Label for="remember" class="flex items-center space-x-3">
-                    <Checkbox id="remember" name="remember" :tabindex="3" />
-                    <span>Remember me</span>
-                </Label>
-            </div>
-
-            <Button
-                type="submit"
-                class="mt-4 w-full"
-                :tabindex="4"
-                :disabled="processing"
-                data-test="login-button"
+            <label
+                for="remember"
+                class="text-ink flex cursor-pointer items-center gap-3 text-sm"
             >
-                <Spinner v-if="processing" />
-                Log in
-            </Button>
-        </div>
+                <input
+                    id="remember"
+                    name="remember"
+                    type="checkbox"
+                    class="accent-ink size-4"
+                />
+                Keep me logged in
+            </label>
 
-        <div class="text-muted-foreground text-center text-sm">
-            Don't have an account?
-            <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
-        </div>
-    </Form>
+            <div class="flex flex-col gap-6">
+                <button
+                    type="submit"
+                    :disabled="processing"
+                    data-test="login-button"
+                    :class="primaryButtonClass"
+                >
+                    {{ processing ? 'Logging in…' : 'Log in' }}
+                </button>
+
+                <p class="text-ink-soft text-sm">
+                    New to StreetWatchers?
+                    <Link :href="register()" :class="inlineLinkClass">
+                        Join for free
+                    </Link>
+                </p>
+            </div>
+        </Form>
+    </AuthPanel>
 </template>
