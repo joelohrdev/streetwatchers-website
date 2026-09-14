@@ -8,6 +8,10 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -19,7 +23,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $bio
- * @property string|null $avatar
+ * @property string|null $avatar_path
  * @property string|null $city
  * @property string|null $country
  * @property UserRole $role
@@ -30,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'bio', 'avatar', 'city', 'country', 'role', 'password'])]
+#[Fillable(['name', 'email', 'bio', 'avatar_path', 'city', 'country', 'role', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -50,11 +54,177 @@ class User extends Authenticatable
             'email' => 'string',
             'password' => 'hashed',
             'bio' => 'string',
-            'avatar' => 'string',
+            'avatar_path' => 'string',
             'city' => 'string',
             'country' => 'string',
             'role' => UserRole::class,
             'email_verified_at' => 'datetime',
         ];
+    }
+
+    /**
+     * @return BelongsToMany<Chapter, $this, ChapterUser>
+     */
+    public function chapters(): BelongsToMany
+    {
+        return $this->belongsToMany(Chapter::class)
+            ->using(ChapterUser::class)
+            ->withPivot('role', 'joined_at');
+    }
+
+    /**
+     * @return HasMany<Photo, $this>
+     */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(Photo::class);
+    }
+
+    /**
+     * @return HasMany<Comment, $this>
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * @return HasMany<Like, $this>
+     */
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    /**
+     * @return BelongsToMany<Photo, $this>
+     */
+    public function likedPhotos(): BelongsToMany
+    {
+        return $this->belongsToMany(Photo::class, 'likes')->withTimestamps();
+    }
+
+    /**
+     * The users who follow this user.
+     *
+     * @return BelongsToMany<User, $this, Follow>
+     */
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+            ->using(Follow::class)
+            ->withTimestamps(updatedAt: false);
+    }
+
+    /**
+     * The users this user follows.
+     *
+     * @return BelongsToMany<User, $this, Follow>
+     */
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
+            ->using(Follow::class)
+            ->withTimestamps(updatedAt: false);
+    }
+
+    /**
+     * @return BelongsToMany<Collective, $this, CollectiveUser>
+     */
+    public function collectives(): BelongsToMany
+    {
+        return $this->belongsToMany(Collective::class)
+            ->using(CollectiveUser::class)
+            ->withPivot('role');
+    }
+
+    /**
+     * @return HasMany<CollectiveApplication, $this>
+     */
+    public function collectiveApplications(): HasMany
+    {
+        return $this->hasMany(CollectiveApplication::class);
+    }
+
+    /**
+     * @return BelongsToMany<CritiqueGroup, $this, CritiqueGroupUser>
+     */
+    public function critiqueGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(CritiqueGroup::class)
+            ->using(CritiqueGroupUser::class)
+            ->withPivot('joined_at');
+    }
+
+    /**
+     * @return HasMany<CritiqueSubmission, $this>
+     */
+    public function critiqueSubmissions(): HasMany
+    {
+        return $this->hasMany(CritiqueSubmission::class);
+    }
+
+    /**
+     * @return HasMany<CritiqueComment, $this>
+     */
+    public function critiqueComments(): HasMany
+    {
+        return $this->hasMany(CritiqueComment::class);
+    }
+
+    /**
+     * @return HasMany<Event, $this>
+     */
+    public function organizedEvents(): HasMany
+    {
+        return $this->hasMany(Event::class, 'organizer_id');
+    }
+
+    /**
+     * The events this user has responded to, with the RSVP status on the pivot.
+     *
+     * @return BelongsToMany<Event, $this, EventRsvp>
+     */
+    public function rsvpedEvents(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'event_rsvps')
+            ->using(EventRsvp::class)
+            ->withPivot('status');
+    }
+
+    /**
+     * @return HasOne<Correspondent, $this>
+     */
+    public function correspondent(): HasOne
+    {
+        return $this->hasOne(Correspondent::class);
+    }
+
+    /**
+     * @return HasMany<Article, $this>
+     */
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Article::class);
+    }
+
+    /**
+     * The reports this user has filed.
+     *
+     * @return HasMany<Report, $this>
+     */
+    public function filedReports(): HasMany
+    {
+        return $this->hasMany(Report::class, 'reporter_id');
+    }
+
+    /**
+     * The reports filed against this user.
+     *
+     * @return MorphMany<Report, $this>
+     */
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(Report::class, 'reportable');
     }
 }

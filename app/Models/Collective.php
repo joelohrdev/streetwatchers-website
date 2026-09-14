@@ -2,33 +2,30 @@
 
 namespace App\Models;
 
-use App\Enums\ChapterStatus;
-use Carbon\Carbon;
-use Database\Factories\ChapterFactory;
+use Database\Factories\CollectiveFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $slug
- * @property string $city
- * @property string $country
- * @property float $latitude
- * @property float $longitude
  * @property string $description
- * @property string|null $cover_image_path
- * @property ChapterStatus $status
+ * @property string|null $website_url
+ * @property string|null $instagram_url
+ * @property string|null $logo_path
+ * @property bool $is_open_for_applications
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable('name', 'slug', 'city', 'country', 'latitude', 'longitude', 'description', 'cover_image_path', 'status')]
-class Chapter extends Model
+#[Fillable(['name', 'slug', 'description', 'website_url', 'instagram_url', 'logo_path', 'is_open_for_applications'])]
+class Collective extends Model
 {
-    /** @use HasFactory<ChapterFactory> */
+    /** @use HasFactory<CollectiveFactory> */
     use HasFactory;
 
     /**
@@ -42,13 +39,11 @@ class Chapter extends Model
             'id' => 'integer',
             'name' => 'string',
             'slug' => 'string',
-            'city' => 'string',
-            'country' => 'string',
-            'latitude' => 'float',
-            'longitude' => 'float',
             'description' => 'string',
-            'cover_image_path' => 'string',
-            'status' => ChapterStatus::class,
+            'website_url' => 'string',
+            'instagram_url' => 'string',
+            'logo_path' => 'string',
+            'is_open_for_applications' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -63,28 +58,20 @@ class Chapter extends Model
     }
 
     /**
-     * @return BelongsToMany<User, $this, ChapterUser>
+     * @return BelongsToMany<User, $this, CollectiveUser>
      */
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
-            ->using(ChapterUser::class)
-            ->withPivot('role', 'joined_at');
+            ->using(CollectiveUser::class)
+            ->withPivot('role');
     }
 
     /**
-     * @return HasMany<Photo, $this>
+     * @return HasMany<CollectiveApplication, $this>
      */
-    public function photos(): HasMany
+    public function applications(): HasMany
     {
-        return $this->hasMany(Photo::class);
-    }
-
-    /**
-     * @return HasMany<Event, $this>
-     */
-    public function events(): HasMany
-    {
-        return $this->hasMany(Event::class);
+        return $this->hasMany(CollectiveApplication::class);
     }
 }

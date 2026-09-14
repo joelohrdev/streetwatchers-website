@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'bio' => fake()->text(),
-            'avatar' => fake()->image(),
+            'avatar_path' => 'avatars/'.fake()->uuid().'.jpg',
             'city' => fake()->city(),
             'country' => fake()->country(),
             'role' => fake()->randomElement(UserRole::cases()),
