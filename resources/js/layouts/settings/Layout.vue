@@ -29,7 +29,7 @@ const tabs = computed(() => [
             class="font-display text-ink-soft hover:text-ink inline-flex items-center gap-2 text-xs font-semibold tracking-[0.14em] uppercase transition-colors"
         >
             <ArrowLeft class="size-4" />
-            Back to Your StreetWatchers
+            Back to your memberships
         </Link>
 
         <p

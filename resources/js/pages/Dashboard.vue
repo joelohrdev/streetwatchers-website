@@ -85,13 +85,13 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
 </script>
 
 <template>
-    <Head title="Your StreetWatchers" />
+    <Head title="Your memberships" />
 
     <section class="mx-auto w-full max-w-5xl px-6 py-20 md:px-10 md:py-28">
         <p
             class="font-display text-ink-soft text-xs font-semibold tracking-[0.18em] uppercase"
         >
-            Your StreetWatchers
+            Your memberships
         </p>
         <h1
             class="font-display mt-4 text-3xl font-extrabold tracking-tight uppercase md:text-5xl"

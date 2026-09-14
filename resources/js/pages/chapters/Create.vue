@@ -125,7 +125,7 @@ const nextSteps = [
 
             <div class="mt-12 sm:max-w-xs">
                 <Link :href="dashboard()" :class="primaryButtonClass">
-                    Back to Your StreetWatchers
+                    Back to your memberships
                 </Link>
             </div>
         </template>

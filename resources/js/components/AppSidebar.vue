@@ -52,7 +52,7 @@ const { isCurrentUrl, isCurrentOrParentUrl } = useCurrentUrl();
 /** The sidebar only appears in the admin panel, so its top links lead back to the rest of the site. */
 const mainNavItems: NavItem[] = [
     { title: 'View site', href: home(), icon: Globe },
-    { title: 'Your StreetWatchers', href: dashboard(), icon: LayoutGrid },
+    { title: 'Your memberships', href: dashboard(), icon: LayoutGrid },
 ];
 
 /** A section link that stays highlighted on its sub-pages, e.g. a single chapter. */

@@ -13,7 +13,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * "Your StreetWatchers": a member's groups, collectives and applications.
+ * "Your memberships": a member's groups, collectives and applications.
  */
 class DashboardController extends Controller
 {

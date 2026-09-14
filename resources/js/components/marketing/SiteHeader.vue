@@ -265,7 +265,7 @@ const mobileItemClass =
                         </DropdownMenuLabel>
                         <DropdownMenuItem as-child :class="menuItemClass">
                             <Link :href="dashboard()">
-                                Your StreetWatchers
+                                Your memberships
                                 <span
                                     v-if="pendingApplications > 0"
                                     class="ml-auto tracking-normal"
@@ -366,7 +366,7 @@ const mobileItemClass =
                         class="font-display border-ink text-ink relative self-start border-b-2 pb-0.5 text-sm font-semibold tracking-[0.14em] uppercase"
                         @click="isMenuOpen = false"
                     >
-                        Your StreetWatchers
+                        Your memberships
                         <template v-if="pendingApplications > 0">
                             ({{ pendingApplications }})
                         </template>
