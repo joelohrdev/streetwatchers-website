@@ -24,15 +24,22 @@ export function distanceInKilometres(
     return 2 * EARTH_RADIUS_KM * Math.asin(Math.sqrt(a));
 }
 
-const kilometres = new Intl.NumberFormat(undefined, {
+const KILOMETRES_PER_MILE = 1.609344;
+
+const miles = new Intl.NumberFormat(undefined, {
     style: 'unit',
-    unit: 'kilometer',
+    unit: 'mile',
     maximumFractionDigits: 0,
 });
 
-/** A short, human distance such as "Under 1 km away" or "1,240 km away". */
-export function formatDistance(distance: number): string {
-    return distance < 1
-        ? 'Under 1 km away'
-        : `${kilometres.format(distance)} away`;
+/**
+ * A short, human distance in miles, such as "Under 1 mi away" or "770 mi away".
+ * Distances are calculated in kilometres and converted here for display.
+ */
+export function formatDistance(kilometres: number): string {
+    const distanceInMiles = kilometres / KILOMETRES_PER_MILE;
+
+    return distanceInMiles < 1
+        ? 'Under 1 mi away'
+        : `${miles.format(distanceInMiles)} away`;
 }
