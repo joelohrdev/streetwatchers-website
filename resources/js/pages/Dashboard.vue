@@ -4,12 +4,14 @@ import { ArrowRight } from '@lucide/vue';
 import { computed } from 'vue';
 import CollectiveLogo from '@/components/marketing/CollectiveLogo.vue';
 import { inlineLinkClass } from '@/lib/marketing';
+import { formatMeetupDay, formatMeetupHours } from '@/lib/meetups';
 import { formatDate } from '@/lib/utils';
 import {
     create as startGroup,
     index as groupDirectory,
     show as showGroup,
 } from '@/routes/chapters';
+import { show as showMeetup } from '@/routes/chapters/events';
 import { index as applicationsInbox } from '@/routes/collective-applications';
 import {
     create as startCollective,
@@ -25,6 +27,18 @@ type Group = {
     country: string;
     status: 'pending' | 'active' | 'inactive';
     role: 'organizer' | 'member';
+};
+
+type UpcomingMeetup = {
+    id: number;
+    title: string;
+    location_name: string;
+    starts_at: string;
+    ends_at: string;
+    timezone: string;
+    is_canceled: boolean;
+    is_going: boolean;
+    group: { name: string; slug: string };
 };
 
 type Collective = {
@@ -43,6 +57,7 @@ type SentApplication = {
 };
 
 const props = defineProps<{
+    upcomingMeetups: UpcomingMeetup[];
     groups: Group[];
     collectives: Collective[];
     applications: SentApplication[];
@@ -141,6 +156,64 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
             </span>
             <ArrowRight class="size-5 shrink-0" />
         </Link>
+    </section>
+
+    <section class="border-hairline border-t">
+        <div class="mx-auto w-full max-w-5xl px-6 py-16 md:px-10 md:py-20">
+            <h2 :class="sectionHeading">Your upcoming meetups</h2>
+            <ul
+                v-if="upcomingMeetups.length"
+                class="border-hairline mt-6 border-t"
+            >
+                <li
+                    v-for="meetup in upcomingMeetups"
+                    :key="meetup.id"
+                    :class="rowClass"
+                >
+                    <div>
+                        <Link
+                            :href="showMeetup([meetup.group.slug, meetup.id])"
+                            class="font-display text-sm font-extrabold tracking-[0.06em] uppercase hover:underline"
+                            :class="{
+                                'text-ink-soft line-through':
+                                    meetup.is_canceled,
+                            }"
+                        >
+                            {{ meetup.title }}
+                        </Link>
+                        <p class="text-ink-soft mt-1 text-sm">
+                            <time :datetime="meetup.starts_at">
+                                {{
+                                    formatMeetupDay(
+                                        meetup.starts_at,
+                                        meetup.timezone,
+                                    )
+                                }},
+                                {{
+                                    formatMeetupHours(
+                                        meetup.starts_at,
+                                        meetup.ends_at,
+                                        meetup.timezone,
+                                    )
+                                }}
+                            </time>
+                            · {{ meetup.location_name }} ·
+                            {{ meetup.group.name }}
+                        </p>
+                    </div>
+                    <p v-if="meetup.is_canceled" :class="labelClass">
+                        Canceled
+                    </p>
+                    <p v-else-if="meetup.is_going" :class="labelClass">
+                        You're going
+                    </p>
+                </li>
+            </ul>
+            <p v-else class="text-ink-soft mt-6 leading-relaxed">
+                Nothing planned in your groups yet. Meetups your groups plan
+                will show up here.
+            </p>
+        </div>
     </section>
 
     <section class="border-hairline border-t">

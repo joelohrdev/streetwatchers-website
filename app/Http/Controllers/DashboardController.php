@@ -3,20 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ChapterMemberRole;
+use App\Enums\ChapterStatus;
 use App\Enums\CollectiveApplicationStatus;
 use App\Enums\CollectiveMemberRole;
 use App\Models\ChapterUser;
 use App\Models\CollectiveApplication;
 use App\Models\CollectiveUser;
+use App\Models\Event;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * "Your memberships": a member's groups, collectives and applications.
+ * "Your memberships": a member's upcoming meetups, groups, collectives and applications.
  */
 class DashboardController extends Controller
 {
+    /**
+     * How many upcoming meetups to list.
+     */
+    private const UPCOMING_MEETUPS = 10;
+
     public function __invoke(Request $request): Response
     {
         $user = $request->user();
@@ -33,6 +42,7 @@ class DashboardController extends Controller
             ->pluck('aggregate', 'collective_id');
 
         return Inertia::render('Dashboard', [
+            'upcomingMeetups' => $this->upcomingMeetups($user),
             'groups' => $user->chapterMemberships()
                 ->with('chapter')
                 ->get()
@@ -71,5 +81,34 @@ class DashboardController extends Controller
                     'created_at' => $application->created_at?->toIso8601String(),
                 ]),
         ]);
+    }
+
+    /**
+     * Meetups that haven't finished in the active groups the member belongs to, soonest first, marking the ones
+     * they're going to. Canceled ones stay listed so anyone planning to go sees the change.
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    private function upcomingMeetups(User $user): Collection
+    {
+        return Event::query()
+            ->whereIn('chapter_id', $user->chapters()->where('status', ChapterStatus::Active)->select('chapters.id'))
+            ->where('ends_at', '>=', now())
+            ->with('chapter:id,name,slug')
+            ->withExists(['attendees as is_going' => fn ($query) => $query->whereKey($user->id)])
+            ->orderBy('starts_at')
+            ->limit(self::UPCOMING_MEETUPS)
+            ->get()
+            ->map(fn (Event $event): array => [
+                'id' => $event->id,
+                'title' => $event->title,
+                'location_name' => $event->location_name,
+                'starts_at' => $event->starts_at->toIso8601String(),
+                'ends_at' => $event->ends_at->toIso8601String(),
+                'timezone' => $event->timezone,
+                'is_canceled' => $event->isCanceled(),
+                'is_going' => (bool) $event->is_going,
+                'group' => ['name' => $event->chapter->name, 'slug' => $event->chapter->slug],
+            ]);
     }
 }
