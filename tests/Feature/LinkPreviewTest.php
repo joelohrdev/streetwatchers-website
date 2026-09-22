@@ -54,3 +54,42 @@ test('member-written text is escaped in preview tags', function () {
         ->assertSee('content="Quote&quot; onload=&quot;alert(1)"', false)
         ->assertDontSee('content="Quote" onload="alert(1)"', false);
 });
+
+/**
+ * The og:description a group page gives for the description.
+ */
+function previewDescriptionFor(string $description): string
+{
+    $group = Chapter::factory()->active()->create(['description' => $description]);
+
+    preg_match('/<meta property="og:description" content="([^"]*)">/', test()->get(route('chapters.show', $group))->getContent(), $matches);
+
+    return html_entity_decode($matches[1], ENT_QUOTES);
+}
+
+test('a long description ends at the last full sentence that fits', function () {
+    $description = 'We\'re street photographers in and around the Chicago area who meet up to walk the city with our cameras. '
+        .'Walks are free and open to everyone, whatever you shoot with, phones included. '
+        .'We pick a neighborhood, spread out, shoot for a couple of hours, then regroup.';
+
+    expect(previewDescriptionFor($description))->toBe(
+        'We\'re street photographers in and around the Chicago area who meet up to walk the city with our cameras. '
+        .'Walks are free and open to everyone, whatever you shoot with, phones included.'
+    );
+});
+
+test('a long description with no sentence ending late enough is cut at a whole word', function () {
+    // The only sentence ends near the start, so stopping there would leave an almost empty preview.
+    $description = 'Hi there. '.str_repeat('we walk the river and the markets and the alleys ', 6);
+
+    $preview = previewDescriptionFor($description);
+    $shortened = mb_substr($preview, 0, -1);
+
+    expect($preview)->toEndWith('…')
+        ->and(mb_strlen($shortened))->toBeLessThanOrEqual(200)
+        ->and(str_starts_with($description, $shortened.' '))->toBeTrue();
+});
+
+test('a short description is used as it is', function () {
+    expect(previewDescriptionFor('Weekly walks along the Clyde.'))->toBe('Weekly walks along the Clyde.');
+});

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Concerns\WritesLinkPreviews;
 use App\Enums\ChapterStatus;
 use App\Http\Requests\StoreEventRequest;
 use App\Models\Chapter;
@@ -9,7 +10,6 @@ use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,6 +18,8 @@ use Inertia\Response;
  */
 class EventController extends Controller
 {
+    use WritesLinkPreviews;
+
     /**
      * A public meetup page, so people who aren't members yet can see what the group does and RSVP.
      */
@@ -82,10 +84,7 @@ class EventController extends Controller
     {
         $when = $event->starts_at->timezone($event->timezone)->format('D, M j, g:i A T');
 
-        return Str::of("{$when} at {$event->location_name}, with {$chapter->name}. {$event->description}")
-            ->squish()
-            ->limit(200)
-            ->toString();
+        return $this->previewText("{$when} at {$event->location_name}, with {$chapter->name}. {$event->description}");
     }
 
     public function create(Chapter $chapter): Response

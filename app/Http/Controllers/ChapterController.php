@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Concerns\GeneratesUniqueSlugs;
+use App\Concerns\WritesLinkPreviews;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\Country;
@@ -25,7 +26,7 @@ use Inertia\Response;
 
 class ChapterController extends Controller
 {
-    use GeneratesUniqueSlugs;
+    use GeneratesUniqueSlugs, WritesLinkPreviews;
 
     /**
      * How many nearby chapters to suggest on a chapter page.
@@ -143,7 +144,7 @@ class ChapterController extends Controller
             'status' => $request->session()->get('status'),
         ])->withViewData(['meta' => [
             'title' => $chapter->name,
-            'description' => Str::of($chapter->description)->squish()->limit(200)->toString(),
+            'description' => $this->previewText($chapter->description),
             'url' => route('chapters.show', $chapter),
         ]]);
     }
