@@ -17,12 +17,15 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoRemovalRequestController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\ShortLinkController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\EnsureCollectivesAreEnabled;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+Route::get('sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
 
 /*
  * Chapters are called "groups" on the public site, so their URLs live under /groups.
