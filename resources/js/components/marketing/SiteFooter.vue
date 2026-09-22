@@ -2,12 +2,14 @@
 import { usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
+import { useAnalyticsConsent } from '@/composables/useAnalyticsConsent';
 import { codeOfConduct, privacy } from '@/routes';
 import { index as chapterDirectory } from '@/routes/chapters';
 import { index as collectiveDirectory } from '@/routes/collectives';
 import { create as contact } from '@/routes/contact-messages';
 
 const page = usePage();
+const { reopen: reopenConsent } = useAnalyticsConsent();
 
 /** Collectives and photo removal requests are left out until collectives and photos launch. */
 const footerLinks = computed(() => [
@@ -42,6 +44,14 @@ const footerLinks = computed(() => [
                     >
                         {{ link.label }}
                     </a>
+                    <button
+                        v-if="page.props.analytics"
+                        type="button"
+                        class="text-ink-soft hover:text-ink cursor-pointer text-sm transition-colors"
+                        @click="reopenConsent"
+                    >
+                        Cookie settings
+                    </button>
                 </nav>
             </div>
 

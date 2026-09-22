@@ -103,8 +103,8 @@ import { edit as profileSettings } from '@/routes/profile';
             <li>To answer messages you send us.</li>
         </ul>
         <p>
-            We don't sell your information, show ads, or use analytics or
-            tracking tools.
+            We don't sell your information or show ads. If you allow it, we use
+            Google Analytics to see how the site is used, as described below.
         </p>
 
         <h2>Services we rely on</h2>
@@ -118,14 +118,29 @@ import { edit as profileSettings } from '@/routes/profile';
             map provider. When your browser loads them, the provider receives
             your IP address. Our fonts come from our own site.
         </p>
+        <p>
+            If you allow analytics, we use Google Analytics. It records which
+            pages you visit, how you arrived, your device and browser, and your
+            approximate location, such as your country and city. Google handles
+            this data under its own privacy terms and doesn't store your IP
+            address. We use it only to understand how the site is used, never
+            for ads. If you don't allow it, Google Analytics doesn't load at
+            all.
+        </p>
 
         <h2>Cookies</h2>
         <p>
-            We only use cookies the site needs to work: one that keeps you
-            signed in, one that protects forms from forgery, a "remember me"
-            cookie if you tick that box when you log in, and, for site admins,
-            one that remembers whether the admin menu is open. There are no
-            advertising or analytics cookies.
+            The site needs a few cookies to work: one that keeps you signed in,
+            one that protects forms from forgery, a "remember me" cookie if you
+            tick that box when you log in, and, for site admins, one that
+            remembers whether the admin menu is open.
+        </p>
+        <p>
+            If you allow analytics, Google Analytics also sets its own cookies,
+            whose names start with <code>_ga</code>, to recognize return visits.
+            We ask before setting them and remember your answer in your browser.
+            You can change it at any time from "Cookie settings" at the bottom
+            of every page. There are no advertising cookies.
         </p>
 
         <h2>How long we keep it</h2>

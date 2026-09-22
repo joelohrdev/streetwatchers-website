@@ -49,6 +49,9 @@ class HandleInertiaRequests extends Middleware
             'unreadContactMessages' => fn (): ?int => $request->user()?->isSuperAdmin()
                 ? ContactMessage::query()->whereNull('read_at')->count()
                 : null,
+            'analytics' => config('services.google_analytics.measurement_id')
+                ? ['measurementId' => config('services.google_analytics.measurement_id')]
+                : null,
             'features' => [
                 'collectives' => (bool) config('features.collectives'),
             ],

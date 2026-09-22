@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    /*
+     * Google Analytics 4. Leave GOOGLE_ANALYTICS_ID unset to turn analytics off entirely. When it's set, the
+     * public site asks visitors for consent and only loads Google's script for those who allow it.
+     */
+    'google_analytics' => [
+        'measurement_id' => env('GOOGLE_ANALYTICS_ID'),
+    ],
+
 ];
