@@ -38,7 +38,7 @@ class CollectiveSeeder extends Seeder
         ['The Long Walk', 'Melbourne, Australia', 'We walk a city end to end in a single day and publish what we see as one long sequence.', false, false],
         ['Monochrome Hours', 'Buenos Aires, Argentina', 'A black-and-white collective drawn to hard light and deep shadow.', false, true],
         ['Crossings', 'Istanbul, Türkiye', 'Bridges, ferries and borders: places where people pass from one side to another.', false, true],
-        ['Home Ground', 'Nairobi, Kenya', 'Each member spends a year photographing the neighbourhood they live in.', false, true],
+        ['Home Ground', 'Nairobi, Kenya', 'Each member spends a year photographing the neighborhood they live in.', false, true],
         ['Parade', 'New Orleans, United States', 'Festivals, marches and public celebrations, from the crowd rather than the grandstand.', false, false],
         ['Small Hours', 'Seoul, South Korea', 'Early mornings, when cities are only just waking up.', false, true],
     ];

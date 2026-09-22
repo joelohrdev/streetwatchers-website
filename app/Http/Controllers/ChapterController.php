@@ -93,7 +93,7 @@ class ChapterController extends Controller
                 'country' => $other->country->label(),
                 'latitude' => $other->latitude,
                 'longitude' => $other->longitude,
-                'distance' => round($chapter->distanceInKilometresTo($other)),
+                'distance' => round($chapter->distanceInKilometersTo($other)),
             ])
             ->sortBy('distance')
             ->take(self::NEARBY_CHAPTERS)
@@ -113,13 +113,13 @@ class ChapterController extends Controller
                 'photos_count' => $chapter->published_photos_count,
                 'created_at' => $chapter->created_at?->toIso8601String(),
             ],
-            'organisers' => $chapter->members()
+            'organizers' => $chapter->members()
                 ->wherePivot('role', ChapterMemberRole::Admin)
                 ->orderBy('name')
                 ->get(['users.name', 'users.instagram_handle'])
-                ->map(fn (User $organiser): array => [
-                    'name' => $organiser->name,
-                    'instagram_handle' => $organiser->instagram_handle,
+                ->map(fn (User $organizer): array => [
+                    'name' => $organizer->name,
+                    'instagram_handle' => $organizer->instagram_handle,
                 ]),
             'upcomingEvents' => $chapter->events()
                 ->where('ends_at', '>=', now())
@@ -133,7 +133,7 @@ class ChapterController extends Controller
                     'starts_at' => $event->starts_at->toIso8601String(),
                     'ends_at' => $event->ends_at->toIso8601String(),
                     'timezone' => $event->timezone,
-                    'is_cancelled' => $event->isCancelled(),
+                    'is_canceled' => $event->isCanceled(),
                 ]),
             'nearby' => $nearby,
             'nearbyRadiusMiles' => self::NEARBY_RADIUS_MILES,
@@ -145,7 +145,7 @@ class ChapterController extends Controller
     /**
      * How the visitor relates to the group, which decides the join panel on the group page.
      *
-     * @return 'guest'|'none'|'member'|'organiser'
+     * @return 'guest'|'none'|'member'|'organizer'
      */
     private function membershipFor(Request $request, Chapter $chapter): string
     {
@@ -158,7 +158,7 @@ class ChapterController extends Controller
         $role = $chapter->memberships()->where('user_id', $user->id)->first()?->role;
 
         return match ($role) {
-            ChapterMemberRole::Admin => 'organiser',
+            ChapterMemberRole::Admin => 'organizer',
             ChapterMemberRole::Member => 'member',
             default => 'none',
         };

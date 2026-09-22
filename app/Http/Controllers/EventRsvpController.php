@@ -77,14 +77,14 @@ class EventRsvpController extends Controller
     {
         $event->rsvps()->detach($request->user());
 
-        return to_route('chapters.events.show', [$chapter, $event])->with('status', 'rsvp-cancelled');
+        return to_route('chapters.events.show', [$chapter, $event])->with('status', 'rsvp-canceled');
     }
 
     private function closedReason(Event $event): string
     {
         return match (true) {
             ! $event->rsvps_enabled => 'This meetup doesn’t take RSVPs. Just turn up.',
-            $event->isCancelled() => 'This meetup has been cancelled.',
+            $event->isCanceled() => 'This meetup has been canceled.',
             $event->hasEnded() => 'This meetup has already happened.',
             default => 'This meetup is full.',
         };

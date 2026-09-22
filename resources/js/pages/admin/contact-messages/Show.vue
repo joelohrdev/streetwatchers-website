@@ -82,7 +82,7 @@ const replyHref = computed(
                 <ActionDialog
                     :form="destroy.form(contactMessage.id)"
                     title="Delete this message?"
-                    description="The message and the sender's details are permanently deleted, for example to honour a request to erase their data. The audit log only records that a message was deleted."
+                    description="The message and the sender's details are permanently deleted, for example to honor a request to erase their data. The audit log only records that a message was deleted."
                     trigger-label="Delete"
                     trigger-variant="outline"
                     submit-label="Delete message"

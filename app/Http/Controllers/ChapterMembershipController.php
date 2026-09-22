@@ -38,7 +38,7 @@ class ChapterMembershipController extends Controller
     {
         $this->ensureActive($chapter);
 
-        // Attach only when the user isn't already in the group, so an organiser keeps their admin role.
+        // Attach only when the user isn't already in the group, so an organizer keeps their admin role.
         if (! $chapter->members()->whereKey($request->user()->id)->exists()) {
             $chapter->members()->attach($request->user(), ['role' => ChapterMemberRole::Member]);
         }
@@ -52,7 +52,7 @@ class ChapterMembershipController extends Controller
 
         if ($membership?->role === ChapterMemberRole::Admin) {
             throw ValidationException::withMessages([
-                'membership' => 'Step down as an organiser from the members page before you leave the group.',
+                'membership' => 'Step down as an organizer from the members page before you leave the group.',
             ]);
         }
 

@@ -22,7 +22,7 @@ const longitude = ref('');
 const locating = ref(false);
 const locationError = ref<string | null>(null);
 
-/** Fill the coordinates from the browser, rounded to roughly neighbourhood precision. */
+/** Fill the coordinates from the browser, rounded to roughly neighborhood precision. */
 function useCurrentLocation(): void {
     if (!('geolocation' in navigator)) {
         locationError.value =
@@ -56,9 +56,9 @@ const sectionLabelClass =
     'font-display text-xs font-semibold tracking-[0.18em] uppercase';
 
 const nextSteps = [
-    "You are the group's first admin, so you will be able to run its events and content once it's live.",
-    'Every group needs at least two admins before it can be approved. We will get in touch to add a co-organiser.',
+    "You are the group's organizer, so you will be able to plan its meetups once it's live.",
     'Our team reviews the group and it appears in the directory once it is approved.',
+    'Once it is live, you can make other members organizers to share the job.',
 ];
 </script>
 

@@ -24,7 +24,7 @@ type Group = {
     city: string;
     country: string;
     status: 'pending' | 'active' | 'inactive';
-    role: 'organiser' | 'member';
+    role: 'organizer' | 'member';
 };
 
 type Collective = {
@@ -177,8 +177,8 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
                         <p :class="labelClass">
                             {{
                                 groupStatusLabel[group.status] ??
-                                (group.role === 'organiser'
-                                    ? 'Organiser'
+                                (group.role === 'organizer'
+                                    ? 'Organizer'
                                     : 'Member')
                             }}
                         </p>

@@ -4,14 +4,14 @@ import { ArrowLeft } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import {
     destroy as stepDown,
-    store as makeOrganiser,
-} from '@/actions/App/Http/Controllers/ChapterOrganiserController';
+    store as makeOrganizer,
+} from '@/actions/App/Http/Controllers/ChapterOrganizerController';
 import { show as showGroup } from '@/routes/chapters';
 
 type Member = {
     id: number;
     name: string;
-    is_organiser: boolean;
+    is_organizer: boolean;
     is_you: boolean;
     joined_at: string | null;
 };
@@ -21,8 +21,8 @@ const props = defineProps<{
     members: Member[];
 }>();
 
-const organiserCount = computed(
-    () => props.members.filter((member) => member.is_organiser).length,
+const organizerCount = computed(
+    () => props.members.filter((member) => member.is_organizer).length,
 );
 
 const confirmingStepDown = ref(false);
@@ -50,10 +50,10 @@ const actionClass =
         <h1
             class="font-display mt-4 text-3xl font-extrabold tracking-tight uppercase md:text-5xl"
         >
-            Members and organisers
+            Members and organizers
         </h1>
         <p class="text-ink-soft mt-6 text-lg leading-relaxed">
-            Organisers plan meetups and can make other members organisers.
+            Organizers plan meetups and can make other members organizers.
             Sharing the job keeps the group going when someone is away.
         </p>
 
@@ -71,7 +71,7 @@ const actionClass =
                         >
                     </p>
                     <p class="text-ink-soft mt-1 text-sm">
-                        {{ member.is_organiser ? 'Organiser' : 'Member'
+                        {{ member.is_organizer ? 'Organizer' : 'Member'
                         }}<template v-if="member.joined_at">
                             · joined
                             {{ joined.format(new Date(member.joined_at)) }}
@@ -80,8 +80,8 @@ const actionClass =
                 </div>
 
                 <Form
-                    v-if="!member.is_organiser"
-                    v-bind="makeOrganiser.form(group.slug)"
+                    v-if="!member.is_organizer"
+                    v-bind="makeOrganizer.form(group.slug)"
                     :options="{ preserveScroll: true }"
                     v-slot="{ processing }"
                 >
@@ -91,12 +91,12 @@ const actionClass =
                         :disabled="processing"
                         :class="actionClass"
                     >
-                        Make organiser
+                        Make organizer
                     </button>
                 </Form>
 
                 <Form
-                    v-else-if="member.is_you && organiserCount > 1"
+                    v-else-if="member.is_you && organizerCount > 1"
                     v-bind="stepDown.form(group.slug)"
                     v-slot="{ processing }"
                     class="flex items-center gap-4 text-sm"
@@ -130,8 +130,8 @@ const actionClass =
             </li>
         </ul>
 
-        <p v-if="organiserCount === 1" class="text-ink-soft mt-6 text-sm">
-            To step down, first make another member an organiser. A group always
+        <p v-if="organizerCount === 1" class="text-ink-soft mt-6 text-sm">
+            To step down, first make another member an organizer. A group always
             needs at least one.
         </p>
     </section>

@@ -7,10 +7,10 @@ use App\Models\AuditLog;
 use App\Models\Chapter;
 use App\Models\User;
 
-test('a pending chapter with two admins can be approved', function () {
+test('a pending chapter with one admin can be approved', function () {
     $admin = User::factory()->superAdmin()->create();
     $chapter = Chapter::factory()->pending()->create();
-    $chapter->members()->attach(User::factory(2)->create(), ['role' => ChapterMemberRole::Admin]);
+    $chapter->members()->attach(User::factory()->create(), ['role' => ChapterMemberRole::Admin]);
 
     $response = $this->actingAs($admin)->post(route('admin.chapters.approval.store', $chapter));
 
@@ -26,16 +26,15 @@ test('a pending chapter with two admins can be approved', function () {
     ]);
 });
 
-test('a pending chapter with fewer than two admins cannot be approved', function () {
+test('a pending chapter with no admin cannot be approved', function () {
     $admin = User::factory()->superAdmin()->create();
     $chapter = Chapter::factory()->pending()->create();
-    $chapter->members()->attach(User::factory()->create(), ['role' => ChapterMemberRole::Admin]);
     $chapter->members()->attach(User::factory()->create(), ['role' => ChapterMemberRole::Member]);
 
     $response = $this->actingAs($admin)->post(route('admin.chapters.approval.store', $chapter));
 
     $response->assertSessionHasErrors([
-        'chapter' => 'A chapter needs at least 2 admins before it can be approved. This chapter has 1.',
+        'chapter' => 'A chapter needs at least 1 admin before it can be approved. This chapter has 0.',
     ]);
     expect($chapter->fresh()->status)->toBe(ChapterStatus::Pending);
     expect(AuditLog::query()->count())->toBe(0);
@@ -58,7 +57,7 @@ test('an active chapter can be deactivated with a logged reason', function () {
     $chapter = Chapter::factory()->active()->create();
 
     $this->actingAs($admin)
-        ->post(route('admin.chapters.deactivation.store', $chapter), ['reason' => 'Organisers stepped down.'])
+        ->post(route('admin.chapters.deactivation.store', $chapter), ['reason' => 'Organizers stepped down.'])
         ->assertSessionHasNoErrors();
 
     expect($chapter->fresh()->status)->toBe(ChapterStatus::Inactive);
@@ -67,7 +66,7 @@ test('an active chapter can be deactivated with a logged reason', function () {
         'subject_id' => $chapter->id,
         'old_status' => 'active',
         'new_status' => 'inactive',
-        'reason' => 'Organisers stepped down.',
+        'reason' => 'Organizers stepped down.',
     ]);
 });
 

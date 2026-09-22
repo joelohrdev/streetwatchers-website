@@ -13,3 +13,12 @@ export type ChapterDirectoryStats = {
     chapterCount: number;
     countryCount: number;
 };
+
+export type UpcomingMeetup = {
+    id: number;
+    title: string;
+    starts_at: string;
+    ends_at: string;
+    timezone: string;
+    group: { name: string; slug: string; city: string; country: string };
+};

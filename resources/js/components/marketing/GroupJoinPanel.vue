@@ -10,7 +10,7 @@ import StatusNote from '@/components/marketing/StatusNote.vue';
 import { primaryButtonClass, secondaryButtonClass } from '@/lib/marketing';
 import { create as joinViaAccount } from '@/routes/chapters/membership';
 
-export type GroupMembership = 'guest' | 'none' | 'member' | 'organiser';
+export type GroupMembership = 'guest' | 'none' | 'member' | 'organizer';
 
 const { group, membership, status } = defineProps<{
     group: { name: string; slug: string };
@@ -30,8 +30,8 @@ const confirmingLeave = ref(false);
         <StatusNote v-else-if="status === 'group-left'">
             You have left {{ group.name }}.
         </StatusNote>
-        <StatusNote v-else-if="status === 'organiser-stepped-down'">
-            You've stepped down as an organiser. You're still a member of
+        <StatusNote v-else-if="status === 'organizer-stepped-down'">
+            You've stepped down as an organizer. You're still a member of
             {{ group.name }}.
         </StatusNote>
 
@@ -75,7 +75,7 @@ const confirmingLeave = ref(false);
                 Join this group
             </h2>
             <p class="text-ink-soft mt-3 max-w-xl leading-relaxed">
-                Joining is free and lets the organisers know you want to come
+                Joining is free and lets the organizers know you want to come
                 along to their walks and events.
             </p>
             <Form
@@ -100,14 +100,14 @@ const confirmingLeave = ref(false);
             >
                 <Check class="size-5" />
                 {{
-                    membership === 'organiser'
-                        ? 'You organise this group'
+                    membership === 'organizer'
+                        ? 'You organize this group'
                         : 'You are a member'
                 }}
             </p>
 
             <p
-                v-if="membership === 'organiser'"
+                v-if="membership === 'organizer'"
                 class="text-ink-soft mt-3 max-w-xl leading-relaxed"
             >
                 You run {{ group.name }}'s walks and events.

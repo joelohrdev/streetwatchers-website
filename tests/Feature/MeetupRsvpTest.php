@@ -34,15 +34,15 @@ test('RSVPing to a meetup joins its group', function () {
         ->and($meetup->attendees()->whereKey($visitor->id)->exists())->toBeTrue();
 });
 
-test('an organiser who RSVPs keeps their organiser role', function () {
+test('an organizer who RSVPs keeps their organizer role', function () {
     $group = Chapter::factory()->active()->create();
-    $organiser = User::factory()->create();
-    $group->members()->attach($organiser, ['role' => ChapterMemberRole::Admin]);
+    $organizer = User::factory()->create();
+    $group->members()->attach($organizer, ['role' => ChapterMemberRole::Admin]);
     $meetup = Event::factory()->for($group)->upcoming()->takingRsvps()->create();
 
-    $this->actingAs($organiser)->post(route('chapters.events.rsvp.store', [$group, $meetup]));
+    $this->actingAs($organizer)->post(route('chapters.events.rsvp.store', [$group, $meetup]));
 
-    expect($group->members()->whereKey($organiser->id)->sole()->pivot->role)->toBe(ChapterMemberRole::Admin);
+    expect($group->members()->whereKey($organizer->id)->sole()->pivot->role)->toBe(ChapterMemberRole::Admin);
 });
 
 test('RSVPing twice keeps one RSVP and still counts when the meetup is full', function () {
@@ -86,9 +86,9 @@ test('nobody can RSVP to a meetup that is not taking RSVPs', function (Closure $
         fn (Chapter $group) => Event::factory()->for($group)->upcoming()->create(),
         'This meetup doesn’t take RSVPs. Just turn up.',
     ],
-    'cancelled' => [
-        fn (Chapter $group) => Event::factory()->for($group)->upcoming()->takingRsvps()->cancelled()->create(),
-        'This meetup has been cancelled.',
+    'canceled' => [
+        fn (Chapter $group) => Event::factory()->for($group)->upcoming()->takingRsvps()->canceled()->create(),
+        'This meetup has been canceled.',
     ],
     'already happened' => [
         fn (Chapter $group) => Event::factory()->for($group)->takingRsvps()->create([
@@ -99,7 +99,7 @@ test('nobody can RSVP to a meetup that is not taking RSVPs', function (Closure $
     ],
 ]);
 
-test('cancelling an RSVP keeps the person in the group', function () {
+test('canceling an RSVP keeps the person in the group', function () {
     $group = Chapter::factory()->active()->create();
     $member = User::factory()->create();
     $group->members()->attach($member, ['role' => ChapterMemberRole::Member]);
@@ -108,7 +108,7 @@ test('cancelling an RSVP keeps the person in the group', function () {
 
     $this->actingAs($member)
         ->delete(route('chapters.events.rsvp.destroy', [$group, $meetup]))
-        ->assertSessionHas('status', 'rsvp-cancelled');
+        ->assertSessionHas('status', 'rsvp-canceled');
 
     expect($meetup->attendees()->count())->toBe(0)
         ->and($group->members()->whereKey($member->id)->exists())->toBeTrue();
@@ -143,7 +143,7 @@ test('a guest can choose to register before RSVPing', function () {
         ->assertRedirect(route('register'));
 });
 
-test('only organisers see who is going', function (?ChapterMemberRole $role, bool $seesNames) {
+test('only organizers see who is going', function (?ChapterMemberRole $role, bool $seesNames) {
     $group = Chapter::factory()->active()->create();
     $viewer = User::factory()->create();
 
@@ -162,5 +162,5 @@ test('only organisers see who is going', function (?ChapterMemberRole $role, boo
 })->with([
     'not in the group' => [null, false],
     'member' => [ChapterMemberRole::Member, false],
-    'organiser' => [ChapterMemberRole::Admin, true],
+    'organizer' => [ChapterMemberRole::Admin, true],
 ]);

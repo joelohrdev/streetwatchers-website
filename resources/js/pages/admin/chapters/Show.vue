@@ -100,7 +100,7 @@ const hasEnoughAdmins = computed(
                 :description="
                     hasEnoughAdmins
                         ? 'The chapter will go live and appear in the public directory.'
-                        : `A chapter needs at least ${requiredAdmins} admins before it can be approved. It has ${admins.length}.`
+                        : `A chapter needs at least ${requiredAdmins} ${requiredAdmins === 1 ? 'admin' : 'admins'} before it can be approved. It has ${admins.length}.`
                 "
                 trigger-label="Approve"
                 trigger-variant="default"
@@ -128,7 +128,11 @@ const hasEnoughAdmins = computed(
                 <CardTitle>Chapter admins</CardTitle>
                 <CardDescription>
                     Admins run the chapter's events and content.
-                    {{ requiredAdmins }} are needed for approval.
+                    {{
+                        requiredAdmins === 1
+                            ? 'One is needed for approval.'
+                            : `${requiredAdmins} are needed for approval.`
+                    }}
                 </CardDescription>
             </CardHeader>
             <CardContent class="space-y-6">
@@ -181,7 +185,7 @@ const hasEnoughAdmins = computed(
                             name="email"
                             type="email"
                             required
-                            placeholder="organiser@example.com"
+                            placeholder="organizer@example.com"
                         />
                         <Button type="submit" :disabled="processing">
                             Add

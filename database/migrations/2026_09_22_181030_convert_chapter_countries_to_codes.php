@@ -84,14 +84,14 @@ return new class extends Migration
      */
     private function match(string $name): ?Country
     {
-        $key = $this->normalise($name);
+        $key = $this->normalize($name);
 
         if (isset(self::ALIASES[$key])) {
             return Country::from(self::ALIASES[$key]);
         }
 
         foreach (Country::cases() as $country) {
-            if ($key === strtolower($country->value) || $key === $this->normalise($country->label())) {
+            if ($key === strtolower($country->value) || $key === $this->normalize($country->label())) {
                 return $country;
             }
         }
@@ -99,7 +99,7 @@ return new class extends Migration
         return null;
     }
 
-    private function normalise(string $name): string
+    private function normalize(string $name): string
     {
         $ascii = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $name);
 

@@ -17,7 +17,7 @@ import { computed, ref } from 'vue';
 type Option = { value: string; label: string };
 
 /**
- * A labelled, searchable select in the public site's style. The chosen value is posted under `name`,
+ * A labeled, searchable select in the public site's style. The chosen value is posted under `name`,
  * and typing filters the options ignoring case and accents, so "cote" finds "Côte d’Ivoire".
  */
 const {
@@ -41,18 +41,18 @@ const {
 const selected = ref<string>();
 const searchTerm = ref('');
 
-const normalise = (text: string): string =>
+const normalize = (text: string): string =>
     text
         .normalize('NFD')
         .replace(/\p{Diacritic}/gu, '')
         .toLowerCase();
 
 const filteredOptions = computed(() => {
-    const term = normalise(searchTerm.value.trim());
+    const term = normalize(searchTerm.value.trim());
 
     return term === ''
         ? options
-        : options.filter((option) => normalise(option.label).includes(term));
+        : options.filter((option) => normalize(option.label).includes(term));
 });
 
 const labelFor = (value: string | undefined): string =>

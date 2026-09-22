@@ -119,6 +119,6 @@ test('an Instagram handle must look like an Instagram username', function (strin
 
     expect($user->refresh()->instagram_handle)->toBeNull();
 })->with([
-    'spaces' => ['street walker', 'Instagram usernames only use letters, numbers, full stops and underscores.'],
+    'spaces' => ['street walker', 'Instagram usernames only use letters, numbers, periods and underscores.'],
     'too long' => [str_repeat('a', 31), 'Instagram usernames are 30 characters or fewer.'],
 ]);

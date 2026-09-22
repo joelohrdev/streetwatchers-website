@@ -26,7 +26,7 @@ const { group, meetup, viewer, status } = defineProps<{
         rsvps_enabled: boolean;
         rsvp_limit: number | null;
         attendees_count: number;
-        is_cancelled: boolean;
+        is_canceled: boolean;
         has_ended: boolean;
         is_accepting_rsvps: boolean;
     };
@@ -46,15 +46,15 @@ const route = (): [string, number] => [group.slug, meetup.id];
         <StatusNote v-else-if="status === 'rsvp-going'">
             You're going. See you there.
         </StatusNote>
-        <StatusNote v-else-if="status === 'rsvp-cancelled'">
-            Your RSVP is cancelled. You're still a member of {{ group.name }}.
+        <StatusNote v-else-if="status === 'rsvp-canceled'">
+            Your RSVP is canceled. You're still a member of {{ group.name }}.
         </StatusNote>
 
         <p
-            v-if="meetup.is_cancelled"
+            v-if="meetup.is_canceled"
             class="font-display text-lg font-extrabold tracking-tight uppercase"
         >
-            This meetup has been cancelled
+            This meetup has been canceled
         </p>
 
         <p
@@ -106,7 +106,7 @@ const route = (): [string, number] => [group.slug, meetup.id];
                         :disabled="processing"
                         class="text-ink-soft hover:text-ink cursor-pointer text-sm transition-colors"
                     >
-                        {{ processing ? 'Cancelling…' : "I can't make it" }}
+                        {{ processing ? 'Canceling…' : "I can't make it" }}
                     </button>
                 </Form>
             </template>

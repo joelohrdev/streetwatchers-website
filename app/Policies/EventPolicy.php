@@ -8,10 +8,10 @@ use App\Models\User;
 class EventPolicy
 {
     /**
-     * Any organiser of the meetup's group can edit or cancel it, not only the one who created it.
+     * Any organizer of the meetup's group can edit or cancel it, not only the one who created it.
      */
     public function update(User $user, Event $event): bool
     {
-        return $event->chapter->isOrganisedBy($user);
+        return $event->chapter->isOrganizedBy($user);
     }
 }

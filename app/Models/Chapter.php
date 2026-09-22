@@ -36,7 +36,7 @@ class Chapter extends Model
     /** @use HasFactory<ChapterFactory> */
     use HasFactory;
 
-    private const KILOMETRES_PER_MILE = 1.609344;
+    private const KILOMETERS_PER_MILE = 1.609344;
 
     /**
      * Slightly under the true figure (about 69), so the latitude pre-filter never drops a chapter that's in range.
@@ -67,9 +67,9 @@ class Chapter extends Model
     }
 
     /**
-     * Great-circle distance to another chapter in kilometres, using the haversine formula.
+     * Great-circle distance to another chapter in kilometers, using the haversine formula.
      */
-    public function distanceInKilometresTo(Chapter $other): float
+    public function distanceInKilometersTo(Chapter $other): float
     {
         $latitudeDelta = deg2rad($other->latitude - $this->latitude);
         $longitudeDelta = deg2rad($other->longitude - $this->longitude);
@@ -85,7 +85,7 @@ class Chapter extends Model
      */
     public function distanceInMilesTo(Chapter $other): float
     {
-        return $this->distanceInKilometresTo($other) / self::KILOMETRES_PER_MILE;
+        return $this->distanceInKilometersTo($other) / self::KILOMETERS_PER_MILE;
     }
 
     /**
@@ -135,9 +135,9 @@ class Chapter extends Model
     }
 
     /**
-     * Whether the user runs this group. Only active groups have organisers who can act for them.
+     * Whether the user runs this group. Only active groups have organizers who can act for them.
      */
-    public function isOrganisedBy(User $user): bool
+    public function isOrganizedBy(User $user): bool
     {
         return $this->status === ChapterStatus::Active
             && $this->memberships()

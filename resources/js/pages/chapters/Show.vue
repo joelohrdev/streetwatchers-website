@@ -26,7 +26,7 @@ type UpcomingEvent = {
     starts_at: string;
     ends_at: string;
     timezone: string;
-    is_cancelled: boolean;
+    is_canceled: boolean;
 };
 
 const props = defineProps<{
@@ -36,7 +36,7 @@ const props = defineProps<{
         photos_count: number;
         created_at: string | null;
     };
-    organisers: { name: string; instagram_handle: string | null }[];
+    organizers: { name: string; instagram_handle: string | null }[];
     upcomingEvents: UpcomingEvent[];
     nearby: NearbyChapter[];
     nearbyRadiusMiles: number;
@@ -156,14 +156,14 @@ const stats = computed(() => [
                                 <div>
                                     <p class="font-semibold">
                                         <span
-                                            v-if="event.is_cancelled"
+                                            v-if="event.is_canceled"
                                             class="font-display mr-2 text-xs tracking-[0.14em] uppercase"
-                                            >Cancelled</span
+                                            >Canceled</span
                                         >
                                         <span
                                             :class="{
                                                 'text-ink-soft line-through':
-                                                    event.is_cancelled,
+                                                    event.is_canceled,
                                             }"
                                             >{{ event.title }}</span
                                         >
@@ -195,7 +195,7 @@ const stats = computed(() => [
                         No events are scheduled yet. Check back soon.
                     </p>
                     <div
-                        v-if="membership === 'organiser'"
+                        v-if="membership === 'organizer'"
                         class="mt-8 flex flex-col gap-3 sm:flex-row"
                     >
                         <Link
@@ -208,7 +208,7 @@ const stats = computed(() => [
                             :href="members(chapter.slug)"
                             :class="[secondaryButtonClass, 'sm:w-auto']"
                         >
-                            Members and organisers
+                            Members and organizers
                         </Link>
                     </div>
                 </div>
@@ -219,21 +219,21 @@ const stats = computed(() => [
                     <h2
                         class="font-display text-xs font-semibold tracking-[0.18em] uppercase"
                     >
-                        Organisers
+                        Organizers
                     </h2>
-                    <ul v-if="organisers.length" class="mt-6 space-y-2">
+                    <ul v-if="organizers.length" class="mt-6 space-y-2">
                         <li
-                            v-for="organiser in organisers"
-                            :key="organiser.name"
+                            v-for="organizer in organizers"
+                            :key="organizer.name"
                         >
                             <MemberName
-                                :name="organiser.name"
-                                :instagram-handle="organiser.instagram_handle"
+                                :name="organizer.name"
+                                :instagram-handle="organizer.instagram_handle"
                             />
                         </li>
                     </ul>
                     <p v-else class="text-ink-soft mt-6">
-                        This group is looking for organisers.
+                        This group is looking for organizers.
                     </p>
                 </div>
 

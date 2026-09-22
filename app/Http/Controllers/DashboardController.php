@@ -44,7 +44,7 @@ class DashboardController extends Controller
                     'city' => $membership->chapter->city,
                     'country' => $membership->chapter->country->label(),
                     'status' => $membership->chapter->status->value,
-                    'role' => $membership->role === ChapterMemberRole::Admin ? 'organiser' : 'member',
+                    'role' => $membership->role === ChapterMemberRole::Admin ? 'organizer' : 'member',
                 ]),
             'collectives' => $collectiveMemberships
                 ->sortBy(fn (CollectiveUser $membership): string => $membership->collective->name)

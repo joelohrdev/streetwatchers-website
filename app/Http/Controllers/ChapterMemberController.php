@@ -11,13 +11,13 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * A group's member list, where organisers choose who else organises the group.
+ * A group's member list, where organizers choose who else organizes the group.
  */
 class ChapterMemberController extends Controller
 {
     public function index(Request $request, Chapter $chapter): Response
     {
-        Gate::authorize('organise', $chapter);
+        Gate::authorize('organize', $chapter);
 
         $members = $chapter->members()
             ->orderByRaw('case when chapter_user.role = ? then 0 else 1 end', [ChapterMemberRole::Admin->value])
@@ -26,7 +26,7 @@ class ChapterMemberController extends Controller
             ->map(fn (User $member): array => [
                 'id' => $member->id,
                 'name' => $member->name,
-                'is_organiser' => $member->pivot->role === ChapterMemberRole::Admin,
+                'is_organizer' => $member->pivot->role === ChapterMemberRole::Admin,
                 'is_you' => $member->id === $request->user()->id,
                 'joined_at' => $member->pivot->joined_at?->toIso8601String(),
             ]);

@@ -2,7 +2,9 @@
 import { Form } from '@inertiajs/vue3';
 import { LoaderCircle } from '@lucide/vue';
 import { ref } from 'vue';
+import DateField from '@/components/marketing/DateField.vue';
 import FormField from '@/components/marketing/FormField.vue';
+import TimeField from '@/components/marketing/TimeField.vue';
 import { primaryButtonClass } from '@/lib/marketing';
 
 export type MeetupDetails = {
@@ -18,7 +20,7 @@ export type MeetupDetails = {
 };
 
 /**
- * The fields for planning or editing a meetup. Times are entered in the meetup's time zone: the organiser's
+ * The fields for planning or editing a meetup. Times are entered in the meetup's time zone: the organizer's
  * own zone for a new meetup, or the zone it was planned in when editing.
  */
 const { action, meetup, submitLabel } = defineProps<{
@@ -113,33 +115,27 @@ const sectionLabelClass =
 
             <input type="hidden" name="timezone" :value="timezone" />
 
-            <FormField
+            <DateField
                 id="date"
                 label="Date"
-                type="date"
                 name="date"
-                required
                 :value="meetup?.date"
                 :error="errors.date"
             />
 
             <div class="grid gap-10 sm:grid-cols-2">
-                <FormField
+                <TimeField
                     id="starts_at_time"
                     label="Starts"
-                    type="time"
                     name="starts_at_time"
-                    required
-                    :value="meetup?.starts_at_time"
+                    :value="meetup?.starts_at_time ?? '10:00'"
                     :error="errors.starts_at_time"
                 />
-                <FormField
+                <TimeField
                     id="ends_at_time"
                     label="Ends"
-                    type="time"
                     name="ends_at_time"
-                    required
-                    :value="meetup?.ends_at_time"
+                    :value="meetup?.ends_at_time ?? '12:00'"
                     :error="errors.ends_at_time"
                 />
             </div>

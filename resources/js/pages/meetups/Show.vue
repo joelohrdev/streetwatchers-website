@@ -26,7 +26,7 @@ defineProps<{
         rsvps_enabled: boolean;
         rsvp_limit: number | null;
         attendees_count: number;
-        is_cancelled: boolean;
+        is_canceled: boolean;
         has_ended: boolean;
         is_accepting_rsvps: boolean;
     };
@@ -61,20 +61,20 @@ const sectionLabelClass =
         <StatusNote v-else-if="status === 'meetup-updated'" class="mt-10">
             Your changes are saved.
         </StatusNote>
-        <StatusNote v-else-if="status === 'meetup-cancelled'" class="mt-10">
-            The meetup is cancelled. It stays on this page, marked as cancelled,
+        <StatusNote v-else-if="status === 'meetup-canceled'" class="mt-10">
+            The meetup is canceled. It stays on this page, marked as canceled,
             so anyone planning to come finds out.
         </StatusNote>
 
         <p
             class="font-display text-ink-soft mt-12 text-xs font-semibold tracking-[0.18em] uppercase"
         >
-            <span v-if="meetup.is_cancelled" class="text-ink">Cancelled · </span
+            <span v-if="meetup.is_canceled" class="text-ink">Canceled · </span
             >Meetup
         </p>
         <h1
             class="font-display mt-4 text-3xl font-extrabold tracking-tight text-balance uppercase md:text-5xl"
-            :class="{ 'text-ink-soft line-through': meetup.is_cancelled }"
+            :class="{ 'text-ink-soft line-through': meetup.is_canceled }"
         >
             {{ meetup.title }}
         </h1>
@@ -145,7 +145,7 @@ const sectionLabelClass =
 
             <aside class="space-y-12">
                 <div>
-                    <h2 :class="sectionLabelClass">Organised by</h2>
+                    <h2 :class="sectionLabelClass">Organized by</h2>
                     <p class="mt-6">
                         <MemberName
                             :name="meetup.organizer.name"
@@ -174,18 +174,18 @@ const sectionLabelClass =
                     </ul>
                     <p v-else class="text-ink-soft mt-6">No RSVPs yet.</p>
                     <p class="text-ink-soft mt-4 text-xs">
-                        Only organisers can see this list.
+                        Only organizers can see this list.
                     </p>
                 </div>
 
                 <div
                     v-if="
                         viewer.can_manage &&
-                        !meetup.is_cancelled &&
+                        !meetup.is_canceled &&
                         !meetup.has_ended
                     "
                 >
-                    <h2 :class="sectionLabelClass">Organiser tools</h2>
+                    <h2 :class="sectionLabelClass">Organizer tools</h2>
                     <div class="mt-6 flex flex-col gap-4">
                         <Link
                             :href="edit([group.slug, meetup.id])"
@@ -210,7 +210,7 @@ const sectionLabelClass =
                                 >
                                     {{
                                         processing
-                                            ? 'Cancelling…'
+                                            ? 'Canceling…'
                                             : 'Yes, cancel it'
                                     }}
                                 </button>

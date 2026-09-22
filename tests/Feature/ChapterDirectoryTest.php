@@ -37,7 +37,7 @@ test('the chapter directory starts with the search from the homepage', function 
         ->assertInertia(fn (Assert $page) => $page->where('search', 'Lisbon'));
 });
 
-test('an active chapter has a public page with its organisers, upcoming events and nearest chapters', function () {
+test('an active chapter has a public page with its organizers, upcoming events and nearest chapters', function () {
     $lisbon = Chapter::factory()->active()->create([
         'name' => 'Lisbon Streetwatchers', 'latitude' => 38.7223, 'longitude' => -9.1393,
     ]);
@@ -47,7 +47,7 @@ test('an active chapter has a public page with its organisers, upcoming events a
     Chapter::factory()->active()->create(['name' => 'Porto Streetwatchers', 'latitude' => 41.1579, 'longitude' => -8.6291]);
     Chapter::factory()->pending()->create(['latitude' => 38.7300, 'longitude' => -9.1400]);
 
-    $lisbon->members()->attach(User::factory()->create(['name' => 'Ana Organiser', 'instagram_handle' => 'ana.walks']), ['role' => ChapterMemberRole::Admin]);
+    $lisbon->members()->attach(User::factory()->create(['name' => 'Ana Organizer', 'instagram_handle' => 'ana.walks']), ['role' => ChapterMemberRole::Admin]);
     $lisbon->members()->attach(User::factory()->create(['name' => 'Rui Member']), ['role' => ChapterMemberRole::Member]);
 
     $upcoming = Event::factory()->for($lisbon)->create(['starts_at' => now()->addDays(3), 'ends_at' => now()->addDays(3)->addHours(2)]);
@@ -59,7 +59,7 @@ test('an active chapter has a public page with its organisers, upcoming events a
             ->component('chapters/Show')
             ->where('chapter.id', $lisbon->id)
             ->where('chapter.members_count', 2)
-            ->where('organisers', [['name' => 'Ana Organiser', 'instagram_handle' => 'ana.walks']])
+            ->where('organizers', [['name' => 'Ana Organizer', 'instagram_handle' => 'ana.walks']])
             ->has('upcomingEvents', 1)
             ->where('upcomingEvents.0.id', $upcoming->id)
             ->has('nearby', 2)

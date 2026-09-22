@@ -27,7 +27,7 @@ const {
     chapters: MapChapter[];
     /** The visitor's location. The map zooms to it and its nearest chapters. */
     position?: Coordinates | null;
-    /** A chapter to centre on instead of fitting every marker, e.g. on a chapter page. */
+    /** A chapter to center on instead of fitting every marker, e.g. on a chapter page. */
     focus?: MapChapter | null;
     label?: string;
 }>();
@@ -182,7 +182,7 @@ function renderMarkers(): void {
             .map((chapter) => chapterMarker(chapter, false)),
     );
 
-    // The chapter being viewed sits outside the clusters so it never disappears into a neighbour's group.
+    // The chapter being viewed sits outside the clusters so it never disappears into a neighbor's group.
     focusMarker?.remove();
     focusMarker = focus ? chapterMarker(focus, true).addTo(map) : null;
 }
@@ -336,14 +336,14 @@ onBeforeUnmount(() => {
 
 <style scoped>
 /*
- * Greyscale tiles keep the map in the site's black-and-white palette. The filter goes on each
+ * Grayscale tiles keep the map in the site's black-and-white palette. The filter goes on each
  * tile rather than the whole tile pane, which makes Chrome draw hairline gaps between tiles.
  */
 .chapter-map :deep(.leaflet-tile) {
     filter: grayscale(1) contrast(1.05);
 }
 
-/* Outline mode has no tiles, so the sea is the page's paper colour. */
+/* Outline mode has no tiles, so the sea is the page's paper color. */
 .chapter-map.chapter-map--outline {
     background: var(--color-paper);
 }

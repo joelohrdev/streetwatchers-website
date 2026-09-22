@@ -23,7 +23,7 @@ const user = computed(() => page.props.auth.user);
         </h2>
         <p class="text-ink-soft mt-2 leading-relaxed">
             The name other members see, the email we use to reach you, and your
-            Instagram if you want to share it. If you organise a group, your
+            Instagram if you want to share it. If you organize a group, your
             Instagram shows next to your name on its pages.
         </p>
 

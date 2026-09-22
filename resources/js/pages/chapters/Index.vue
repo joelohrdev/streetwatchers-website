@@ -4,7 +4,7 @@ import { ArrowRight, LocateFixed, LoaderCircle, Search } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import ChapterMap from '@/components/marketing/ChapterMap.vue';
 import type { Coordinates } from '@/lib/geo';
-import { distanceInKilometres, formatDistance } from '@/lib/geo';
+import { distanceInKilometers, formatDistance } from '@/lib/geo';
 import { create, show } from '@/routes/chapters';
 
 type Chapter = {
@@ -88,7 +88,7 @@ const results = computed<ChapterResult[]>(() => {
         .map((chapter) => ({
             ...chapter,
             distance: position.value
-                ? distanceInKilometres(position.value, chapter)
+                ? distanceInKilometers(position.value, chapter)
                 : null,
         }));
 

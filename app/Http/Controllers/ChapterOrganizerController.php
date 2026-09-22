@@ -14,13 +14,13 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 /**
- * Organisers making a member an organiser, or stepping down themselves. Site admins have their own controls.
+ * Organizers making a member an organizer, or stepping down themselves. Site admins have their own controls.
  */
-class ChapterOrganiserController extends Controller
+class ChapterOrganizerController extends Controller
 {
     public function store(Request $request, Chapter $chapter): RedirectResponse
     {
-        Gate::authorize('organise', $chapter);
+        Gate::authorize('organize', $chapter);
 
         $validated = $request->validate(['user_id' => ['required', 'integer']]);
 
@@ -30,7 +30,7 @@ class ChapterOrganiserController extends Controller
             ->first();
 
         if ($member === null) {
-            throw ValidationException::withMessages(['user_id' => 'Only members of the group can become organisers.']);
+            throw ValidationException::withMessages(['user_id' => 'Only members of the group can become organizers.']);
         }
 
         DB::transaction(function () use ($request, $chapter, $member): void {
@@ -46,23 +46,23 @@ class ChapterOrganiserController extends Controller
             );
         });
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => "{$member->name} is now an organiser."]);
+        Inertia::flash('toast', ['type' => 'success', 'message' => "{$member->name} is now an organizer."]);
 
         return back();
     }
 
     /**
-     * Step down as an organiser and stay on as a member. A group always keeps at least one organiser.
+     * Step down as an organizer and stay on as a member. A group always keeps at least one organizer.
      */
     public function destroy(Request $request, Chapter $chapter): RedirectResponse
     {
-        Gate::authorize('organise', $chapter);
+        Gate::authorize('organize', $chapter);
 
-        $organiserCount = $chapter->memberships()->where('role', ChapterMemberRole::Admin)->count();
+        $organizerCount = $chapter->memberships()->where('role', ChapterMemberRole::Admin)->count();
 
-        if ($organiserCount < 2) {
+        if ($organizerCount < 2) {
             throw ValidationException::withMessages([
-                'organiser' => 'Make someone else an organiser before you step down, so the group isn’t left without one.',
+                'organizer' => 'Make someone else an organizer before you step down, so the group isn’t left without one.',
             ]);
         }
 
@@ -81,6 +81,6 @@ class ChapterOrganiserController extends Controller
             );
         });
 
-        return to_route('chapters.show', $chapter)->with('status', 'organiser-stepped-down');
+        return to_route('chapters.show', $chapter)->with('status', 'organizer-stepped-down');
     }
 }

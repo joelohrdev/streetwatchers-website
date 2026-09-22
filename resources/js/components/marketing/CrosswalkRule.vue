@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * The crosswalk receding to a vanishing point inside the logo mark, reduced to
- * a centred ornament. Takes its colour from the surrounding text so it
+ * a centered ornament. Takes its color from the surrounding text so it
  * inverts on the black band. Purely decorative.
  */
 const bars = [

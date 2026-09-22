@@ -59,12 +59,12 @@ class EventFactory extends Factory
     }
 
     /**
-     * Indicate that the meetup has been cancelled.
+     * Indicate that the meetup has been canceled.
      */
-    public function cancelled(): static
+    public function canceled(): static
     {
         return $this->state(fn (array $attributes) => [
-            'cancelled_at' => now(),
+            'canceled_at' => now(),
         ]);
     }
 }

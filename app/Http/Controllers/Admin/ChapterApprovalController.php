@@ -11,6 +11,7 @@ use App\Models\Chapter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -19,7 +20,7 @@ class ChapterApprovalController extends Controller
     /**
      * The number of chapter admins a pending chapter needs before it can be approved.
      */
-    public const REQUIRED_ADMINS = 2;
+    public const REQUIRED_ADMINS = 1;
 
     public function store(Request $request, Chapter $chapter): RedirectResponse
     {
@@ -34,8 +35,9 @@ class ChapterApprovalController extends Controller
         if ($adminCount < self::REQUIRED_ADMINS) {
             throw ValidationException::withMessages([
                 'chapter' => sprintf(
-                    'A chapter needs at least %d admins before it can be approved. This chapter has %d.',
+                    'A chapter needs at least %d %s before it can be approved. This chapter has %d.',
                     self::REQUIRED_ADMINS,
+                    Str::plural('admin', self::REQUIRED_ADMINS),
                     $adminCount,
                 ),
             ]);

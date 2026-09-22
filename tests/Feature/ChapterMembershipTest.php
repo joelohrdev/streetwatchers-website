@@ -26,7 +26,7 @@ test('the group page shows how a signed-in user relates to the group', function 
 })->with([
     'not in the group' => [null, 'none'],
     'member' => [ChapterMemberRole::Member, 'member'],
-    'organiser' => [ChapterMemberRole::Admin, 'organiser'],
+    'organizer' => [ChapterMemberRole::Admin, 'organizer'],
 ]);
 
 test('a guest who logs in to join is brought back to the group page', function () {
@@ -76,12 +76,12 @@ test('a member can join a group', function () {
         ->pivot->role->toBe(ChapterMemberRole::Member);
 });
 
-test('joining again does not demote an organiser', function () {
+test('joining again does not demote an organizer', function () {
     $group = Chapter::factory()->active()->create();
-    $organiser = User::factory()->create();
-    $group->members()->attach($organiser, ['role' => ChapterMemberRole::Admin]);
+    $organizer = User::factory()->create();
+    $group->members()->attach($organizer, ['role' => ChapterMemberRole::Admin]);
 
-    $this->actingAs($organiser)->post(route('chapters.membership.store', $group));
+    $this->actingAs($organizer)->post(route('chapters.membership.store', $group));
 
     expect($group->members()->sole()->pivot->role)->toBe(ChapterMemberRole::Admin);
 });
@@ -117,14 +117,14 @@ test('a member can leave a group', function () {
     expect($group->members()->count())->toBe(0);
 });
 
-test('an organiser cannot leave their group from the group page', function () {
+test('an organizer cannot leave their group from the group page', function () {
     $group = Chapter::factory()->active()->create();
-    $organiser = User::factory()->create();
-    $group->members()->attach($organiser, ['role' => ChapterMemberRole::Admin]);
+    $organizer = User::factory()->create();
+    $group->members()->attach($organizer, ['role' => ChapterMemberRole::Admin]);
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->delete(route('chapters.membership.destroy', $group))
-        ->assertSessionHasErrors(['membership' => 'Step down as an organiser from the members page before you leave the group.']);
+        ->assertSessionHasErrors(['membership' => 'Step down as an organizer from the members page before you leave the group.']);
 
-    expect($group->members()->sole()->id)->toBe($organiser->id);
+    expect($group->members()->sole()->id)->toBe($organizer->id);
 });

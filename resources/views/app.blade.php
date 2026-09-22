@@ -11,7 +11,7 @@
             }
         </style>
 
-        {{-- The site is always light, but the browser's tab bar follows the OS colour scheme. --}}
+        {{-- The site is always light, but the browser's tab bar follows the OS color scheme. --}}
         {{-- favicon.svg switches its own fill; the PNGs are fallbacks for browsers without SVG favicons. --}}
         <link rel="icon" href="/icon-black-32.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)">
         <link rel="icon" href="/icon-white-32.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">

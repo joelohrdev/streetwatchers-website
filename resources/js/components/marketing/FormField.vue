@@ -3,7 +3,7 @@ import { Eye, EyeOff } from '@lucide/vue';
 import { ref } from 'vue';
 
 /**
- * A labelled, underlined input in the public site's style. Extra attributes such as name,
+ * A labeled, underlined input in the public site's style. Extra attributes such as name,
  * autocomplete and required go straight to the input. Password fields get a show/hide toggle.
  */
 defineOptions({ inheritAttrs: false });

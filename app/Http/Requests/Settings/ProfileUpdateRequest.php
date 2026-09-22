@@ -19,7 +19,7 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             ...$this->profileRules($this->user()->id),
-            // Instagram usernames are up to 30 letters, numbers, full stops and underscores.
+            // Instagram usernames are up to 30 letters, numbers, periods and underscores.
             'instagram_handle' => ['nullable', 'string', 'max:30', 'regex:/^[a-z0-9._]+$/'],
         ];
     }
@@ -33,7 +33,7 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'instagram_handle.max' => 'Instagram usernames are 30 characters or fewer.',
-            'instagram_handle.regex' => 'Instagram usernames only use letters, numbers, full stops and underscores.',
+            'instagram_handle.regex' => 'Instagram usernames only use letters, numbers, periods and underscores.',
         ];
     }
 

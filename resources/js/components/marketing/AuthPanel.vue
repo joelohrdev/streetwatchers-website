@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** The narrow, centred column used by the public site's sign-in and account pages. */
+/** The narrow, centered column used by the public site's sign-in and account pages. */
 defineProps<{
     title: string;
     description?: string;

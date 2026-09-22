@@ -25,11 +25,11 @@ use Illuminate\Support\Carbon;
  * @property string $timezone
  * @property bool $rsvps_enabled
  * @property int|null $rsvp_limit
- * @property Carbon|null $cancelled_at
+ * @property Carbon|null $canceled_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['chapter_id', 'organizer_id', 'title', 'description', 'location_name', 'latitude', 'longitude', 'starts_at', 'ends_at', 'timezone', 'rsvps_enabled', 'rsvp_limit', 'cancelled_at'])]
+#[Fillable(['chapter_id', 'organizer_id', 'title', 'description', 'location_name', 'latitude', 'longitude', 'starts_at', 'ends_at', 'timezone', 'rsvps_enabled', 'rsvp_limit', 'canceled_at'])]
 class Event extends Model
 {
     /** @use HasFactory<EventFactory> */
@@ -56,7 +56,7 @@ class Event extends Model
             'timezone' => 'string',
             'rsvps_enabled' => 'boolean',
             'rsvp_limit' => 'integer',
-            'cancelled_at' => 'datetime',
+            'canceled_at' => 'datetime',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -100,9 +100,9 @@ class Event extends Model
         return $this->rsvps()->wherePivot('status', EventRsvpStatus::Going);
     }
 
-    public function isCancelled(): bool
+    public function isCanceled(): bool
     {
-        return $this->cancelled_at !== null;
+        return $this->canceled_at !== null;
     }
 
     public function hasEnded(): bool
@@ -116,7 +116,7 @@ class Event extends Model
     public function isAcceptingRsvps(): bool
     {
         return $this->rsvps_enabled
-            && ! $this->isCancelled()
+            && ! $this->isCanceled()
             && ! $this->hasEnded()
             && ($this->rsvp_limit === null || $this->attendees()->count() < $this->rsvp_limit);
     }

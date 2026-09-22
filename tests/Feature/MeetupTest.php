@@ -26,13 +26,13 @@ function meetupDetails(array $overrides = []): array
     ];
 }
 
-function groupWithOrganiser(): array
+function groupWithOrganizer(): array
 {
     $group = Chapter::factory()->active()->create();
-    $organiser = User::factory()->create();
-    $group->members()->attach($organiser, ['role' => ChapterMemberRole::Admin]);
+    $organizer = User::factory()->create();
+    $group->members()->attach($organizer, ['role' => ChapterMemberRole::Admin]);
 
-    return [$group, $organiser];
+    return [$group, $organizer];
 }
 
 beforeEach(function () {
@@ -44,7 +44,7 @@ test('anyone can view a meetup, including guests', function () {
     $meetup = Event::factory()->for($group)->upcoming()->takingRsvps(10)->create([
         'title' => 'Sunday walk',
         'timezone' => 'Europe/London',
-        'organizer_id' => User::factory()->create(['name' => 'Ana Organiser', 'instagram_handle' => 'ana.walks']),
+        'organizer_id' => User::factory()->create(['name' => 'Ana Organizer', 'instagram_handle' => 'ana.walks']),
     ]);
 
     $this->get(route('chapters.events.show', [$group, $meetup]))
@@ -54,7 +54,7 @@ test('anyone can view a meetup, including guests', function () {
             ->where('group.name', 'Glasgow Streetwatchers')
             ->where('meetup.title', 'Sunday walk')
             ->where('meetup.timezone', 'Europe/London')
-            ->where('meetup.organizer', ['name' => 'Ana Organiser', 'instagram_handle' => 'ana.walks'])
+            ->where('meetup.organizer', ['name' => 'Ana Organizer', 'instagram_handle' => 'ana.walks'])
             ->where('meetup.rsvp_limit', 10)
             ->where('meetup.is_accepting_rsvps', true)
             ->where('viewer.is_guest', true)
@@ -71,14 +71,14 @@ test('a meetup is only found under its own active group', function () {
     $this->get(route('chapters.events.show', [$pendingGroup, $pendingMeetup]))->assertNotFound();
 });
 
-test('an organiser can plan a meetup, entered in its own time zone', function () {
-    [$group, $organiser] = groupWithOrganiser();
+test('an organizer can plan a meetup, entered in its own time zone', function () {
+    [$group, $organizer] = groupWithOrganizer();
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->get(route('chapters.events.create', $group))
         ->assertOk();
 
-    $response = $this->actingAs($organiser)
+    $response = $this->actingAs($organizer)
         ->post(route('chapters.events.store', $group), meetupDetails())
         ->assertSessionHasNoErrors();
 
@@ -90,7 +90,7 @@ test('an organiser can plan a meetup, entered in its own time zone', function ()
     // 10:00 in London during British Summer Time is 09:00 UTC.
     expect($meetup)
         ->chapter_id->toBe($group->id)
-        ->organizer_id->toBe($organiser->id)
+        ->organizer_id->toBe($organizer->id)
         ->title->toBe('Sunday walk along the Clyde')
         ->timezone->toBe('Europe/London')
         ->rsvps_enabled->toBeTrue()
@@ -100,9 +100,9 @@ test('an organiser can plan a meetup, entered in its own time zone', function ()
 });
 
 test('a meetup without RSVPs has no limit, even if one was entered', function () {
-    [$group, $organiser] = groupWithOrganiser();
+    [$group, $organizer] = groupWithOrganizer();
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->post(route('chapters.events.store', $group), meetupDetails(['rsvps_enabled' => '0', 'rsvp_limit' => '12']))
         ->assertSessionHasNoErrors();
 
@@ -111,7 +111,7 @@ test('a meetup without RSVPs has no limit, even if one was entered', function ()
         ->rsvp_limit->toBeNull();
 });
 
-test('only organisers can plan a meetup', function () {
+test('only organizers can plan a meetup', function () {
     $group = Chapter::factory()->active()->create();
     $member = User::factory()->create();
     $group->members()->attach($member, ['role' => ChapterMemberRole::Member]);
@@ -125,9 +125,9 @@ test('only organisers can plan a meetup', function () {
 });
 
 test('planning a meetup requires its details', function () {
-    [$group, $organiser] = groupWithOrganiser();
+    [$group, $organizer] = groupWithOrganizer();
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->post(route('chapters.events.store', $group), [])
         ->assertSessionHasErrors([
             'title' => 'The title field is required.',
@@ -141,9 +141,9 @@ test('planning a meetup requires its details', function () {
 });
 
 test('planning a meetup rejects invalid details', function (array $overrides, string $field, string $message) {
-    [$group, $organiser] = groupWithOrganiser();
+    [$group, $organizer] = groupWithOrganizer();
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->post(route('chapters.events.store', $group), meetupDetails($overrides))
         ->assertSessionHasErrors([$field => $message]);
 
@@ -156,14 +156,14 @@ test('planning a meetup rejects invalid details', function (array $overrides, st
 ]);
 
 test('the edit form shows the meetup in its own time zone', function () {
-    [$group, $organiser] = groupWithOrganiser();
+    [$group, $organizer] = groupWithOrganizer();
     $meetup = Event::factory()->for($group)->create([
         'starts_at' => '2026-10-04 09:00:00',
         'ends_at' => '2026-10-04 11:30:00',
         'timezone' => 'Europe/London',
     ]);
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->get(route('chapters.events.edit', [$group, $meetup]))
         ->assertInertia(fn (Assert $page) => $page
             ->component('meetups/Edit')
@@ -172,11 +172,11 @@ test('the edit form shows the meetup in its own time zone', function () {
             ->where('meetup.ends_at_time', '12:30'));
 });
 
-test('any organiser of the group can edit a meetup', function () {
-    [$group, $organiser] = groupWithOrganiser();
+test('any organizer of the group can edit a meetup', function () {
+    [$group, $organizer] = groupWithOrganizer();
     $meetup = Event::factory()->for($group)->upcoming()->create();
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->put(route('chapters.events.update', [$group, $meetup]), meetupDetails(['title' => 'Moved to Saturday']))
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('chapters.events.show', [$group, $meetup]));
@@ -184,7 +184,7 @@ test('any organiser of the group can edit a meetup', function () {
     expect($meetup->fresh()->title)->toBe('Moved to Saturday');
 });
 
-test('a member who is not an organiser cannot edit or cancel a meetup', function () {
+test('a member who is not an organizer cannot edit or cancel a meetup', function () {
     $group = Chapter::factory()->active()->create();
     $member = User::factory()->create();
     $group->members()->attach($member, ['role' => ChapterMemberRole::Member]);
@@ -199,46 +199,46 @@ test('a member who is not an organiser cannot edit or cancel a meetup', function
 
     expect($meetup->fresh())
         ->title->toBe('Original')
-        ->cancelled_at->toBeNull();
+        ->canceled_at->toBeNull();
 });
 
-test('an organiser can cancel a meetup and it stays visible, marked as cancelled', function () {
-    [$group, $organiser] = groupWithOrganiser();
+test('an organizer can cancel a meetup and it stays visible, marked as canceled', function () {
+    [$group, $organizer] = groupWithOrganizer();
     $meetup = Event::factory()->for($group)->upcoming()->takingRsvps()->create();
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->post(route('chapters.events.cancellation.store', [$group, $meetup]))
         ->assertRedirect(route('chapters.events.show', [$group, $meetup]))
-        ->assertSessionHas('status', 'meetup-cancelled');
+        ->assertSessionHas('status', 'meetup-canceled');
 
-    expect($meetup->fresh()->isCancelled())->toBeTrue();
+    expect($meetup->fresh()->isCanceled())->toBeTrue();
 
     $this->get(route('chapters.show', $group))
         ->assertInertia(fn (Assert $page) => $page
             ->where('upcomingEvents.0.id', $meetup->id)
-            ->where('upcomingEvents.0.is_cancelled', true));
+            ->where('upcomingEvents.0.is_canceled', true));
 });
 
-test('cancelled and finished meetups cannot be changed', function (Closure $makeMeetup) {
-    [$group, $organiser] = groupWithOrganiser();
+test('canceled and finished meetups cannot be changed', function (Closure $makeMeetup) {
+    [$group, $organizer] = groupWithOrganizer();
     $meetup = $makeMeetup($group);
 
-    $this->actingAs($organiser)->get(route('chapters.events.edit', [$group, $meetup]))->assertForbidden();
-    $this->actingAs($organiser)->put(route('chapters.events.update', [$group, $meetup]), meetupDetails())->assertForbidden();
-    $this->actingAs($organiser)->post(route('chapters.events.cancellation.store', [$group, $meetup]))->assertForbidden();
+    $this->actingAs($organizer)->get(route('chapters.events.edit', [$group, $meetup]))->assertForbidden();
+    $this->actingAs($organizer)->put(route('chapters.events.update', [$group, $meetup]), meetupDetails())->assertForbidden();
+    $this->actingAs($organizer)->post(route('chapters.events.cancellation.store', [$group, $meetup]))->assertForbidden();
 })->with([
-    'cancelled' => [fn (Chapter $group) => Event::factory()->for($group)->upcoming()->cancelled()->create()],
+    'canceled' => [fn (Chapter $group) => Event::factory()->for($group)->upcoming()->canceled()->create()],
     'finished' => [fn (Chapter $group) => Event::factory()->for($group)->create([
         'starts_at' => now()->subDay(),
         'ends_at' => now()->subDay()->addHours(2),
     ])],
 ]);
 
-test('organisers of a group that is no longer active cannot plan meetups', function () {
-    [$group, $organiser] = groupWithOrganiser();
+test('organizers of a group that is no longer active cannot plan meetups', function () {
+    [$group, $organizer] = groupWithOrganizer();
     $group->update(['status' => ChapterStatus::Inactive]);
 
-    $this->actingAs($organiser)
+    $this->actingAs($organizer)
         ->post(route('chapters.events.store', $group), meetupDetails())
         ->assertForbidden();
 });

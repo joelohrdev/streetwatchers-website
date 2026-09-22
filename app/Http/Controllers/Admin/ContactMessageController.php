@@ -69,7 +69,7 @@ class ContactMessageController extends Controller
     }
 
     /**
-     * Delete a message, for example to honour a request to erase personal data.
+     * Delete a message, for example to honor a request to erase personal data.
      */
     public function destroy(Request $request, ContactMessage $contactMessage): RedirectResponse
     {

@@ -24,8 +24,8 @@ test('authenticated users can visit the dashboard', function () {
 test('your streetwatchers lists the member\'s groups, collectives and applications', function () {
     $user = User::factory()->create();
 
-    $organised = Chapter::factory()->active()->create(['name' => 'Alpha Walkers']);
-    $organised->members()->attach($user, ['role' => ChapterMemberRole::Admin]);
+    $organized = Chapter::factory()->active()->create(['name' => 'Alpha Walkers']);
+    $organized->members()->attach($user, ['role' => ChapterMemberRole::Admin]);
     $joined = Chapter::factory()->active()->create(['name' => 'Beta Walkers']);
     $joined->members()->attach($user, ['role' => ChapterMemberRole::Member]);
 
@@ -43,7 +43,7 @@ test('your streetwatchers lists the member\'s groups, collectives and applicatio
         ->assertInertia(fn (Assert $page) => $page
             ->component('Dashboard')
             ->where('groups.0.name', 'Alpha Walkers')
-            ->where('groups.0.role', 'organiser')
+            ->where('groups.0.role', 'organizer')
             ->where('groups.1.role', 'member')
             ->where('collectives.0.name', 'Alpha Collective')
             ->where('collectives.0.role', 'founder')

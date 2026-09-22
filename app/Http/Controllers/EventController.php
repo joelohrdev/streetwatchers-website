@@ -25,7 +25,7 @@ class EventController extends Controller
         abort_unless($chapter->status === ChapterStatus::Active, 404);
 
         $user = $request->user();
-        $canManage = $user !== null && $chapter->isOrganisedBy($user);
+        $canManage = $user !== null && $chapter->isOrganizedBy($user);
         $event->loadCount('attendees')->load('organizer:id,name,instagram_handle');
 
         return Inertia::render('meetups/Show', [
@@ -50,7 +50,7 @@ class EventController extends Controller
                 'rsvps_enabled' => $event->rsvps_enabled,
                 'rsvp_limit' => $event->rsvp_limit,
                 'attendees_count' => $event->attendees_count,
-                'is_cancelled' => $event->isCancelled(),
+                'is_canceled' => $event->isCanceled(),
                 'has_ended' => $event->hasEnded(),
                 'is_accepting_rsvps' => $event->isAcceptingRsvps(),
             ],
@@ -60,7 +60,7 @@ class EventController extends Controller
                 'is_going' => $user !== null && $event->attendees()->whereKey($user->id)->exists(),
                 'can_manage' => $canManage,
             ],
-            // Only organisers see who is coming. Everyone else sees the count.
+            // Only organizers see who is coming. Everyone else sees the count.
             'attendees' => $canManage
                 ? $event->attendees()->orderBy('name')->pluck('name')
                 : null,
@@ -70,7 +70,7 @@ class EventController extends Controller
 
     public function create(Chapter $chapter): Response
     {
-        Gate::authorize('organise', $chapter);
+        Gate::authorize('organize', $chapter);
 
         return Inertia::render('meetups/Create', [
             'group' => ['name' => $chapter->name, 'slug' => $chapter->slug],
@@ -79,7 +79,7 @@ class EventController extends Controller
 
     public function store(StoreEventRequest $request, Chapter $chapter): RedirectResponse
     {
-        Gate::authorize('organise', $chapter);
+        Gate::authorize('organize', $chapter);
 
         $event = $chapter->events()->create([
             ...$request->meetupAttributes(),
@@ -124,10 +124,10 @@ class EventController extends Controller
     }
 
     /**
-     * Cancelled and finished meetups are kept as a record and can't be changed.
+     * Canceled and finished meetups are kept as a record and can't be changed.
      */
     private function ensureEditable(Event $event): void
     {
-        abort_if($event->isCancelled() || $event->hasEnded(), 403);
+        abort_if($event->isCanceled() || $event->hasEnded(), 403);
     }
 }
