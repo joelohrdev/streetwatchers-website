@@ -93,15 +93,17 @@ class Chapter extends Model
 
     /**
      * The closest active or pending chapter within the given number of miles of a point, if there is one.
-     * Inactive chapters don't count, so a lapsed city can be started again.
+     * Inactive chapters don't count, so a lapsed city can be started again. Pass the chapter being moved as
+     * $except so it isn't measured against itself.
      */
-    public static function nearestWithinMiles(float $latitude, float $longitude, float $miles): ?self
+    public static function nearestWithinMiles(float $latitude, float $longitude, float $miles, ?self $except = null): ?self
     {
         $point = new self(['latitude' => $latitude, 'longitude' => $longitude]);
         $latitudeSpan = $miles / self::MILES_PER_DEGREE_OF_LATITUDE;
 
         return self::query()
             ->whereIn('status', [ChapterStatus::Active, ChapterStatus::Pending])
+            ->when($except, fn ($query) => $query->whereKeyNot($except->id))
             ->whereBetween('latitude', [$latitude - $latitudeSpan, $latitude + $latitudeSpan])
             ->get()
             ->filter(fn (Chapter $chapter): bool => $point->distanceInMilesTo($chapter) < $miles)

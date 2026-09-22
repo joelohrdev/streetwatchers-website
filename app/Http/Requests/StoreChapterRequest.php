@@ -63,25 +63,34 @@ class StoreChapterRequest extends FormRequest
                     $validator->errors()->add('name', 'You already have a group waiting for approval.');
                 }
             },
-            function (Validator $validator): void {
-                if ($validator->errors()->hasAny(['latitude', 'longitude'])) {
-                    return;
-                }
-
-                $radius = Setting::groupRadiusInMiles();
-                $nearest = Chapter::nearestWithinMiles($this->float('latitude'), $this->float('longitude'), $radius);
-
-                if ($nearest === null) {
-                    return;
-                }
-
-                $miles = max(1, (int) round($nearest->distanceInMilesTo(new Chapter($this->only(['latitude', 'longitude'])))));
-                $distance = $miles.' '.Str::plural('mile', $miles);
-
-                $validator->errors()->add('latitude', $nearest->status === ChapterStatus::Pending
-                    ? "A group is already waiting for approval {$distance} from here. Groups must be at least {$radius} miles apart."
-                    : "{$nearest->name} is {$distance} from here. Groups must be at least {$radius} miles apart, so join that group instead.");
-            },
+            fn (Validator $validator) => $this->checkGroupSpacing($validator),
         ];
+    }
+
+    /**
+     * Groups must be a set distance apart, from the platform settings. $except is a group being moved, which
+     * isn't measured against itself.
+     */
+    protected function checkGroupSpacing(Validator $validator, ?Chapter $except = null): void
+    {
+        if ($validator->errors()->hasAny(['latitude', 'longitude'])) {
+            return;
+        }
+
+        $radius = Setting::groupRadiusInMiles();
+        $nearest = Chapter::nearestWithinMiles($this->float('latitude'), $this->float('longitude'), $radius, $except);
+
+        if ($nearest === null) {
+            return;
+        }
+
+        $miles = max(1, (int) round($nearest->distanceInMilesTo(new Chapter($this->only(['latitude', 'longitude'])))));
+        $distance = $miles.' '.Str::plural('mile', $miles);
+
+        $validator->errors()->add('latitude', match (true) {
+            $nearest->status === ChapterStatus::Pending => "A group is already waiting for approval {$distance} from here. Groups must be at least {$radius} miles apart.",
+            $except !== null => "{$nearest->name} is {$distance} from here. Groups must be at least {$radius} miles apart.",
+            default => "{$nearest->name} is {$distance} from here. Groups must be at least {$radius} miles apart, so join that group instead.",
+        });
     }
 }

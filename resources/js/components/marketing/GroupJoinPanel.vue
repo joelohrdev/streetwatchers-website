@@ -26,6 +26,9 @@ const confirmingLeave = ref(false);
         <StatusNote v-if="status === 'group-joined'">
             Welcome to {{ group.name }}. Its meetups will show up on this page.
         </StatusNote>
+        <StatusNote v-else-if="status === 'group-updated'">
+            Your changes are saved.
+        </StatusNote>
         <StatusNote v-else-if="status === 'group-left'">
             You have left {{ group.name }}.
         </StatusNote>

@@ -11,7 +11,13 @@ import SharePanel from '@/components/marketing/SharePanel.vue';
 import { formatDistance } from '@/lib/geo';
 import { inlineLinkClass, secondaryButtonClass } from '@/lib/marketing';
 import { formatMeetupDay, formatMeetupHours } from '@/lib/meetups';
-import { create, index, qrCode as groupQrCode, show } from '@/routes/chapters';
+import {
+    create,
+    edit,
+    index,
+    qrCode as groupQrCode,
+    show,
+} from '@/routes/chapters';
 import {
     create as planMeetup,
     show as showMeetup,
@@ -206,6 +212,12 @@ const stats = computed(() => [
                             :class="[secondaryButtonClass, 'sm:w-auto']"
                         >
                             Members and organizers
+                        </Link>
+                        <Link
+                            :href="edit(chapter.slug)"
+                            :class="[secondaryButtonClass, 'sm:w-auto']"
+                        >
+                            Edit group
                         </Link>
                     </div>
                 </div>

@@ -25,6 +25,7 @@ const {
     label,
     name,
     options,
+    value,
     error,
     placeholder,
     required = false,
@@ -33,12 +34,14 @@ const {
     label: string;
     name: string;
     options: Option[];
+    /** The option selected to begin with, such as a saved value when editing. */
+    value?: string;
     error?: string;
     placeholder?: string;
     required?: boolean;
 }>();
 
-const selected = ref<string>();
+const selected = ref<string | undefined>(value);
 const searchTerm = ref('');
 
 const normalize = (text: string): string =>

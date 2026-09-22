@@ -9,6 +9,7 @@ use App\Enums\Country;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Requests\StoreChapterRequest;
+use App\Http\Requests\UpdateChapterRequest;
 use App\Mail\ChapterProposed;
 use App\Models\Chapter;
 use App\Models\Event;
@@ -16,6 +17,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -166,6 +168,39 @@ class ChapterController extends Controller
             ChapterMemberRole::Member => 'member',
             default => 'none',
         };
+    }
+
+    /**
+     * The form for an organizer to change their group's details.
+     */
+    public function edit(Chapter $chapter): Response
+    {
+        Gate::authorize('organize', $chapter);
+
+        return Inertia::render('chapters/Edit', [
+            'chapter' => [
+                'name' => $chapter->name,
+                'slug' => $chapter->slug,
+                'description' => $chapter->description,
+                'city' => $chapter->city,
+                'country' => $chapter->country->value,
+                'latitude' => $chapter->latitude,
+                'longitude' => $chapter->longitude,
+            ],
+            'countries' => Country::options(),
+        ]);
+    }
+
+    /**
+     * Save an organizer's changes. The slug stays the same, so links and QR codes already shared keep working.
+     */
+    public function update(UpdateChapterRequest $request, Chapter $chapter): RedirectResponse
+    {
+        Gate::authorize('organize', $chapter);
+
+        $chapter->update($request->safe()->only(['name', 'city', 'country', 'latitude', 'longitude', 'description']));
+
+        return to_route('chapters.show', $chapter)->with('status', 'group-updated');
     }
 
     /**

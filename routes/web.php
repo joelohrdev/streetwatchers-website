@@ -58,6 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('groups/{chapter}/membership', [ChapterMembershipController::class, 'store'])->name('chapters.membership.store');
     Route::delete('groups/{chapter}/membership', [ChapterMembershipController::class, 'destroy'])->name('chapters.membership.destroy');
 
+    Route::get('groups/{chapter}/edit', [ChapterController::class, 'edit'])->name('chapters.edit');
+    Route::put('groups/{chapter}', [ChapterController::class, 'update'])->name('chapters.update');
+
     Route::get('groups/{chapter}/members', [ChapterMemberController::class, 'index'])->name('chapters.members.index');
     Route::post('groups/{chapter}/organizers', [ChapterOrganizerController::class, 'store'])->name('chapters.organizers.store');
     Route::delete('groups/{chapter}/organizers', [ChapterOrganizerController::class, 'destroy'])->name('chapters.organizers.destroy');
