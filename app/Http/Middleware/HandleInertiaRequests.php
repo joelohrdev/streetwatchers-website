@@ -49,7 +49,12 @@ class HandleInertiaRequests extends Middleware
             'unreadContactMessages' => fn (): ?int => $request->user()?->isSuperAdmin()
                 ? ContactMessage::query()->whereNull('read_at')->count()
                 : null,
-            'pendingCollectiveApplications' => fn (): ?int => $this->pendingCollectiveApplications($request),
+            'features' => [
+                'collectives' => (bool) config('features.collectives'),
+            ],
+            'pendingCollectiveApplications' => fn (): ?int => config('features.collectives')
+                ? $this->pendingCollectiveApplications($request)
+                : null,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

@@ -26,24 +26,6 @@ import { index as chapterDirectory } from '@/routes/chapters';
 import { index as collectiveDirectory } from '@/routes/collectives';
 import { edit as editProfile } from '@/routes/profile';
 
-/**
- * Explore points at the matching homepage section until the feed page exists;
- * swap its href for a Wayfinder route at that point.
- */
-const navLinks = [
-    { label: 'Explore', href: '#featured', activeOn: [] },
-    {
-        label: 'Groups',
-        href: chapterDirectory.url(),
-        activeOn: [chapterDirectory.url()],
-    },
-    {
-        label: 'Collectives',
-        href: collectiveDirectory.url(),
-        activeOn: [collectiveDirectory.url()],
-    },
-];
-
 const isMenuOpen = ref(false);
 
 // Guests see Log in and Join. Signed-in visitors get a menu under their first name with their account,
@@ -60,6 +42,24 @@ const firstName = computed(
 const pendingApplications = computed(
     () => page.props.pendingCollectiveApplications ?? 0,
 );
+
+// Collectives are left out of the menu until they launch.
+const navLinks = computed(() => [
+    {
+        label: 'Groups',
+        href: chapterDirectory.url(),
+        activeOn: [chapterDirectory.url()],
+    },
+    ...(page.props.features.collectives
+        ? [
+              {
+                  label: 'Collectives',
+                  href: collectiveDirectory.url(),
+                  activeOn: [collectiveDirectory.url()],
+              },
+          ]
+        : []),
+]);
 
 const { currentUrl } = useCurrentUrl();
 
@@ -210,7 +210,7 @@ const mobileItemClass =
                     <NavCorners />
                 </span>
 
-                <a
+                <Link
                     v-for="link in navLinks"
                     :key="link.label"
                     :href="link.href"
@@ -223,7 +223,7 @@ const mobileItemClass =
                     ]"
                 >
                     {{ link.label }}
-                </a>
+                </Link>
                 <DropdownMenu
                     v-if="isSignedIn"
                     :modal="false"
@@ -345,7 +345,7 @@ const mobileItemClass =
             class="border-hairline border-t sm:hidden"
         >
             <div class="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8">
-                <a
+                <Link
                     v-for="link in navLinks"
                     :key="link.label"
                     :href="link.href"
@@ -358,7 +358,7 @@ const mobileItemClass =
                 >
                     {{ link.label }}
                     <NavCorners v-if="isActive(link.activeOn)" />
-                </a>
+                </Link>
                 <template v-if="isSignedIn">
                     <Link
                         :href="dashboard()"

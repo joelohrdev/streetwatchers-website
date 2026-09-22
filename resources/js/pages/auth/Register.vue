@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Form, Head, Link } from '@inertiajs/vue3';
+import { Form, Head, Link, usePage } from '@inertiajs/vue3';
 import { ArrowRight } from '@lucide/vue';
+import { computed } from 'vue';
 import FormField from '@/components/marketing/FormField.vue';
 import { inlineLinkClass, primaryButtonClass } from '@/lib/marketing';
 import { login } from '@/routes';
@@ -11,20 +12,23 @@ defineProps<{
     passwordRules: string;
 }>();
 
-const benefits = [
-    {
-        title: 'Share your frames',
-        body: 'Post candid photographs of everyday public life, with the story behind each one.',
-    },
+const page = usePage();
+
+const benefits = computed(() => [
     {
         title: 'Walk with a group',
         body: 'Join a local group for photo walks, edits and print swaps, or start one in your city.',
     },
-    {
-        title: 'Find your collective',
-        body: 'Team up with photographers who share your way of seeing in an independent collective.',
-    },
-];
+    // Collectives are left out until they launch.
+    ...(page.props.features.collectives
+        ? [
+              {
+                  title: 'Find your collective',
+                  body: 'Team up with photographers who share your way of seeing in an independent collective.',
+              },
+          ]
+        : []),
+]);
 </script>
 
 <template>

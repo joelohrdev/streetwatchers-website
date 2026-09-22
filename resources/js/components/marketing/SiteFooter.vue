@@ -1,20 +1,26 @@
 <script setup lang="ts">
+import { usePage } from '@inertiajs/vue3';
 import { AtSign, Camera, Rss } from '@lucide/vue';
+import { computed } from 'vue';
 import SiteLogo from '@/components/marketing/SiteLogo.vue';
 import { index as chapterDirectory } from '@/routes/chapters';
 import { index as collectiveDirectory } from '@/routes/collectives';
 import { create as contact } from '@/routes/contact-messages';
 import { create as photoRemovalRequest } from '@/routes/photo-removal-requests';
 
-/** Placeholder destinations until the supporting pages exist. */
-const footerLinks = [
+const page = usePage();
+
+/** Placeholder destinations until the supporting pages exist. Collectives are left out until they launch. */
+const footerLinks = computed(() => [
     { label: 'Groups', href: chapterDirectory.url() },
-    { label: 'Collectives', href: collectiveDirectory.url() },
+    ...(page.props.features.collectives
+        ? [{ label: 'Collectives', href: collectiveDirectory.url() }]
+        : []),
     { label: 'Code of Conduct', href: '#' },
     { label: 'Privacy', href: '#' },
     { label: 'Contact', href: contact.url() },
     { label: 'Request photo removal', href: photoRemovalRequest.url() },
-];
+]);
 
 /** Generic stand-ins: lucide no longer ships brand marks. */
 const socialLinks = [

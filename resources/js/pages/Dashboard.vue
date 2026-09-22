@@ -71,11 +71,15 @@ const applicationStatusLabel: Record<SentApplication['status'], string> = {
     declined: 'Not accepted',
 };
 
-const actions = [
+const collectivesEnabled = computed(() => page.props.features.collectives);
+
+const actions = computed(() => [
     { label: 'Start a group', href: startGroup() },
-    { label: 'Start a collective', href: startCollective() },
+    ...(collectivesEnabled.value
+        ? [{ label: 'Start a collective', href: startCollective() }]
+        : []),
     { label: 'Account settings', href: editProfile() },
-];
+]);
 
 const sectionHeading =
     'font-display text-xs font-semibold tracking-[0.18em] uppercase';
@@ -115,7 +119,7 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
         </nav>
 
         <Link
-            v-if="waitingApplications > 0"
+            v-if="collectivesEnabled && waitingApplications > 0"
             :href="applicationsInbox()"
             class="border-ink hover:bg-ink hover:text-paper mt-12 flex items-center justify-between gap-6 border-2 p-6 transition-colors"
         >
@@ -141,7 +145,8 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
 
     <section class="border-hairline border-t">
         <div
-            class="mx-auto grid w-full max-w-5xl gap-16 px-6 py-16 md:grid-cols-2 md:px-10 md:py-20"
+            class="mx-auto grid w-full max-w-5xl gap-16 px-6 py-16 md:px-10 md:py-20"
+            :class="{ 'md:grid-cols-2': collectivesEnabled }"
         >
             <div>
                 <h2 :class="sectionHeading">Your groups</h2>
@@ -187,7 +192,7 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
                 </p>
             </div>
 
-            <div>
+            <div v-if="collectivesEnabled">
                 <h2 :class="sectionHeading">Your collectives</h2>
                 <ul
                     v-if="collectives.length"
@@ -246,7 +251,10 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
         </div>
     </section>
 
-    <section v-if="applications.length" class="border-hairline border-t">
+    <section
+        v-if="collectivesEnabled && applications.length"
+        class="border-hairline border-t"
+    >
         <div class="mx-auto w-full max-w-5xl px-6 py-16 md:px-10 md:py-20">
             <h2 :class="sectionHeading">Applications you've sent</h2>
             <ul class="border-hairline mt-6 border-t">
