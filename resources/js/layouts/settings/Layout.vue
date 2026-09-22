@@ -1,25 +1,18 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { ArrowLeft } from '@lucide/vue';
-import { computed } from 'vue';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
-import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 
-const page = usePage();
 const { isCurrentOrParentUrl } = useCurrentUrl();
 
-/** Appearance only changes the admin panel's theme, so only super admins see it. */
-const tabs = computed(() => [
+const tabs = [
     { title: 'Profile', href: editProfile() },
     { title: 'Password', href: editSecurity() },
-    ...(page.props.auth.user.role === 'super_admin'
-        ? [{ title: 'Appearance', href: editAppearance() }]
-        : []),
-]);
+];
 </script>
 
 <template>
