@@ -31,10 +31,10 @@
         </style>
 
         {{-- Browser chrome follows the OS/browser colour scheme, not the in-app appearance setting. --}}
-        {{-- icon.svg switches its own fill; the PNGs are fallbacks for browsers without SVG favicons. --}}
+        {{-- favicon.svg switches its own fill; the PNGs are fallbacks for browsers without SVG favicons. --}}
         <link rel="icon" href="/icon-black-32.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)">
         <link rel="icon" href="/icon-white-32.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         @fonts
