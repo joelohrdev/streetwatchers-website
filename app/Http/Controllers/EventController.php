@@ -26,7 +26,7 @@ class EventController extends Controller
 
         $user = $request->user();
         $canManage = $user !== null && $chapter->isOrganisedBy($user);
-        $event->loadCount('attendees')->load('organizer:id,name');
+        $event->loadCount('attendees')->load('organizer:id,name,instagram_handle');
 
         return Inertia::render('meetups/Show', [
             'group' => [
@@ -43,7 +43,10 @@ class EventController extends Controller
                 'starts_at' => $event->starts_at->toIso8601String(),
                 'ends_at' => $event->ends_at->toIso8601String(),
                 'timezone' => $event->timezone,
-                'organizer' => $event->organizer->name,
+                'organizer' => [
+                    'name' => $event->organizer->name,
+                    'instagram_handle' => $event->organizer->instagram_handle,
+                ],
                 'rsvps_enabled' => $event->rsvps_enabled,
                 'rsvp_limit' => $event->rsvp_limit,
                 'attendees_count' => $event->attendees_count,

@@ -6,6 +6,7 @@ import type { MapChapter } from '@/components/marketing/ChapterMap.vue';
 import type { GroupMembership } from '@/components/marketing/GroupJoinPanel.vue';
 import GroupJoinPanel from '@/components/marketing/GroupJoinPanel.vue';
 import ChapterMap from '@/components/marketing/ChapterMap.vue';
+import MemberName from '@/components/marketing/MemberName.vue';
 import { formatDistance } from '@/lib/geo';
 import { inlineLinkClass, secondaryButtonClass } from '@/lib/marketing';
 import { formatMeetupDay, formatMeetupHours } from '@/lib/meetups';
@@ -35,7 +36,7 @@ const props = defineProps<{
         photos_count: number;
         created_at: string | null;
     };
-    organisers: string[];
+    organisers: { name: string; instagram_handle: string | null }[];
     upcomingEvents: UpcomingEvent[];
     nearby: NearbyChapter[];
     nearbyRadiusMiles: number;
@@ -221,8 +222,14 @@ const stats = computed(() => [
                         Organisers
                     </h2>
                     <ul v-if="organisers.length" class="mt-6 space-y-2">
-                        <li v-for="organiser in organisers" :key="organiser">
-                            {{ organiser }}
+                        <li
+                            v-for="organiser in organisers"
+                            :key="organiser.name"
+                        >
+                            <MemberName
+                                :name="organiser.name"
+                                :instagram-handle="organiser.instagram_handle"
+                            />
                         </li>
                     </ul>
                     <p v-else class="text-ink-soft mt-6">

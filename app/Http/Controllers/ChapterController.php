@@ -10,6 +10,7 @@ use App\Enums\PhotoStatus;
 use App\Http\Requests\StoreChapterRequest;
 use App\Models\Chapter;
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -115,7 +116,11 @@ class ChapterController extends Controller
             'organisers' => $chapter->members()
                 ->wherePivot('role', ChapterMemberRole::Admin)
                 ->orderBy('name')
-                ->pluck('name'),
+                ->get(['users.name', 'users.instagram_handle'])
+                ->map(fn (User $organiser): array => [
+                    'name' => $organiser->name,
+                    'instagram_handle' => $organiser->instagram_handle,
+                ]),
             'upcomingEvents' => $chapter->events()
                 ->where('ends_at', '>=', now())
                 ->orderBy('starts_at')

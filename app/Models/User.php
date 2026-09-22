@@ -28,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $avatar_path
  * @property string|null $city
  * @property string|null $country
+ * @property string|null $instagram_handle
  * @property UserRole $role
  * @property UserStatus $status
  * @property string|null $two_factor_secret
@@ -37,7 +38,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'bio', 'avatar_path', 'city', 'country', 'role', 'password'])]
+#[Fillable(['name', 'email', 'bio', 'avatar_path', 'city', 'country', 'instagram_handle', 'role', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -60,6 +61,7 @@ class User extends Authenticatable
             'avatar_path' => 'string',
             'city' => 'string',
             'country' => 'string',
+            'instagram_handle' => 'string',
             'role' => UserRole::class,
             'status' => UserStatus::class,
             'email_verified_at' => 'datetime',

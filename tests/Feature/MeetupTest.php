@@ -44,6 +44,7 @@ test('anyone can view a meetup, including guests', function () {
     $meetup = Event::factory()->for($group)->upcoming()->takingRsvps(10)->create([
         'title' => 'Sunday walk',
         'timezone' => 'Europe/London',
+        'organizer_id' => User::factory()->create(['name' => 'Ana Organiser', 'instagram_handle' => 'ana.walks']),
     ]);
 
     $this->get(route('chapters.events.show', [$group, $meetup]))
@@ -53,6 +54,7 @@ test('anyone can view a meetup, including guests', function () {
             ->where('group.name', 'Glasgow Streetwatchers')
             ->where('meetup.title', 'Sunday walk')
             ->where('meetup.timezone', 'Europe/London')
+            ->where('meetup.organizer', ['name' => 'Ana Organiser', 'instagram_handle' => 'ana.walks'])
             ->where('meetup.rsvp_limit', 10)
             ->where('meetup.is_accepting_rsvps', true)
             ->where('viewer.is_guest', true)

@@ -14,6 +14,7 @@ export type User = {
     status: UserStatus;
     avatar?: string;
     email_verified_at: string | null;
+    instagram_handle: string | null;
     created_at: string;
     updated_at: string;
     [key: string]: unknown;

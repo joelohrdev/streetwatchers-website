@@ -83,3 +83,42 @@ test('correct password must be provided to delete account', function () {
 
     expect($user->fresh())->not->toBeNull();
 });
+
+test('an Instagram handle is saved however it is pasted', function (string $entered) {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->patch(route('profile.update'), ['name' => $user->name, 'email' => $user->email, 'instagram_handle' => $entered])
+        ->assertSessionHasNoErrors();
+
+    expect($user->refresh()->instagram_handle)->toBe('street.walker_1');
+})->with([
+    'bare' => ['street.walker_1'],
+    'with @' => ['@street.walker_1'],
+    'mixed case' => ['@Street.Walker_1'],
+    'profile link' => ['https://www.instagram.com/street.walker_1/'],
+    'shared link' => ['instagram.com/street.walker_1?igsh=abc123'],
+]);
+
+test('an Instagram handle can be removed', function () {
+    $user = User::factory()->create(['instagram_handle' => 'street.walker_1']);
+
+    $this->actingAs($user)
+        ->patch(route('profile.update'), ['name' => $user->name, 'email' => $user->email, 'instagram_handle' => ''])
+        ->assertSessionHasNoErrors();
+
+    expect($user->refresh()->instagram_handle)->toBeNull();
+});
+
+test('an Instagram handle must look like an Instagram username', function (string $entered, string $message) {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->patch(route('profile.update'), ['name' => $user->name, 'email' => $user->email, 'instagram_handle' => $entered])
+        ->assertSessionHasErrors(['instagram_handle' => $message]);
+
+    expect($user->refresh()->instagram_handle)->toBeNull();
+})->with([
+    'spaces' => ['street walker', 'Instagram usernames only use letters, numbers, full stops and underscores.'],
+    'too long' => [str_repeat('a', 31), 'Instagram usernames are 30 characters or fewer.'],
+]);

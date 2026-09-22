@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import { store as cancelMeetup } from '@/actions/App/Http/Controllers/EventCancellationController';
 import type { MeetupViewer } from '@/components/marketing/MeetupRsvpPanel.vue';
 import MeetupRsvpPanel from '@/components/marketing/MeetupRsvpPanel.vue';
+import MemberName from '@/components/marketing/MemberName.vue';
 import StatusNote from '@/components/marketing/StatusNote.vue';
 import { inlineLinkClass, secondaryButtonClass } from '@/lib/marketing';
 import { formatMeetupHours, formatMeetupLongDay } from '@/lib/meetups';
@@ -21,7 +22,7 @@ defineProps<{
         starts_at: string;
         ends_at: string;
         timezone: string;
-        organizer: string;
+        organizer: { name: string; instagram_handle: string | null };
         rsvps_enabled: boolean;
         rsvp_limit: number | null;
         attendees_count: number;
@@ -145,7 +146,14 @@ const sectionLabelClass =
             <aside class="space-y-12">
                 <div>
                     <h2 :class="sectionLabelClass">Organised by</h2>
-                    <p class="mt-6">{{ meetup.organizer }}</p>
+                    <p class="mt-6">
+                        <MemberName
+                            :name="meetup.organizer.name"
+                            :instagram-handle="
+                                meetup.organizer.instagram_handle
+                            "
+                        />
+                    </p>
                     <p class="text-ink-soft mt-1 text-sm">
                         for
                         <Link
