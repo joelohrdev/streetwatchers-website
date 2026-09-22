@@ -164,3 +164,19 @@ test('only organizers see who is going', function (?ChapterMemberRole $role, boo
     'member' => [ChapterMemberRole::Member, false],
     'organizer' => [ChapterMemberRole::Admin, true],
 ]);
+
+test('members must verify their email before they RSVP', function () {
+    $group = Chapter::factory()->active()->create();
+    $meetup = Event::factory()->for($group)->upcoming()->takingRsvps()->create();
+    $unverified = User::factory()->unverified()->create();
+
+    $this->actingAs($unverified)
+        ->from(route('chapters.events.show', [$group, $meetup]))
+        ->post(route('chapters.events.rsvp.store', [$group, $meetup]))
+        ->assertRedirect(route('verification.notice'));
+
+    expect($meetup->attendees()->count())->toBe(0);
+
+    // Once verified, they're sent back to the meetup they were looking at.
+    expect(session('url.intended'))->toBe(route('chapters.events.show', [$group, $meetup]));
+});
