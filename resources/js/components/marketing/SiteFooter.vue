@@ -55,10 +55,32 @@ const footerLinks = computed(() => [
                 </nav>
             </div>
 
-            <div class="border-hairline border-t pt-10">
+            <div
+                class="border-hairline flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t pt-10"
+            >
                 <p class="text-ink-soft/80 text-xs">
                     &copy; {{ new Date().getFullYear() }} StreetWatchers
                 </p>
+
+                <ul
+                    v-if="page.props.socialLinks.length"
+                    class="flex gap-6"
+                    aria-label="StreetWatchers on social media"
+                >
+                    <li
+                        v-for="social in page.props.socialLinks"
+                        :key="social.label"
+                    >
+                        <a
+                            :href="social.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-ink-soft hover:text-ink text-xs transition-colors"
+                        >
+                            {{ social.label }}
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </footer>

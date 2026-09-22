@@ -43,4 +43,12 @@ return [
         'measurement_id' => env('GOOGLE_ANALYTICS_ID'),
     ],
 
+    /*
+     * StreetWatchers' own social media pages, linked from the site footer. A link only appears once its URL is set.
+     */
+    'social' => [
+        'instagram' => env('SOCIAL_INSTAGRAM_URL'),
+        'facebook' => env('SOCIAL_FACEBOOK_URL'),
+    ],
+
 ];

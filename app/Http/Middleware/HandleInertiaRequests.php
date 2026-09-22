@@ -52,6 +52,11 @@ class HandleInertiaRequests extends Middleware
             'analytics' => config('services.google_analytics.measurement_id')
                 ? ['measurementId' => config('services.google_analytics.measurement_id')]
                 : null,
+            'socialLinks' => collect(['instagram' => 'Instagram', 'facebook' => 'Facebook'])
+                ->filter(fn (string $label, string $network): bool => filled(config("services.social.{$network}")))
+                ->map(fn (string $label, string $network): array => ['label' => $label, 'url' => config("services.social.{$network}")])
+                ->values()
+                ->all(),
             'features' => [
                 'collectives' => (bool) config('features.collectives'),
             ],

@@ -26,6 +26,8 @@ declare module '@inertiajs/core' {
             unreadContactMessages: number | null;
             /** Google Analytics settings, or null when analytics is off. */
             analytics: { measurementId: string } | null;
+            /** StreetWatchers' social media pages for the footer. Only the ones with a URL set are included. */
+            socialLinks: { label: string; url: string }[];
             /** Features that can be switched off before they launch. */
             features: { collectives: boolean };
             /** Pending applications to collectives the user founded. Null when they founded none. */
