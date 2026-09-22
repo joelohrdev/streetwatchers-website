@@ -9,6 +9,7 @@ use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -66,7 +67,25 @@ class EventController extends Controller
                 ? $event->attendees()->orderBy('name')->pluck('name')
                 : null,
             'status' => $request->session()->get('status'),
-        ]);
+        ])->withViewData(['meta' => [
+            'title' => ($event->isCanceled() ? 'Canceled: ' : '').$event->title,
+            'description' => $this->previewDescription($chapter, $event),
+            'url' => route('chapters.events.show', [$chapter, $event]),
+        ]]);
+    }
+
+    /**
+     * "Sat, Oct 4, 10:00 AM BST at Riverside Museum, with Glasgow Streetwatchers." then the description, for
+     * link previews. The time is in the meetup's own time zone.
+     */
+    private function previewDescription(Chapter $chapter, Event $event): string
+    {
+        $when = $event->starts_at->timezone($event->timezone)->format('D, M j, g:i A T');
+
+        return Str::of("{$when} at {$event->location_name}, with {$chapter->name}. {$event->description}")
+            ->squish()
+            ->limit(200)
+            ->toString();
     }
 
     public function create(Chapter $chapter): Response

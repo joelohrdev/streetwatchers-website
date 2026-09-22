@@ -18,6 +18,33 @@
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+        {{--
+            Link previews for WhatsApp, Facebook, X and other sites. They're written here rather than with Inertia's
+            <Head> so crawlers that don't run JavaScript always get them, whether or not SSR is running. Group and
+            meetup pages pass their own through view data; every other page uses these defaults.
+        --}}
+        @php
+            $meta = [
+                'title' => config('app.name'),
+                'description' => 'Find a street photography group near you and join its photo walks, or start one in your city.',
+                'url' => url()->current(),
+                'type' => 'website',
+                ...($meta ?? []),
+            ];
+        @endphp
+        <meta name="description" content="{{ $meta['description'] }}">
+        <link rel="canonical" href="{{ $meta['url'] }}">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta property="og:type" content="{{ $meta['type'] }}">
+        <meta property="og:title" content="{{ $meta['title'] }}">
+        <meta property="og:description" content="{{ $meta['description'] }}">
+        <meta property="og:url" content="{{ $meta['url'] }}">
+        <meta property="og:image" content="{{ asset('og-image.jpg') }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="A black-and-white photograph of a cracked crosswalk on a sunny Chicago street corner.">
+        <meta name="twitter:card" content="summary_large_image">
+
         @fonts
 
         @vite(['resources/css/app.css', 'resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])

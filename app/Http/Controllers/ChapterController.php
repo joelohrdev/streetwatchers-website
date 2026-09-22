@@ -144,7 +144,11 @@ class ChapterController extends Controller
             'nearbyRadiusMiles' => self::NEARBY_RADIUS_MILES,
             'membership' => $this->membershipFor($request, $chapter),
             'status' => $request->session()->get('status'),
-        ]);
+        ])->withViewData(['meta' => [
+            'title' => $chapter->name,
+            'description' => Str::of($chapter->description)->squish()->limit(200)->toString(),
+            'url' => route('chapters.show', $chapter),
+        ]]);
     }
 
     /**
