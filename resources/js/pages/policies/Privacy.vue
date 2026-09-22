@@ -12,7 +12,6 @@ import { edit as profileSettings } from '@/routes/profile';
             StreetWatchers is a place for street photographers to find local
             groups and meet up for photo walks. This policy explains what
             information we collect, who can see it, and the choices you have.
-            We've tried to keep it short and plain.
         </p>
         <p>
             StreetWatchers is run by an individual, referred to as "we" and "us"
@@ -69,9 +68,9 @@ import { edit as profileSettings } from '@/routes/profile';
                 meetups.
             </li>
             <li>
-                <strong>The StreetWatchers team:</strong> account and group
-                details when needed to review groups, handle reports and keep
-                the site safe.
+                <strong>Site admins:</strong> account and group details, when
+                they need them to review groups, handle reports and keep the
+                site safe.
             </li>
         </ul>
         <p>
@@ -87,9 +86,9 @@ import { edit as profileSettings } from '@/routes/profile';
         </p>
         <p>
             When you propose a group, you can fill in its map location from your
-            current position. It's rounded to about a kilometer (roughly half a
-            mile) before it's used, because it becomes the group's public map
-            location. You can also type a location in yourself.
+            current position. Because that becomes the group's public map
+            location, it's rounded to within about half a mile. You can also
+            type a location in yourself.
         </p>
 
         <h2>How we use your information</h2>
@@ -117,27 +116,25 @@ import { edit as profileSettings } from '@/routes/profile';
         <p>
             Maps on the site are drawn from map images loaded directly from a
             map provider. When your browser loads them, the provider receives
-            your IP address, as with any website. Our fonts are served from our
-            own site.
+            your IP address. Our fonts come from our own site.
         </p>
 
         <h2>Cookies</h2>
         <p>
             We only use cookies the site needs to work: one that keeps you
             signed in, one that protects forms from forgery, a "remember me"
-            cookie if you tick that box when you log in, and, for the
-            StreetWatchers team, one that remembers whether the admin menu is
-            open. There are no advertising or analytics cookies.
+            cookie if you tick that box when you log in, and, for site admins,
+            one that remembers whether the admin menu is open. There are no
+            advertising or analytics cookies.
         </p>
 
         <h2>How long we keep it</h2>
         <p>
             We keep your account information until you delete your account.
             Deleting it removes your account, your group memberships, your RSVPs
-            and the meetups you planned. Messages you send us are kept as long
-            as we need them to deal with your request. Server logs are kept for
-            a short time. Records of moderation decisions made by the
-            StreetWatchers team are kept so those decisions can be reviewed.
+            and the meetups you planned. We keep messages you send us until
+            we've dealt with your request, and server logs for a short time. We
+            keep records of moderation decisions so they can be reviewed later.
         </p>
 
         <h2>Your rights</h2>
@@ -167,8 +164,7 @@ import { edit as profileSettings } from '@/routes/profile';
         <h2>Where your information is stored</h2>
         <p>
             StreetWatchers is used around the world, so your information may be
-            stored and processed in a country other than yours. We take care to
-            protect it wherever it's handled.
+            stored and processed in a country other than yours.
         </p>
 
         <h2>Age</h2>

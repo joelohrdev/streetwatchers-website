@@ -8,9 +8,9 @@ import { create as contact } from '@/routes/contact-messages';
     <PolicyPage title="Code of conduct" updated="September 22, 2026">
         <p>
             StreetWatchers brings photographers together to walk and shoot in
-            public. That only works if everyone feels safe and respected: the
-            people in the group, and the people in front of the camera. This
-            code applies on the site and at every StreetWatchers meetup.
+            public. This code covers how members treat each other and the people
+            they photograph. It applies on the site and at every StreetWatchers
+            meetup.
         </p>
 
         <h2>Respect the people you photograph</h2>
