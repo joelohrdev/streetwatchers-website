@@ -34,6 +34,9 @@ Route::get('chapters/{path?}', fn (Request $request, ?string $path = null): Redi
     301,
 ))->where('path', '.*');
 
+Route::inertia('privacy', 'policies/Privacy')->name('privacy');
+Route::inertia('code-of-conduct', 'policies/CodeOfConduct')->name('code-of-conduct');
+
 Route::get('contact', [ContactMessageController::class, 'create'])->name('contact-messages.create');
 Route::post('contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1')

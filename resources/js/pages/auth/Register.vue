@@ -4,7 +4,7 @@ import { ArrowRight } from '@lucide/vue';
 import { computed } from 'vue';
 import FormField from '@/components/marketing/FormField.vue';
 import { inlineLinkClass, primaryButtonClass } from '@/lib/marketing';
-import { login } from '@/routes';
+import { codeOfConduct, login, privacy } from '@/routes';
 import { index as groupDirectory } from '@/routes/chapters';
 import { store } from '@/routes/register';
 
@@ -137,6 +137,36 @@ const benefits = computed(() => [
                     placeholder="Type it again"
                     :error="errors.password_confirmation"
                 />
+
+                <div>
+                    <label class="flex cursor-pointer items-start gap-3">
+                        <input
+                            type="checkbox"
+                            name="terms"
+                            value="1"
+                            required
+                            class="accent-ink mt-1 size-4 shrink-0"
+                        />
+                        <span class="text-ink-soft text-sm leading-relaxed">
+                            I'm 18 or older, I agree to the
+                            <a
+                                :href="codeOfConduct.url()"
+                                target="_blank"
+                                :class="inlineLinkClass"
+                                >code of conduct</a
+                            >, and I've read the
+                            <a
+                                :href="privacy.url()"
+                                target="_blank"
+                                :class="inlineLinkClass"
+                                >privacy policy</a
+                            >.
+                        </span>
+                    </label>
+                    <p v-if="errors.terms" class="text-ink mt-2 text-sm">
+                        {{ errors.terms }}
+                    </p>
+                </div>
 
                 <div class="flex flex-col gap-6">
                     <button

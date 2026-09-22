@@ -37,6 +37,7 @@ test('a guest who registers to apply is brought back to the collective page', fu
         'email' => 'walker@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
+        'terms' => '1',
     ])->assertRedirect(route('collectives.show', $collective));
 });
 

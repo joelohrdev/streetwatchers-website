@@ -3,7 +3,6 @@ import { Form, Head, Link } from '@inertiajs/vue3';
 import { store } from '@/actions/App/Http/Controllers/ContactMessageController';
 import { home } from '@/routes';
 import { index as groupDirectory } from '@/routes/chapters';
-import { create as photoRemovalRequest } from '@/routes/photo-removal-requests';
 import type { Option } from '@/types';
 
 defineProps<{
@@ -58,15 +57,6 @@ const labelClass = 'text-ink-soft text-xs tracking-[0.14em] uppercase';
             <p class="text-ink-soft mt-6 text-lg leading-relaxed">
                 Questions about groups, your account, press or partnerships?
                 Send us a message and we will get back to you by email.
-            </p>
-            <p class="text-ink-soft mt-4 leading-relaxed">
-                Want a photo of you taken down? Use the
-                <Link
-                    :href="photoRemovalRequest()"
-                    class="text-ink border-ink border-b"
-                    >photo removal form</Link
-                >
-                so our moderators see it straight away.
             </p>
 
             <Form

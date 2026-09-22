@@ -22,6 +22,10 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
+            // Members meet in person, so accounts are for adults who agree to the code of conduct.
+            'terms' => ['accepted'],
+        ], [
+            'terms.accepted' => 'Please confirm you’re 18 or older and agree to the code of conduct.',
         ])->validate();
 
         return User::create([

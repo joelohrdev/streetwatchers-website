@@ -51,6 +51,7 @@ test('a guest who registers to join is brought back to the group page', function
         'email' => 'walker@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
+        'terms' => '1',
     ])->assertRedirect(route('chapters.show', $group));
 });
 
