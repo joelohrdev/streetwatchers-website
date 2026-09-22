@@ -6,6 +6,7 @@ use App\Enums\AuditAction;
 use App\Enums\ChapterStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\DeactivateChapterRequest;
+use App\Mail\ChapterDeactivated;
 use App\Models\AuditLog;
 use App\Models\Chapter;
 use Illuminate\Http\RedirectResponse;
@@ -35,6 +36,8 @@ class ChapterDeactivationController extends Controller
                 reason: $request->validated('reason'),
             );
         });
+
+        $chapter->mailOrganizers(new ChapterDeactivated($chapter));
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __(':name deactivated.', ['name' => $chapter->name])]);
 

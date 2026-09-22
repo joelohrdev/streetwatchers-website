@@ -4,9 +4,11 @@ use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\Country;
 use App\Enums\SettingKey;
+use App\Mail\ChapterProposed;
 use App\Models\Chapter;
 use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia as Assert;
 
 /**
@@ -178,4 +180,40 @@ test('the group radius comes from the platform settings', function () {
         ->assertSessionHasErrors([
             'latitude' => 'Edinburgh Streetwatchers is 42 miles from here. Groups must be at least 50 miles apart, so join that group instead.',
         ]);
+});
+
+test('site admins are emailed about a new group to review', function () {
+    $siteAdmin = User::factory()->superAdmin()->create();
+    $suspendedSiteAdmin = User::factory()->superAdmin()->suspended()->create();
+    $member = User::factory()->create(['name' => 'Ana Proposer', 'email' => 'ana@example.com']);
+    Mail::fake();
+
+    $this->actingAs($member)->post(route('chapters.store'), chapterProposal());
+
+    $chapter = Chapter::query()->sole();
+    Mail::assertQueued(ChapterProposed::class, fn (ChapterProposed $mail) => $mail->chapter->is($chapter)
+        && $mail->hasTo($siteAdmin->email)
+        && ! $mail->hasTo($suspendedSiteAdmin->email)
+        && ! $mail->hasTo($member->email)
+        && $mail->hasReplyTo('ana@example.com'));
+});
+
+test('the new group email shows the proposal and links to the admin panel', function () {
+    $chapter = Chapter::factory()->pending()->create(['name' => 'Glasgow Streetwatchers', 'description' => 'Weekly walks along the Clyde.']);
+    $proposer = User::factory()->create(['name' => 'Ana Proposer']);
+
+    (new ChapterProposed($chapter, $proposer))
+        ->assertHasSubject('New group to review: Glasgow Streetwatchers')
+        ->assertSeeInHtml('Weekly walks along the Clyde.')
+        ->assertSeeInHtml('Ana Proposer')
+        ->assertSeeInHtml(route('admin.chapters.show', $chapter))
+        ->assertSeeInText(route('admin.chapters.show', $chapter));
+});
+
+test('members must verify their email before proposing a group', function () {
+    $this->actingAs(User::factory()->unverified()->create())
+        ->post(route('chapters.store'), chapterProposal())
+        ->assertRedirect(route('verification.notice'));
+
+    expect(Chapter::query()->count())->toBe(0);
 });

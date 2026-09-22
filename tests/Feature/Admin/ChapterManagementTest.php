@@ -3,9 +3,12 @@
 use App\Enums\AuditAction;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
+use App\Mail\ChapterApproved;
+use App\Mail\ChapterDeactivated;
 use App\Models\AuditLog;
 use App\Models\Chapter;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 test('a pending chapter with one admin can be approved', function () {
     $admin = User::factory()->superAdmin()->create();
@@ -162,4 +165,59 @@ test('removing an admin who is not a chapter admin returns 404', function () {
     $this->actingAs($admin)
         ->delete(route('admin.chapters.admins.destroy', [$chapter, $member]))
         ->assertNotFound();
+});
+
+test('organizers are emailed when their group is approved', function () {
+    $admin = User::factory()->superAdmin()->create();
+    $chapter = Chapter::factory()->pending()->create();
+    $organizer = User::factory()->create();
+    $member = User::factory()->create();
+    $chapter->members()->attach($organizer, ['role' => ChapterMemberRole::Admin]);
+    $chapter->members()->attach($member, ['role' => ChapterMemberRole::Member]);
+    Mail::fake();
+
+    $this->actingAs($admin)->post(route('admin.chapters.approval.store', $chapter));
+
+    Mail::assertQueued(ChapterApproved::class, fn (ChapterApproved $mail) => $mail->chapter->is($chapter)
+        && $mail->hasTo($organizer->email)
+        && ! $mail->hasTo($member->email));
+});
+
+test('the approval email links to the group and to planning a meetup', function () {
+    $chapter = Chapter::factory()->active()->create(['name' => 'Glasgow Streetwatchers']);
+
+    (new ChapterApproved($chapter))
+        ->assertHasSubject('Glasgow Streetwatchers is live on StreetWatchers')
+        ->assertSeeInHtml(route('chapters.show', $chapter))
+        ->assertSeeInHtml(route('chapters.events.create', $chapter))
+        ->assertSeeInText(route('chapters.events.create', $chapter));
+});
+
+test('organizers are emailed when their group is deactivated, without the admin\'s reason', function () {
+    $admin = User::factory()->superAdmin()->create();
+    $chapter = Chapter::factory()->active()->create();
+    $organizer = User::factory()->create();
+    $chapter->members()->attach($organizer, ['role' => ChapterMemberRole::Admin]);
+    Mail::fake();
+
+    $this->actingAs($admin)
+        ->post(route('admin.chapters.deactivation.store', $chapter), ['reason' => 'Internal note about spam reports.']);
+
+    Mail::assertQueued(ChapterDeactivated::class, function (ChapterDeactivated $mail) use ($chapter, $organizer) {
+        $mail->assertDontSeeInHtml('Internal note about spam reports.');
+
+        return $mail->chapter->is($chapter) && $mail->hasTo($organizer->email);
+    });
+});
+
+test('no email is sent when a group has no active organizer', function () {
+    $admin = User::factory()->superAdmin()->create();
+    $chapter = Chapter::factory()->active()->create();
+    $chapter->members()->attach(User::factory()->suspended()->create(), ['role' => ChapterMemberRole::Admin]);
+    Mail::fake();
+
+    $this->actingAs($admin)
+        ->post(route('admin.chapters.deactivation.store', $chapter), ['reason' => 'Spam.']);
+
+    Mail::assertNothingQueued();
 });

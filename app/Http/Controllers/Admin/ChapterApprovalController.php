@@ -6,6 +6,7 @@ use App\Enums\AuditAction;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Http\Controllers\Controller;
+use App\Mail\ChapterApproved;
 use App\Models\AuditLog;
 use App\Models\Chapter;
 use Illuminate\Http\RedirectResponse;
@@ -54,6 +55,8 @@ class ChapterApprovalController extends Controller
                 newStatus: ChapterStatus::Active,
             );
         });
+
+        $chapter->mailOrganizers(new ChapterApproved($chapter));
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __(':name approved.', ['name' => $chapter->name])]);
 

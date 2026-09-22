@@ -7,13 +7,17 @@ use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\Country;
 use App\Enums\PhotoStatus;
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Http\Requests\StoreChapterRequest;
+use App\Mail\ChapterProposed;
 use App\Models\Chapter;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -191,6 +195,16 @@ class ChapterController extends Controller
 
             return $chapter;
         });
+
+        $siteAdmins = User::query()
+            ->where('role', UserRole::SuperAdmin)
+            ->where('status', UserStatus::Active)
+            ->pluck('email')
+            ->all();
+
+        if ($siteAdmins !== []) {
+            Mail::to($siteAdmins)->queue(new ChapterProposed($chapter, $request->user()));
+        }
 
         return to_route('chapters.create')->with('submitted_chapter', $chapter->name);
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\Country;
+use App\Enums\UserStatus;
 use Carbon\Carbon;
 use Database\Factories\ChapterFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * @property int $id
@@ -132,6 +135,31 @@ class Chapter extends Model
     public function memberships(): HasMany
     {
         return $this->hasMany(ChapterUser::class);
+    }
+
+    /**
+     * The members who run this group.
+     *
+     * @return BelongsToMany<User, $this, ChapterUser>
+     */
+    public function organizers(): BelongsToMany
+    {
+        return $this->members()->wherePivot('role', ChapterMemberRole::Admin);
+    }
+
+    /**
+     * Emails every active organizer of this group.
+     */
+    public function mailOrganizers(Mailable $mailable): void
+    {
+        $recipients = $this->organizers()
+            ->where('status', UserStatus::Active)
+            ->pluck('email')
+            ->all();
+
+        if ($recipients !== []) {
+            Mail::to($recipients)->queue($mailable);
+        }
     }
 
     /**
