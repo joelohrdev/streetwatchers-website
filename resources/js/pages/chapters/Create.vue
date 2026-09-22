@@ -22,7 +22,10 @@ const longitude = ref('');
 const locating = ref(false);
 const locationError = ref<string | null>(null);
 
-/** Fill the coordinates from the browser, rounded to roughly neighborhood precision. */
+/**
+ * Fill the coordinates from the browser, rounded to two decimal places (about a kilometer). They become the
+ * group's public map pin, so this keeps a proposer's exact position, such as their home, off the map.
+ */
 function useCurrentLocation(): void {
     if (!('geolocation' in navigator)) {
         locationError.value =
@@ -36,8 +39,8 @@ function useCurrentLocation(): void {
 
     navigator.geolocation.getCurrentPosition(
         (position) => {
-            latitude.value = position.coords.latitude.toFixed(4);
-            longitude.value = position.coords.longitude.toFixed(4);
+            latitude.value = position.coords.latitude.toFixed(2);
+            longitude.value = position.coords.longitude.toFixed(2);
             locating.value = false;
         },
         () => {
