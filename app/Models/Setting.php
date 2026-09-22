@@ -74,6 +74,14 @@ class Setting extends Model
         return $banner === '' ? null : $banner;
     }
 
+    /**
+     * How far apart groups must be, in miles. A new group can't be proposed closer than this to an active or pending one.
+     */
+    public static function groupRadiusInMiles(): int
+    {
+        return (int) (self::valueOf(SettingKey::GroupRadiusMiles) ?? 25);
+    }
+
     private static function cacheKey(SettingKey $key): string
     {
         return 'settings.'.$key->value;

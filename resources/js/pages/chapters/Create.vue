@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
-import { ImagePlus, LoaderCircle, LocateFixed, X } from '@lucide/vue';
-import { onBeforeUnmount, ref, useTemplateRef } from 'vue';
+import { LoaderCircle, LocateFixed } from '@lucide/vue';
+import { ref } from 'vue';
 import { store } from '@/actions/App/Http/Controllers/ChapterController';
+import ComboboxField from '@/components/marketing/ComboboxField.vue';
 import FormField from '@/components/marketing/FormField.vue';
 import { primaryButtonClass, secondaryButtonClass } from '@/lib/marketing';
 import { dashboard } from '@/routes';
 
 defineProps<{
     submittedChapter: string | null;
+    countries: { value: string; label: string }[];
 }>();
 
 const DESCRIPTION_LIMIT = 5000;
@@ -46,34 +48,6 @@ function useCurrentLocation(): void {
         { timeout: 10000 },
     );
 }
-
-const coverInput = useTemplateRef<HTMLInputElement>('coverInput');
-const coverPreview = ref<string | null>(null);
-
-function previewCover(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-
-    clearPreview();
-    coverPreview.value = file ? URL.createObjectURL(file) : null;
-}
-
-function removeCover(): void {
-    clearPreview();
-
-    if (coverInput.value) {
-        coverInput.value.value = '';
-    }
-}
-
-function clearPreview(): void {
-    if (coverPreview.value) {
-        URL.revokeObjectURL(coverPreview.value);
-    }
-
-    coverPreview.value = null;
-}
-
-onBeforeUnmount(clearPreview);
 
 const inputValue = (event: Event): string =>
     (event.target as HTMLInputElement).value;
@@ -144,7 +118,7 @@ const nextSteps = [
             <Form
                 v-bind="store.form()"
                 class="mt-14 flex flex-col gap-14"
-                v-slot="{ errors, processing, progress }"
+                v-slot="{ errors, processing }"
             >
                 <div
                     class="border-hairline flex flex-col gap-10 border-t pt-10"
@@ -227,13 +201,13 @@ const nextSteps = [
                             placeholder="Glasgow"
                             :error="errors.city"
                         />
-                        <FormField
+                        <ComboboxField
                             id="country"
                             label="Country"
                             name="country"
                             required
-                            autocomplete="country-name"
-                            placeholder="United Kingdom"
+                            placeholder="Search for a country"
+                            :options="countries"
                             :error="errors.country"
                         />
                     </div>
@@ -291,60 +265,6 @@ const nextSteps = [
                     </div>
                 </div>
 
-                <div class="border-hairline flex flex-col gap-6 border-t pt-10">
-                    <div>
-                        <h2 :class="sectionLabelClass">Cover image</h2>
-                        <p class="text-ink-soft mt-3 leading-relaxed">
-                            Optional. A wide photo from your city works best.
-                            JPG, PNG or WebP, up to 5 MB.
-                        </p>
-                    </div>
-
-                    <div
-                        v-if="coverPreview"
-                        class="border-hairline relative border"
-                    >
-                        <img
-                            :src="coverPreview"
-                            alt="Cover image preview"
-                            class="aspect-[3/1] w-full object-cover"
-                        />
-                        <button
-                            type="button"
-                            class="bg-paper text-ink border-ink absolute top-3 right-3 flex size-8 items-center justify-center border"
-                            aria-label="Remove cover image"
-                            @click="removeCover"
-                        >
-                            <X class="size-4" />
-                        </button>
-                    </div>
-
-                    <label
-                        v-show="!coverPreview"
-                        for="cover_image"
-                        class="border-ink/25 hover:border-ink text-ink flex aspect-[3/1] cursor-pointer flex-col items-center justify-center gap-3 border border-dashed transition-colors"
-                    >
-                        <ImagePlus class="size-6" />
-                        <span
-                            class="font-display text-xs font-semibold tracking-[0.14em] uppercase"
-                        >
-                            Choose a cover image
-                        </span>
-                    </label>
-                    <input
-                        id="cover_image"
-                        ref="coverInput"
-                        type="file"
-                        name="cover_image"
-                        accept="image/jpeg,image/png,image/webp"
-                        class="sr-only"
-                        @change="previewCover"
-                    />
-                    <p v-if="errors.cover_image" class="text-ink text-sm">
-                        {{ errors.cover_image }}
-                    </p>
-                </div>
-
                 <div
                     class="border-hairline flex flex-col gap-4 border-t pt-10 sm:flex-row sm:items-center"
                 >
@@ -359,14 +279,6 @@ const nextSteps = [
                         />
                         Submit for approval
                     </button>
-                    <progress
-                        v-if="progress"
-                        :value="progress.percentage"
-                        max="100"
-                        class="accent-ink w-full sm:w-40"
-                    >
-                        {{ progress.percentage }}%
-                    </progress>
                 </div>
             </Form>
         </template>

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
+use App\Enums\Country;
 use App\Enums\EventRsvpStatus;
 use App\Enums\PhotoStatus;
 use App\Enums\ReportStatus;
@@ -42,18 +43,18 @@ class DatabaseSeeder extends Seeder
             ->map(fn (string $name) => Tag::factory()->create(['name' => $name]));
 
         $chapters = collect([
-            ['name' => 'London Streetwatchers', 'slug' => 'london', 'city' => 'London', 'country' => 'United Kingdom', 'latitude' => 51.5072, 'longitude' => -0.1276],
-            ['name' => 'New York Streetwatchers', 'slug' => 'new-york', 'city' => 'New York', 'country' => 'United States', 'latitude' => 40.7128, 'longitude' => -74.0060],
-            ['name' => 'Mexico City Streetwatchers', 'slug' => 'mexico-city', 'city' => 'Mexico City', 'country' => 'Mexico', 'latitude' => 19.4326, 'longitude' => -99.1332],
+            ['name' => 'London Streetwatchers', 'slug' => 'london', 'city' => 'London', 'country' => Country::UnitedKingdom, 'latitude' => 51.5072, 'longitude' => -0.1276],
+            ['name' => 'New York Streetwatchers', 'slug' => 'new-york', 'city' => 'New York', 'country' => Country::UnitedStates, 'latitude' => 40.7128, 'longitude' => -74.0060],
+            ['name' => 'Mexico City Streetwatchers', 'slug' => 'mexico-city', 'city' => 'Mexico City', 'country' => Country::Mexico, 'latitude' => 19.4326, 'longitude' => -99.1332],
         ])->map(fn (array $attributes) => Chapter::factory()->create([...$attributes, 'status' => ChapterStatus::Active]));
 
         $readyForApproval = Chapter::factory()->pending()->create([
-            'name' => 'Lagos Streetwatchers', 'slug' => 'lagos', 'city' => 'Lagos', 'country' => 'Nigeria', 'latitude' => 6.5244, 'longitude' => 3.3792,
+            'name' => 'Lagos Streetwatchers', 'slug' => 'lagos', 'city' => 'Lagos', 'country' => Country::Nigeria, 'latitude' => 6.5244, 'longitude' => 3.3792,
         ]);
         $readyForApproval->members()->attach($users->except([$testUser->id])->random(2), ['role' => ChapterMemberRole::Admin]);
 
         $needsAnotherAdmin = Chapter::factory()->pending()->create([
-            'name' => 'Berlin Streetwatchers', 'slug' => 'berlin', 'city' => 'Berlin', 'country' => 'Germany', 'latitude' => 52.5200, 'longitude' => 13.4050,
+            'name' => 'Berlin Streetwatchers', 'slug' => 'berlin', 'city' => 'Berlin', 'country' => Country::Germany, 'latitude' => 52.5200, 'longitude' => 13.4050,
         ]);
         $berlinMembers = $users->except([$testUser->id])->random(3);
         $needsAnotherAdmin->members()->attach($berlinMembers->first(), ['role' => ChapterMemberRole::Admin]);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Country;
 use App\Models\Chapter;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -10,10 +11,10 @@ test('the homepage renders the marketing page for guests', function () {
 });
 
 test('the homepage counts active groups and the countries they are in', function () {
-    Chapter::factory()->active()->create(['country' => 'Portugal']);
-    Chapter::factory()->active()->create(['country' => 'Portugal']);
-    Chapter::factory()->active()->create(['country' => 'Spain']);
-    Chapter::factory()->pending()->create(['country' => 'France']);
+    Chapter::factory()->active()->create(['country' => Country::Portugal]);
+    Chapter::factory()->active()->create(['country' => Country::Portugal]);
+    Chapter::factory()->active()->create(['country' => Country::Spain]);
+    Chapter::factory()->pending()->create(['country' => Country::France]);
 
     $this->get(route('home'))
         ->assertInertia(fn (Assert $page) => $page

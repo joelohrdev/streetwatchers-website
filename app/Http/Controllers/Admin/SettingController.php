@@ -21,6 +21,7 @@ class SettingController extends Controller
             'settings' => [
                 'new_photos_require_review' => Setting::newPhotosRequireReview(),
                 'announcement_banner' => Setting::announcementBanner(),
+                'group_radius_miles' => Setting::groupRadiusInMiles(),
             ],
         ]);
     }
@@ -30,11 +31,13 @@ class SettingController extends Controller
         $old = [
             'new_photos_require_review' => Setting::newPhotosRequireReview(),
             'announcement_banner' => Setting::announcementBanner(),
+            'group_radius_miles' => Setting::groupRadiusInMiles(),
         ];
 
         $new = [
             'new_photos_require_review' => $request->boolean('new_photos_require_review'),
             'announcement_banner' => trim((string) $request->validated('announcement_banner')) ?: null,
+            'group_radius_miles' => $request->integer('group_radius_miles'),
         ];
 
         $changes = [];
@@ -49,6 +52,7 @@ class SettingController extends Controller
             DB::transaction(function () use ($request, $new, $changes): void {
                 Setting::store(SettingKey::NewPhotosRequireReview, $new['new_photos_require_review'] ? '1' : '0');
                 Setting::store(SettingKey::AnnouncementBanner, $new['announcement_banner']);
+                Setting::store(SettingKey::GroupRadiusMiles, (string) $new['group_radius_miles']);
 
                 AuditLog::record(
                     actor: $request->user(),

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Concerns\GeneratesUniqueSlugs;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
+use App\Enums\Country;
 use App\Enums\PhotoStatus;
 use App\Http\Requests\StoreChapterRequest;
 use App\Models\Chapter;
@@ -12,7 +13,6 @@ use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,6 +25,11 @@ class ChapterController extends Controller
      * How many nearby chapters to suggest on a chapter page.
      */
     private const NEARBY_CHAPTERS = 4;
+
+    /**
+     * How far away, in miles, a chapter can be and still be suggested as nearby.
+     */
+    private const NEARBY_RADIUS_MILES = 100;
 
     /**
      * Slugs that would collide with fixed routes under /chapters.
@@ -49,7 +54,7 @@ class ChapterController extends Controller
                 'name' => $chapter->name,
                 'slug' => $chapter->slug,
                 'city' => $chapter->city,
-                'country' => $chapter->country,
+                'country' => $chapter->country->label(),
                 'latitude' => $chapter->latitude,
                 'longitude' => $chapter->longitude,
                 'description' => Str::limit($chapter->description, 160),
@@ -78,12 +83,13 @@ class ChapterController extends Controller
             ->where('status', ChapterStatus::Active)
             ->whereKeyNot($chapter->id)
             ->get(['id', 'name', 'slug', 'city', 'country', 'latitude', 'longitude'])
+            ->filter(fn (Chapter $other): bool => $chapter->distanceInMilesTo($other) <= self::NEARBY_RADIUS_MILES)
             ->map(fn (Chapter $other): array => [
                 'id' => $other->id,
                 'name' => $other->name,
                 'slug' => $other->slug,
                 'city' => $other->city,
-                'country' => $other->country,
+                'country' => $other->country->label(),
                 'latitude' => $other->latitude,
                 'longitude' => $other->longitude,
                 'distance' => round($chapter->distanceInKilometresTo($other)),
@@ -98,13 +104,10 @@ class ChapterController extends Controller
                 'name' => $chapter->name,
                 'slug' => $chapter->slug,
                 'city' => $chapter->city,
-                'country' => $chapter->country,
+                'country' => $chapter->country->label(),
                 'latitude' => $chapter->latitude,
                 'longitude' => $chapter->longitude,
                 'description' => $chapter->description,
-                'cover_image_url' => $chapter->cover_image_path
-                    ? Storage::disk('public')->url($chapter->cover_image_path)
-                    : null,
                 'members_count' => $chapter->members_count,
                 'photos_count' => $chapter->published_photos_count,
                 'created_at' => $chapter->created_at?->toIso8601String(),
@@ -126,6 +129,7 @@ class ChapterController extends Controller
                     'ends_at' => $event->ends_at->toIso8601String(),
                 ]),
             'nearby' => $nearby,
+            'nearbyRadiusMiles' => self::NEARBY_RADIUS_MILES,
             'membership' => $this->membershipFor($request, $chapter),
             'status' => $request->session()->get('status'),
         ]);
@@ -160,6 +164,7 @@ class ChapterController extends Controller
     {
         return Inertia::render('chapters/Create', [
             'submittedChapter' => $request->session()->get('submitted_chapter'),
+            'countries' => Country::options(),
         ]);
     }
 
@@ -172,7 +177,6 @@ class ChapterController extends Controller
             $chapter = Chapter::query()->create([
                 ...$request->safe()->only(['name', 'city', 'country', 'latitude', 'longitude', 'description']),
                 'slug' => $this->uniqueSlug($request->validated('name'), Chapter::class, self::RESERVED_SLUGS),
-                'cover_image_path' => $request->file('cover_image')?->store('chapter-covers', 'public'),
                 'status' => ChapterStatus::Pending,
             ]);
 

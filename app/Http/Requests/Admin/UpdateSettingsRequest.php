@@ -17,6 +17,7 @@ class UpdateSettingsRequest extends FormRequest
         return [
             'new_photos_require_review' => ['required', 'boolean'],
             'announcement_banner' => ['nullable', 'string', 'max:500'],
+            'group_radius_miles' => ['required', 'integer', 'between:1,250'],
         ];
     }
 }

@@ -42,7 +42,7 @@ class DashboardController extends Controller
                     'name' => $membership->chapter->name,
                     'slug' => $membership->chapter->slug,
                     'city' => $membership->chapter->city,
-                    'country' => $membership->chapter->country,
+                    'country' => $membership->chapter->country->label(),
                     'status' => $membership->chapter->status->value,
                     'role' => $membership->role === ChapterMemberRole::Admin ? 'organiser' : 'member',
                 ]),

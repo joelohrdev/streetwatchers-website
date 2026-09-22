@@ -7,6 +7,7 @@ import type { GroupMembership } from '@/components/marketing/GroupJoinPanel.vue'
 import GroupJoinPanel from '@/components/marketing/GroupJoinPanel.vue';
 import ChapterMap from '@/components/marketing/ChapterMap.vue';
 import { formatDistance } from '@/lib/geo';
+import { inlineLinkClass } from '@/lib/marketing';
 import { create, index, show } from '@/routes/chapters';
 
 type NearbyChapter = MapChapter & { distance: number };
@@ -22,7 +23,6 @@ type UpcomingEvent = {
 const props = defineProps<{
     chapter: MapChapter & {
         description: string;
-        cover_image_url: string | null;
         members_count: number;
         photos_count: number;
         created_at: string | null;
@@ -30,6 +30,7 @@ const props = defineProps<{
     organisers: string[];
     upcomingEvents: UpcomingEvent[];
     nearby: NearbyChapter[];
+    nearbyRadiusMiles: number;
     membership: GroupMembership;
     status: string | null;
 }>();
@@ -118,13 +119,6 @@ const stats = computed(() => [
             :status="status"
         />
     </section>
-
-    <img
-        v-if="chapter.cover_image_url"
-        :src="chapter.cover_image_url"
-        :alt="`${chapter.name} cover photo`"
-        class="border-hairline aspect-[3/1] w-full border-y object-cover"
-    />
 
     <section class="border-hairline border-t">
         <div
@@ -226,7 +220,7 @@ const stats = computed(() => [
         </div>
     </section>
 
-    <section v-if="nearby.length" class="border-hairline border-t">
+    <section class="border-hairline border-t">
         <div class="mx-auto w-full max-w-6xl px-6 py-16 md:px-10 md:py-20">
             <h2
                 class="font-display text-xs font-semibold tracking-[0.18em] uppercase"
@@ -234,6 +228,7 @@ const stats = computed(() => [
                 Nearby groups
             </h2>
             <ul
+                v-if="nearby.length"
                 class="mt-8 grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4"
             >
                 <li
@@ -259,6 +254,12 @@ const stats = computed(() => [
                     </Link>
                 </li>
             </ul>
+            <p v-else class="text-ink-soft mt-6">
+                No other groups within {{ nearbyRadiusMiles }} miles.
+                <Link :href="index()" :class="inlineLinkClass">
+                    See all groups
+                </Link>
+            </p>
         </div>
     </section>
 

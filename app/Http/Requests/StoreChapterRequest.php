@@ -4,9 +4,12 @@ namespace App\Http\Requests;
 
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
+use App\Enums\Country;
 use App\Models\Chapter;
+use App\Models\Setting;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -22,11 +25,10 @@ class StoreChapterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255', Rule::unique(Chapter::class, 'name')],
             'city' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
+            'country' => ['required', Rule::enum(Country::class)],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
             'description' => ['required', 'string', 'max:5000'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
 
@@ -39,7 +41,6 @@ class StoreChapterRequest extends FormRequest
     {
         return [
             'name.unique' => 'A group with this name already exists.',
-            'cover_image.max' => 'The cover image must be 5 MB or smaller.',
         ];
     }
 
@@ -61,6 +62,25 @@ class StoreChapterRequest extends FormRequest
                 if ($hasPendingProposal) {
                     $validator->errors()->add('name', 'You already have a group waiting for approval.');
                 }
+            },
+            function (Validator $validator): void {
+                if ($validator->errors()->hasAny(['latitude', 'longitude'])) {
+                    return;
+                }
+
+                $radius = Setting::groupRadiusInMiles();
+                $nearest = Chapter::nearestWithinMiles($this->float('latitude'), $this->float('longitude'), $radius);
+
+                if ($nearest === null) {
+                    return;
+                }
+
+                $miles = max(1, (int) round($nearest->distanceInMilesTo(new Chapter($this->only(['latitude', 'longitude'])))));
+                $distance = $miles.' '.Str::plural('mile', $miles);
+
+                $validator->errors()->add('latitude', $nearest->status === ChapterStatus::Pending
+                    ? "A group is already waiting for approval {$distance} from here. Groups must be at least {$radius} miles apart."
+                    : "{$nearest->name} is {$distance} from here. Groups must be at least {$radius} miles apart, so join that group instead.");
             },
         ];
     }

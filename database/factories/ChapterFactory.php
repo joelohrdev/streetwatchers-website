@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\ChapterStatus;
+use App\Enums\Country;
 use App\Models\Chapter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +23,7 @@ class ChapterFactory extends Factory
             'name' => fake()->company(),
             'slug' => fake()->slug(),
             'city' => fake()->city(),
-            'country' => fake()->country(),
+            'country' => fake()->randomElement(Country::cases()),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
             'description' => fake()->text(),

@@ -14,6 +14,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { edit } from '@/routes/admin/settings';
@@ -22,6 +23,7 @@ const props = defineProps<{
     settings: {
         new_photos_require_review: boolean;
         announcement_banner: string | null;
+        group_radius_miles: number;
     };
 }>();
 
@@ -124,6 +126,34 @@ const announcement = ref(props.settings.announcement_banner ?? '');
                         No banner will be shown.
                     </p>
                 </div>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Group spacing</CardTitle>
+                <CardDescription>
+                    A new group can't be proposed within this distance of an
+                    active group or one waiting for approval.
+                </CardDescription>
+            </CardHeader>
+            <CardContent class="grid gap-2">
+                <Label for="group-radius-miles">Minimum distance</Label>
+                <div class="flex items-center gap-2">
+                    <Input
+                        id="group-radius-miles"
+                        type="number"
+                        name="group_radius_miles"
+                        min="1"
+                        max="250"
+                        step="1"
+                        required
+                        :default-value="settings.group_radius_miles"
+                        class="w-24"
+                    />
+                    <span class="text-muted-foreground text-sm">miles</span>
+                </div>
+                <InputError :message="errors.group_radius_miles" />
             </CardContent>
         </Card>
 

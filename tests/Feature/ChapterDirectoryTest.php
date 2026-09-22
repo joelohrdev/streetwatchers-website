@@ -2,6 +2,7 @@
 
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
+use App\Enums\Country;
 use App\Models\Chapter;
 use App\Models\Event;
 use App\Models\User;
@@ -11,7 +12,7 @@ test('the chapter directory is public and lists only active chapters', function 
     $active = Chapter::factory()->active()->create([
         'name' => 'Lisbon Streetwatchers',
         'city' => 'Lisbon',
-        'country' => 'Portugal',
+        'country' => Country::Portugal,
         'latitude' => 38.7223,
         'longitude' => -9.1393,
     ]);
@@ -40,8 +41,10 @@ test('an active chapter has a public page with its organisers, upcoming events a
     $lisbon = Chapter::factory()->active()->create([
         'name' => 'Lisbon Streetwatchers', 'latitude' => 38.7223, 'longitude' => -9.1393,
     ]);
-    $porto = Chapter::factory()->active()->create(['name' => 'Porto Streetwatchers', 'latitude' => 41.1579, 'longitude' => -8.6291]);
-    $madrid = Chapter::factory()->active()->create(['name' => 'Madrid Streetwatchers', 'latitude' => 40.4168, 'longitude' => -3.7038]);
+    $setubal = Chapter::factory()->active()->create(['name' => 'Setúbal Streetwatchers', 'latitude' => 38.5244, 'longitude' => -8.8882]);
+    $evora = Chapter::factory()->active()->create(['name' => 'Évora Streetwatchers', 'latitude' => 38.5714, 'longitude' => -7.9135]);
+    // Porto is about 170 miles away, beyond the nearby radius.
+    Chapter::factory()->active()->create(['name' => 'Porto Streetwatchers', 'latitude' => 41.1579, 'longitude' => -8.6291]);
     Chapter::factory()->pending()->create(['latitude' => 38.7300, 'longitude' => -9.1400]);
 
     $lisbon->members()->attach(User::factory()->create(['name' => 'Ana Organiser']), ['role' => ChapterMemberRole::Admin]);
@@ -60,9 +63,18 @@ test('an active chapter has a public page with its organisers, upcoming events a
             ->has('upcomingEvents', 1)
             ->where('upcomingEvents.0.id', $upcoming->id)
             ->has('nearby', 2)
-            ->where('nearby.0.id', $porto->id)
-            ->where('nearby.0.distance', 274)
-            ->where('nearby.1.id', $madrid->id));
+            ->where('nearby.0.id', $setubal->id)
+            ->where('nearby.0.distance', 31)
+            ->where('nearby.1.id', $evora->id)
+            ->where('nearbyRadiusMiles', 100));
+});
+
+test('a chapter with no other groups within 100 miles suggests none', function () {
+    $lisbon = Chapter::factory()->active()->create(['latitude' => 38.7223, 'longitude' => -9.1393]);
+    Chapter::factory()->active()->create(['latitude' => 41.1579, 'longitude' => -8.6291]);
+
+    $this->get(route('chapters.show', $lisbon))
+        ->assertInertia(fn (Assert $page) => $page->has('nearby', 0));
 });
 
 test('chapters that are not active have no public page', function (ChapterStatus $status) {
