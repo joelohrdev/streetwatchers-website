@@ -32,7 +32,6 @@ use Illuminate\Support\Facades\Mail;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read int|null $admins_count
- * @property-read int|null $published_photos_count
  */
 #[Fillable('name', 'slug', 'city', 'country', 'latitude', 'longitude', 'description', 'cover_image_path', 'status')]
 class Chapter extends Model

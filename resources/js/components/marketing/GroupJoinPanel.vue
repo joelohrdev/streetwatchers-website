@@ -24,8 +24,7 @@ const confirmingLeave = ref(false);
 <template>
     <div id="join" class="border-ink border-2 p-6 md:p-8">
         <StatusNote v-if="status === 'group-joined'">
-            Welcome to {{ group.name }}. Keep an eye on this page for upcoming
-            walks and events.
+            Welcome to {{ group.name }}. Its meetups will show up on this page.
         </StatusNote>
         <StatusNote v-else-if="status === 'group-left'">
             You have left {{ group.name }}.
@@ -76,7 +75,7 @@ const confirmingLeave = ref(false);
             </h2>
             <p class="text-ink-soft mt-3 max-w-xl leading-relaxed">
                 Joining is free and lets the organizers know you want to come
-                along to their walks and events.
+                along to their meetups.
             </p>
             <Form
                 v-bind="joinGroup.form(group.slug)"
@@ -110,7 +109,7 @@ const confirmingLeave = ref(false);
                 v-if="membership === 'organizer'"
                 class="text-ink-soft mt-3 max-w-xl leading-relaxed"
             >
-                You run {{ group.name }}'s walks and events.
+                You plan {{ group.name }}'s meetups.
             </p>
 
             <Form

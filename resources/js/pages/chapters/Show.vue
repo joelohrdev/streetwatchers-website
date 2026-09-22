@@ -34,7 +34,6 @@ const props = defineProps<{
     chapter: MapChapter & {
         description: string;
         members_count: number;
-        photos_count: number;
         created_at: string | null;
         share_url: string;
     };
@@ -61,10 +60,6 @@ const stats = computed(() => [
     {
         label: props.chapter.members_count === 1 ? 'Member' : 'Members',
         value: props.chapter.members_count,
-    },
-    {
-        label: props.chapter.photos_count === 1 ? 'Photo' : 'Photos',
-        value: props.chapter.photos_count,
     },
     ...(foundedYear.value
         ? [{ label: 'Founded', value: foundedYear.value }]
@@ -141,7 +136,7 @@ const stats = computed(() => [
                     <h2
                         class="font-display text-xs font-semibold tracking-[0.18em] uppercase"
                     >
-                        Upcoming walks and events
+                        Upcoming meetups
                     </h2>
                     <ul
                         v-if="upcomingEvents.length"
@@ -194,7 +189,7 @@ const stats = computed(() => [
                         </li>
                     </ul>
                     <p v-else class="text-ink-soft mt-6">
-                        No events are scheduled yet. Check back soon.
+                        No meetups are planned yet.
                     </p>
                     <div
                         v-if="membership === 'organizer'"

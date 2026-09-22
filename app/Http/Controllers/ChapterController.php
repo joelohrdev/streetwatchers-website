@@ -6,7 +6,6 @@ use App\Concerns\GeneratesUniqueSlugs;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\Country;
-use App\Enums\PhotoStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Requests\StoreChapterRequest;
@@ -79,10 +78,7 @@ class ChapterController extends Controller
     {
         abort_unless($chapter->status === ChapterStatus::Active, 404);
 
-        $chapter->loadCount([
-            'members',
-            'photos as published_photos_count' => fn ($query) => $query->where('status', PhotoStatus::Published),
-        ]);
+        $chapter->loadCount('members');
 
         $nearby = Chapter::query()
             ->where('status', ChapterStatus::Active)
@@ -114,7 +110,6 @@ class ChapterController extends Controller
                 'longitude' => $chapter->longitude,
                 'description' => $chapter->description,
                 'members_count' => $chapter->members_count,
-                'photos_count' => $chapter->published_photos_count,
                 'created_at' => $chapter->created_at?->toIso8601String(),
                 'share_url' => $chapter->shareUrl(),
             ],

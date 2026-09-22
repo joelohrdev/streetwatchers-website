@@ -12,15 +12,11 @@ defineProps<{
     upcomingMeetups: UpcomingMeetup[];
 }>();
 
-/**
- * Placeholder content. Each value is shaped like the Inertia prop that will
- * replace it, so the sections stay untouched when the backend lands.
- */
 const mission =
-    'A global community for candid, unstaged photographs of everyday public life.';
+    'Find a street photography group in your city and join its next photo walk.';
 
 const introStatement =
-    'A global home for photographers who find the extraordinary in everyday streets.';
+    'Photo walks run by local photographers, open to anyone with a camera or a phone.';
 </script>
 
 <template>
