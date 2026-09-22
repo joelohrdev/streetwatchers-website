@@ -15,6 +15,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventRsvpController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoRemovalRequestController;
+use App\Http\Controllers\QrCodeController;
+use App\Http\Controllers\ShortLinkController;
 use App\Http\Middleware\EnsureCollectivesAreEnabled;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -79,6 +81,13 @@ Route::get('groups/{chapter}/meetups/{event}/rsvp', [EventRsvpController::class,
 // Registered after groups/create so that path isn't read as a group slug.
 Route::get('groups/{chapter}', [ChapterController::class, 'show'])->name('chapters.show');
 Route::get('groups/{chapter}/meetups/{event}', [EventController::class, 'show'])->scopeBindings()->name('chapters.events.show');
+
+// Short links for sharing, e.g. /g/1B and /m/4k. See App\Concerns\HasShortCode.
+Route::get('g/{code}', [ShortLinkController::class, 'group'])->where('code', '[0-9A-Za-z]+')->name('short-links.group');
+Route::get('m/{code}', [ShortLinkController::class, 'meetup'])->where('code', '[0-9A-Za-z]+')->name('short-links.meetup');
+
+Route::get('groups/{chapter}/qr-code', [QrCodeController::class, 'group'])->name('chapters.qr-code');
+Route::get('groups/{chapter}/meetups/{event}/qr-code', [QrCodeController::class, 'meetup'])->scopeBindings()->name('chapters.events.qr-code');
 
 // Collectives aren't part of the launch, so every public collective page is switched off by config('features.collectives').
 Route::middleware(EnsureCollectivesAreEnabled::class)->group(function () {

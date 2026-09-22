@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\HasShortCode;
 use App\Enums\EventRsvpStatus;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -33,7 +34,7 @@ use Illuminate\Support\Carbon;
 class Event extends Model
 {
     /** @use HasFactory<EventFactory> */
-    use HasFactory;
+    use HasFactory, HasShortCode;
 
     /**
      * Get the attributes that should be cast.
@@ -98,6 +99,14 @@ class Event extends Model
     public function attendees(): BelongsToMany
     {
         return $this->rsvps()->wherePivot('status', EventRsvpStatus::Going);
+    }
+
+    /**
+     * A short link to the meetup's page, for sharing and QR codes.
+     */
+    public function shareUrl(): string
+    {
+        return route('short-links.meetup', $this->shortCode());
     }
 
     public function isCanceled(): bool

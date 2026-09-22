@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\HasShortCode;
 use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\Country;
@@ -37,7 +38,7 @@ use Illuminate\Support\Facades\Mail;
 class Chapter extends Model
 {
     /** @use HasFactory<ChapterFactory> */
-    use HasFactory;
+    use HasFactory, HasShortCode;
 
     private const KILOMETERS_PER_MILE = 1.609344;
 
@@ -107,6 +108,14 @@ class Chapter extends Model
             ->filter(fn (Chapter $chapter): bool => $point->distanceInMilesTo($chapter) < $miles)
             ->sortBy(fn (Chapter $chapter): float => $point->distanceInMilesTo($chapter))
             ->first();
+    }
+
+    /**
+     * A short link to the group's page, for sharing and QR codes.
+     */
+    public function shareUrl(): string
+    {
+        return route('short-links.group', $this->shortCode());
     }
 
     /**

@@ -116,6 +116,7 @@ class ChapterController extends Controller
                 'members_count' => $chapter->members_count,
                 'photos_count' => $chapter->published_photos_count,
                 'created_at' => $chapter->created_at?->toIso8601String(),
+                'share_url' => $chapter->shareUrl(),
             ],
             'organizers' => $chapter->members()
                 ->wherePivot('role', ChapterMemberRole::Admin)

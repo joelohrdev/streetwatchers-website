@@ -53,6 +53,7 @@ class EventController extends Controller
                 'is_canceled' => $event->isCanceled(),
                 'has_ended' => $event->hasEnded(),
                 'is_accepting_rsvps' => $event->isAcceptingRsvps(),
+                'share_url' => $event->shareUrl(),
             ],
             'viewer' => [
                 'is_guest' => $user === null,

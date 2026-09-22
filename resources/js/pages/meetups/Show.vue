@@ -6,11 +6,12 @@ import { store as cancelMeetup } from '@/actions/App/Http/Controllers/EventCance
 import type { MeetupViewer } from '@/components/marketing/MeetupRsvpPanel.vue';
 import MeetupRsvpPanel from '@/components/marketing/MeetupRsvpPanel.vue';
 import MemberName from '@/components/marketing/MemberName.vue';
+import SharePanel from '@/components/marketing/SharePanel.vue';
 import StatusNote from '@/components/marketing/StatusNote.vue';
 import { inlineLinkClass, secondaryButtonClass } from '@/lib/marketing';
 import { formatMeetupHours, formatMeetupLongDay } from '@/lib/meetups';
 import { show as showGroup } from '@/routes/chapters';
-import { edit } from '@/routes/chapters/events';
+import { edit, qrCode as meetupQrCode } from '@/routes/chapters/events';
 
 defineProps<{
     group: { name: string; slug: string; city: string; country: string };
@@ -29,6 +30,7 @@ defineProps<{
         is_canceled: boolean;
         has_ended: boolean;
         is_accepting_rsvps: boolean;
+        share_url: string;
     };
     viewer: MeetupViewer;
     attendees: string[] | null;
@@ -164,6 +166,19 @@ const sectionLabelClass =
                         </Link>
                     </p>
                 </div>
+
+                <SharePanel
+                    v-if="!meetup.is_canceled && !meetup.has_ended"
+                    :url="meetup.share_url"
+                    :text="`${meetup.title} with ${group.name}`"
+                    :qr-code-src="meetupQrCode.url([group.slug, meetup.id])"
+                    :qr-code-download-src="
+                        meetupQrCode.url([group.slug, meetup.id], {
+                            query: { download: 1 },
+                        })
+                    "
+                    :label="`the ${meetup.title} meetup page`"
+                />
 
                 <div v-if="attendees !== null && meetup.rsvps_enabled">
                     <h2 :class="sectionLabelClass">Who's going</h2>

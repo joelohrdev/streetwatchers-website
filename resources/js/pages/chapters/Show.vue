@@ -7,10 +7,11 @@ import type { GroupMembership } from '@/components/marketing/GroupJoinPanel.vue'
 import GroupJoinPanel from '@/components/marketing/GroupJoinPanel.vue';
 import ChapterMap from '@/components/marketing/ChapterMap.vue';
 import MemberName from '@/components/marketing/MemberName.vue';
+import SharePanel from '@/components/marketing/SharePanel.vue';
 import { formatDistance } from '@/lib/geo';
 import { inlineLinkClass, secondaryButtonClass } from '@/lib/marketing';
 import { formatMeetupDay, formatMeetupHours } from '@/lib/meetups';
-import { create, index, show } from '@/routes/chapters';
+import { create, index, qrCode as groupQrCode, show } from '@/routes/chapters';
 import {
     create as planMeetup,
     show as showMeetup,
@@ -35,6 +36,7 @@ const props = defineProps<{
         members_count: number;
         photos_count: number;
         created_at: string | null;
+        share_url: string;
     };
     organizers: { name: string; instagram_handle: string | null }[];
     upcomingEvents: UpcomingEvent[];
@@ -251,6 +253,18 @@ const stats = computed(() => [
                         />
                     </div>
                 </div>
+
+                <SharePanel
+                    :url="chapter.share_url"
+                    :text="`${chapter.name} on StreetWatchers`"
+                    :qr-code-src="groupQrCode.url(chapter.slug)"
+                    :qr-code-download-src="
+                        groupQrCode.url(chapter.slug, {
+                            query: { download: 1 },
+                        })
+                    "
+                    :label="`the ${chapter.name} page`"
+                />
             </aside>
         </div>
     </section>
