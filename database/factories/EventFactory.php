@@ -32,6 +32,39 @@ class EventFactory extends Factory
             'longitude' => fake()->longitude(),
             'starts_at' => $startsAt,
             'ends_at' => $startsAt->copy()->addHours(fake()->numberBetween(1, 4)),
+            'timezone' => 'UTC',
         ];
+    }
+
+    /**
+     * A meetup a week from now, two hours long.
+     */
+    public function upcoming(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'starts_at' => now()->addWeek(),
+            'ends_at' => now()->addWeek()->addHours(2),
+        ]);
+    }
+
+    /**
+     * Indicate that the meetup takes RSVPs, optionally with a limit on places.
+     */
+    public function takingRsvps(?int $limit = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rsvps_enabled' => true,
+            'rsvp_limit' => $limit,
+        ]);
+    }
+
+    /**
+     * Indicate that the meetup has been cancelled.
+     */
+    public function cancelled(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'cancelled_at' => now(),
+        ]);
     }
 }

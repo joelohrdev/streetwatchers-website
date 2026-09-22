@@ -127,6 +127,8 @@ class ChapterController extends Controller
                     'location_name' => $event->location_name,
                     'starts_at' => $event->starts_at->toIso8601String(),
                     'ends_at' => $event->ends_at->toIso8601String(),
+                    'timezone' => $event->timezone,
+                    'is_cancelled' => $event->isCancelled(),
                 ]),
             'nearby' => $nearby,
             'nearbyRadiusMiles' => self::NEARBY_RADIUS_MILES,

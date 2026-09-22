@@ -52,7 +52,7 @@ class ChapterMembershipController extends Controller
 
         if ($membership?->role === ChapterMemberRole::Admin) {
             throw ValidationException::withMessages([
-                'membership' => 'Organisers can’t leave their group here. Get in touch and we will help hand it over.',
+                'membership' => 'Step down as an organiser from the members page before you leave the group.',
             ]);
         }
 

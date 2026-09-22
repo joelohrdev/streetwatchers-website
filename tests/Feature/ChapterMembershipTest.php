@@ -124,7 +124,7 @@ test('an organiser cannot leave their group from the group page', function () {
 
     $this->actingAs($organiser)
         ->delete(route('chapters.membership.destroy', $group))
-        ->assertSessionHasErrors(['membership' => 'Organisers can’t leave their group here. Get in touch and we will help hand it over.']);
+        ->assertSessionHasErrors(['membership' => 'Step down as an organiser from the members page before you leave the group.']);
 
     expect($group->members()->sole()->id)->toBe($organiser->id);
 });

@@ -30,6 +30,10 @@ const confirmingLeave = ref(false);
         <StatusNote v-else-if="status === 'group-left'">
             You have left {{ group.name }}.
         </StatusNote>
+        <StatusNote v-else-if="status === 'organiser-stepped-down'">
+            You've stepped down as an organiser. You're still a member of
+            {{ group.name }}.
+        </StatusNote>
 
         <template v-if="membership === 'guest'">
             <h2

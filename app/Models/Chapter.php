@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChapterMemberRole;
 use App\Enums\ChapterStatus;
 use App\Enums\Country;
 use Carbon\Carbon;
@@ -131,6 +132,18 @@ class Chapter extends Model
     public function memberships(): HasMany
     {
         return $this->hasMany(ChapterUser::class);
+    }
+
+    /**
+     * Whether the user runs this group. Only active groups have organisers who can act for them.
+     */
+    public function isOrganisedBy(User $user): bool
+    {
+        return $this->status === ChapterStatus::Active
+            && $this->memberships()
+                ->where('user_id', $user->id)
+                ->where('role', ChapterMemberRole::Admin)
+                ->exists();
     }
 
     /**

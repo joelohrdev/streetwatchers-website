@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EventRsvpStatus;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,10 +22,14 @@ use Illuminate\Support\Carbon;
  * @property float|null $longitude
  * @property Carbon $starts_at
  * @property Carbon $ends_at
+ * @property string $timezone
+ * @property bool $rsvps_enabled
+ * @property int|null $rsvp_limit
+ * @property Carbon|null $cancelled_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['chapter_id', 'organizer_id', 'title', 'description', 'location_name', 'latitude', 'longitude', 'starts_at', 'ends_at'])]
+#[Fillable(['chapter_id', 'organizer_id', 'title', 'description', 'location_name', 'latitude', 'longitude', 'starts_at', 'ends_at', 'timezone', 'rsvps_enabled', 'rsvp_limit', 'cancelled_at'])]
 class Event extends Model
 {
     /** @use HasFactory<EventFactory> */
@@ -48,6 +53,10 @@ class Event extends Model
             'longitude' => 'float',
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
+            'timezone' => 'string',
+            'rsvps_enabled' => 'boolean',
+            'rsvp_limit' => 'integer',
+            'cancelled_at' => 'datetime',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -79,5 +88,36 @@ class Event extends Model
         return $this->belongsToMany(User::class, 'event_rsvps')
             ->using(EventRsvp::class)
             ->withPivot('status');
+    }
+
+    /**
+     * The users who are going, the only RSVP status meetups use.
+     *
+     * @return BelongsToMany<User, $this, EventRsvp>
+     */
+    public function attendees(): BelongsToMany
+    {
+        return $this->rsvps()->wherePivot('status', EventRsvpStatus::Going);
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->cancelled_at !== null;
+    }
+
+    public function hasEnded(): bool
+    {
+        return $this->ends_at->isPast();
+    }
+
+    /**
+     * Whether someone new can RSVP: RSVPs are on, the meetup is still ahead and there is room.
+     */
+    public function isAcceptingRsvps(): bool
+    {
+        return $this->rsvps_enabled
+            && ! $this->isCancelled()
+            && ! $this->hasEnded()
+            && ($this->rsvp_limit === null || $this->attendees()->count() < $this->rsvp_limit);
     }
 }

@@ -7,8 +7,14 @@ import type { GroupMembership } from '@/components/marketing/GroupJoinPanel.vue'
 import GroupJoinPanel from '@/components/marketing/GroupJoinPanel.vue';
 import ChapterMap from '@/components/marketing/ChapterMap.vue';
 import { formatDistance } from '@/lib/geo';
-import { inlineLinkClass } from '@/lib/marketing';
+import { inlineLinkClass, secondaryButtonClass } from '@/lib/marketing';
+import { formatMeetupDay, formatMeetupHours } from '@/lib/meetups';
 import { create, index, show } from '@/routes/chapters';
+import {
+    create as planMeetup,
+    show as showMeetup,
+} from '@/routes/chapters/events';
+import { index as members } from '@/routes/chapters/members';
 
 type NearbyChapter = MapChapter & { distance: number };
 
@@ -18,6 +24,8 @@ type UpcomingEvent = {
     location_name: string;
     starts_at: string;
     ends_at: string;
+    timezone: string;
+    is_cancelled: boolean;
 };
 
 const props = defineProps<{
@@ -45,16 +53,6 @@ const foundedYear = computed(() =>
         ? new Date(props.chapter.created_at).getFullYear()
         : null,
 );
-
-const eventDay = new Intl.DateTimeFormat(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-});
-const eventTime = new Intl.DateTimeFormat(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-});
 
 const stats = computed(() => [
     {
@@ -146,42 +144,72 @@ const stats = computed(() => [
                         v-if="upcomingEvents.length"
                         class="border-hairline divide-hairline mt-6 divide-y border-y"
                     >
-                        <li
-                            v-for="event in upcomingEvents"
-                            :key="event.id"
-                            class="flex gap-6 py-5"
-                        >
-                            <CalendarDays
-                                class="text-ink-soft mt-0.5 size-5 shrink-0"
-                            />
-                            <div>
-                                <p class="font-semibold">{{ event.title }}</p>
-                                <p class="text-ink-soft mt-1 text-sm">
-                                    <time :datetime="event.starts_at">
-                                        {{
-                                            eventDay.format(
-                                                new Date(event.starts_at),
-                                            )
-                                        }}
-                                        ·
-                                        {{
-                                            eventTime.format(
-                                                new Date(event.starts_at),
-                                            )
-                                        }}–{{
-                                            eventTime.format(
-                                                new Date(event.ends_at),
-                                            )
-                                        }}
-                                    </time>
-                                    · {{ event.location_name }}
-                                </p>
-                            </div>
+                        <li v-for="event in upcomingEvents" :key="event.id">
+                            <Link
+                                :href="showMeetup([chapter.slug, event.id])"
+                                class="hover:bg-ink/[0.03] focus-visible:outline-ink flex gap-6 py-5 transition-colors focus-visible:outline-2"
+                            >
+                                <CalendarDays
+                                    class="text-ink-soft mt-0.5 size-5 shrink-0"
+                                />
+                                <div>
+                                    <p class="font-semibold">
+                                        <span
+                                            v-if="event.is_cancelled"
+                                            class="font-display mr-2 text-xs tracking-[0.14em] uppercase"
+                                            >Cancelled</span
+                                        >
+                                        <span
+                                            :class="{
+                                                'text-ink-soft line-through':
+                                                    event.is_cancelled,
+                                            }"
+                                            >{{ event.title }}</span
+                                        >
+                                    </p>
+                                    <p class="text-ink-soft mt-1 text-sm">
+                                        <time :datetime="event.starts_at">
+                                            {{
+                                                formatMeetupDay(
+                                                    event.starts_at,
+                                                    event.timezone,
+                                                )
+                                            }}
+                                            ·
+                                            {{
+                                                formatMeetupHours(
+                                                    event.starts_at,
+                                                    event.ends_at,
+                                                    event.timezone,
+                                                )
+                                            }}
+                                        </time>
+                                        · {{ event.location_name }}
+                                    </p>
+                                </div>
+                            </Link>
                         </li>
                     </ul>
                     <p v-else class="text-ink-soft mt-6">
                         No events are scheduled yet. Check back soon.
                     </p>
+                    <div
+                        v-if="membership === 'organiser'"
+                        class="mt-8 flex flex-col gap-3 sm:flex-row"
+                    >
+                        <Link
+                            :href="planMeetup(chapter.slug)"
+                            :class="[secondaryButtonClass, 'sm:w-auto']"
+                        >
+                            Plan a meetup
+                        </Link>
+                        <Link
+                            :href="members(chapter.slug)"
+                            :class="[secondaryButtonClass, 'sm:w-auto']"
+                        >
+                            Members and organisers
+                        </Link>
+                    </div>
                 </div>
             </div>
 
