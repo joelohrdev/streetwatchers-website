@@ -3,7 +3,10 @@
 use App\Enums\ChapterStatus;
 use App\Enums\PhotoStatus;
 use App\Models\Chapter;
+use App\Models\Collective;
+use App\Models\CollectiveApplication;
 use App\Models\Comment;
+use App\Models\Event;
 use App\Models\Photo;
 use App\Models\Report;
 use App\Models\User;
@@ -38,6 +41,33 @@ test('the dashboard counts chapters and photos by status', function () {
             ])->all())
             ->where('stats.photos.1', ['value' => 'published', 'label' => PhotoStatus::Published->label(), 'count' => 3])
             ->where('stats.users', 4));
+});
+
+test('the dashboard counts activity from the last 7 and 30 days', function () {
+    $collective = Collective::factory()->create();
+
+    foreach ([40, 20, 2] as $daysAgo) {
+        $this->travelTo(now()->subDays($daysAgo), function () use ($collective) {
+            $user = User::factory()->create();
+            $chapter = Chapter::factory()->create();
+            $chapter->members()->attach($user, ['joined_at' => now()]);
+            Event::factory()->for($chapter)->create(['organizer_id' => $user->id]);
+            CollectiveApplication::factory()->for($collective)->for($user)->create();
+        });
+    }
+
+    $admin = User::factory()->superAdmin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('admin.dashboard'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('activity', [
+                ['key' => 'signups', 'label' => 'New users', 'lastWeek' => 2, 'lastMonth' => 3],
+                ['key' => 'groupRequests', 'label' => 'Groups started', 'lastWeek' => 1, 'lastMonth' => 2],
+                ['key' => 'groupJoins', 'label' => 'Group joins', 'lastWeek' => 1, 'lastMonth' => 2],
+                ['key' => 'meetups', 'label' => 'Meetups created', 'lastWeek' => 1, 'lastMonth' => 2],
+                ['key' => 'collectiveApplications', 'label' => 'Collective applications', 'lastWeek' => 1, 'lastMonth' => 2],
+            ]));
 });
 
 test('the chapter list can be filtered by status', function () {

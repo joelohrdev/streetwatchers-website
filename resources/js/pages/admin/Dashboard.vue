@@ -1,22 +1,29 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import StatusBadge from '@/components/admin/StatusBadge.vue';
-import Heading from '@/components/Heading.vue';
+import { Head, Link } from "@inertiajs/vue3";
+import { computed } from "vue";
+import StatusBadge from "@/components/admin/StatusBadge.vue";
+import Heading from "@/components/Heading.vue";
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card';
-import { dashboard } from '@/routes/admin';
-import { index as reportsIndex } from '@/routes/admin/reports';
+} from "@/components/ui/card";
+import { dashboard } from "@/routes/admin";
+import { index as reportsIndex } from "@/routes/admin/reports";
 
 type StatusCount = {
     value: string;
     label: string;
     count: number;
+};
+
+type RecentCount = {
+    key: string;
+    label: string;
+    lastWeek: number;
+    lastMonth: number;
 };
 
 const props = defineProps<{
@@ -27,23 +34,24 @@ const props = defineProps<{
         chapters: StatusCount[];
         photos: StatusCount[];
     };
+    activity: RecentCount[];
 }>();
 
 defineOptions({
     layout: {
-        breadcrumbs: [{ title: 'Admin', href: dashboard() }],
+        breadcrumbs: [{ title: "Admin", href: dashboard() }],
     },
 });
 
 const breakdowns = computed(() => [
     {
-        title: 'Chapters',
-        description: 'Chapters by approval status.',
+        title: "Chapters",
+        description: "Chapters by approval status.",
         counts: props.stats.chapters,
     },
     {
-        title: 'Photos',
-        description: 'Photos by moderation status.',
+        title: "Photos",
+        description: "Photos by moderation status.",
         counts: props.stats.photos,
     },
 ]);
@@ -91,6 +99,47 @@ const total = (counts: StatusCount[]) =>
             </Card>
         </Link>
     </div>
+
+    <Card>
+        <CardHeader>
+            <CardTitle>Recent activity</CardTitle>
+            <CardDescription>
+                What people did on the site in the last 7 and 30 days.
+            </CardDescription>
+        </CardHeader>
+        <CardContent>
+            <div class="overflow-x-auto rounded-md border">
+                <table class="w-full text-sm">
+                    <thead class="bg-muted/50 text-muted-foreground">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-medium">
+                                Activity
+                            </th>
+                            <th class="px-3 py-2 text-right font-medium">
+                                7 days
+                            </th>
+                            <th class="px-3 py-2 text-right font-medium">
+                                30 days
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr v-for="item in activity" :key="item.key">
+                            <td class="px-3 py-2">{{ item.label }}</td>
+                            <td
+                                class="px-3 py-2 text-right font-medium tabular-nums"
+                            >
+                                {{ item.lastWeek }}
+                            </td>
+                            <td class="px-3 py-2 text-right tabular-nums">
+                                {{ item.lastMonth }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </CardContent>
+    </Card>
 
     <div class="grid gap-4 lg:grid-cols-2">
         <Card v-for="breakdown in breakdowns" :key="breakdown.title">

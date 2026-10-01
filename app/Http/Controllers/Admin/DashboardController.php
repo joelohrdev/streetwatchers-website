@@ -7,7 +7,10 @@ use App\Enums\PhotoStatus;
 use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Chapter;
+use App\Models\ChapterUser;
 use App\Models\Collective;
+use App\Models\CollectiveApplication;
+use App\Models\Event;
 use App\Models\Photo;
 use App\Models\Report;
 use App\Models\User;
@@ -28,7 +31,37 @@ class DashboardController extends Controller
                 'chapters' => $this->countByStatus(Chapter::query(), ChapterStatus::cases()),
                 'photos' => $this->countByStatus(Photo::query(), PhotoStatus::cases()),
             ],
+            'activity' => [
+                $this->countRecent('signups', 'New users', User::query(), 'created_at'),
+                $this->countRecent('groupRequests', 'Groups started', Chapter::query(), 'created_at'),
+                $this->countRecent('groupJoins', 'Group joins', ChapterUser::query(), 'joined_at'),
+                $this->countRecent('meetups', 'Meetups created', Event::query(), 'created_at'),
+                $this->countRecent('collectiveApplications', 'Collective applications', CollectiveApplication::query(), 'created_at'),
+            ],
         ]);
+    }
+
+    /**
+     * Count rows created in the last 7 and 30 days in one query.
+     *
+     * @template TModel of Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return array{key: string, label: string, lastWeek: int, lastMonth: int}
+     */
+    private function countRecent(string $key, string $label, Builder $query, string $column): array
+    {
+        $counts = $query->toBase()
+            ->where($column, '>=', now()->subDays(30))
+            ->selectRaw("count(*) as last_month, count(case when {$column} >= ? then 1 end) as last_week", [now()->subDays(7)])
+            ->first();
+
+        return [
+            'key' => $key,
+            'label' => $label,
+            'lastWeek' => (int) $counts->last_week,
+            'lastMonth' => (int) $counts->last_month,
+        ];
     }
 
     /**
